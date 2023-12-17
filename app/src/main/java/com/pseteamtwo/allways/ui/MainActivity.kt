@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways
+package com.pseteamtwo.allways.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.pseteamtwo.allways.ui.theme.AllWaysTheme
 
 /**
- *
+ * TODO: DELETE
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
