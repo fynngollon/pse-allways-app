@@ -8,17 +8,3 @@ data class NetworkAccount (
     val passwordHash: String,
     val passwordSalt: String
 )
-
-fun NetworkAccount.toLocal() = LocalAccount(
-    email = email,
-    pseudonym = pseudonym,
-    passwordHash = passwordHash,
-    passwordSalt = passwordSalt
-)
-
-fun LocalAccount.toNetwork() = NetworkAccount(
-    email = email,
-    pseudonym = pseudonym,
-    passwordHash = passwordHash,
-    passwordSalt = passwordSalt
-)

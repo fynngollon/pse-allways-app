@@ -13,8 +13,3 @@ data class LocalAccount(
     var passwordHash: String,
     var passwordSalt: String
 )
-
-fun LocalAccount.toExternal() = Account(
-    email = email,
-    pseudonym = pseudonym
-)
