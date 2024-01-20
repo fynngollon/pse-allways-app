@@ -1,4 +1,15 @@
 package com.pseteamtwo.allways.question.source.network
 
-class ProfileQuestionNetworkDataSource {
+import kotlinx.coroutines.sync.Mutex
+
+class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource {
+    private val accessMutex = Mutex()
+
+    override suspend fun loadQuestions(pseudonym: String): List<NetworkQuestion> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveQuestions(questions: List<NetworkQuestion>) {
+        TODO("Not yet implemented")
+    }
 }

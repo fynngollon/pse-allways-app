@@ -1,4 +1,21 @@
 package com.pseteamtwo.allways.question.source.local
 
-class QuestionDao {
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface QuestionDao {
+    @Query("") //TODO
+    fun observeAll(): Flow<List<LocalQuestion>>
+
+    @Upsert
+    suspend fun upsert(localQuestion: LocalQuestion)
+
+    @Upsert //TODO
+    suspend fun upsertAll(localQuestions: List<LocalQuestion>)
+
+    @Query("") //TODO
+    suspend fun deleteQuestion(id: String): Int
 }

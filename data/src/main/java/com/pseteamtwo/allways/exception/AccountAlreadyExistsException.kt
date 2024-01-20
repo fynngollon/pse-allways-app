@@ -1,4 +1,4 @@
 package com.pseteamtwo.allways.exception
 
-class AccountAlreadyExistsException : Throwable() {
+class AccountAlreadyExistsException : Exception() {
 }

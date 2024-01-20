@@ -3,8 +3,8 @@ package com.pseteamtwo.allways.account.source.network
 import kotlinx.coroutines.sync.Mutex
 
 class DefaultAccountNetworkDataSource : AccountNetworkDataSource {
-
     private val accessMutex = Mutex()
+
     override suspend fun loadAccount(pseudonym: String): NetworkAccount {
         TODO("Not yet implemented")
     }

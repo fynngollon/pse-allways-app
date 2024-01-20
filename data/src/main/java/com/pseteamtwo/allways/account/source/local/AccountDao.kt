@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AccountDao {
-
     @Query("SELECT * FROM account")
     fun observe(): Flow<LocalAccount>
 
@@ -15,5 +14,5 @@ interface AccountDao {
     suspend fun upsert(localAccount: LocalAccount)
 
     @Query("DELETE FROM account")
-    suspend fun deleteAccount()
+    suspend fun deleteAccount(): Int
 }

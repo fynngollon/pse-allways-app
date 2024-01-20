@@ -4,7 +4,7 @@ import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlin.jvm.Throws
 
 interface AccountNetworkDataSource {
-
+    @Throws(ServerConnectionFailedException::class)
     suspend fun loadAccount(pseudonym: String): NetworkAccount
 
     @Throws(ServerConnectionFailedException::class)
