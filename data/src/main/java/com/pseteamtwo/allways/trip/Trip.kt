@@ -1,7 +1,8 @@
 package com.pseteamtwo.allways.trip
 
-import android.location.Location
+import org.osmdroid.util.GeoPoint
 import java.time.LocalDateTime
+import kotlin.time.Duration
 
 data class Trip(
     var id: String,
@@ -10,8 +11,8 @@ data class Trip(
     var isConfirmed: Boolean,
     var startDateTime: LocalDateTime,
     var endDateTime: LocalDateTime,
-    var startLocation: Location, //TODO("GeoPoint doesn't exist lol; could create own GeoPoint class but Location would be better if it can be init with missing values")
-    var endLocation: Location,
+    var startLocation: GeoPoint,
+    var endLocation: GeoPoint,
     var duration: Int, //TODO("or java.time.Duration")
-    var distance: Int
+    var distance: Duration
 )
