@@ -5,14 +5,14 @@ import java.time.LocalDateTime
 import kotlin.time.Duration
 
 data class Trip(
-    var id: String,
-    var stages: List<Stage>,
-    var purpose: Purpose,
-    var isConfirmed: Boolean,
-    var startDateTime: LocalDateTime,
-    var endDateTime: LocalDateTime,
-    var startLocation: GeoPoint,
-    var endLocation: GeoPoint,
-    var duration: Int, //TODO("or java.time.Duration")
-    var distance: Int
+    val id: String,
+    val stages: List<Stage>,
+    val purpose: Purpose,
+    val isConfirmed: Boolean,
+    val startDateTime: LocalDateTime,
+    val endDateTime: LocalDateTime,
+    val startLocation: GeoPoint,
+    val endLocation: GeoPoint,
+    val duration: Int, //TODO("or java.time.Duration")
+    val distance: Int
 )
