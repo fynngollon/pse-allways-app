@@ -14,5 +14,5 @@ data class Trip(
     var startLocation: GeoPoint,
     var endLocation: GeoPoint,
     var duration: Int, //TODO("or java.time.Duration")
-    var distance: Duration
+    var distance: Int
 )
