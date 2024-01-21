@@ -36,7 +36,7 @@ class DefaultAccountRepository @Inject constructor(
     override suspend fun createAccount(email: String, password: String) {
         // checks if the user is already logged in to an account
         if (accountLocalDataSource.observe().count() > 0) {
-            // TODO("user is already logged in")
+            // TODO("user is already logged in, is this case even possible")
             return
         }
 
@@ -100,6 +100,11 @@ class DefaultAccountRepository @Inject constructor(
 
     @Throws(ServerConnectionFailedException::class)
     private fun getAccountFromServer(pseudonym: String): Account {
+        TODO("Not yet implemented")
+    }
+
+    @Throws(ServerConnectionFailedException::class)
+    private suspend fun saveAccountToNetwork(pseudonym: String, passwordHash: String): Boolean {
         TODO("Not yet implemented")
     }
 }
