@@ -82,12 +82,37 @@ class DefaultAccountRepository @Inject constructor(
         accountNetworkDataSource.deleteAccount(accountLocalDataSource.observe().first().toNetwork())
     }
 
-    override suspend fun validateAccount(pseudonym: String, password: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun validateLogin(email: String, password: String): Boolean {
+        // checks if an account exists with the email
+        if (accountNetworkDataSource.doesEmailExist(email)) {
+            return false
+        }
+
+        // compares the passwords
+        val networkAccount = accountNetworkDataSource.loadAccount(email) // TODO("should be pseudonym not email!!!, is loadAccount(email) better tho?")
+        val passwordHash = withContext(dispatcher) {
+            hashPassword(password, networkAccount.passwordSalt)
+        }
+
+        return passwordHash == networkAccount.passwordHash
     }
 
-    override suspend fun authenticateAccount(pseudonym: String, passwordHash: String): Boolean {
-        TODO("Not yet implemented")
+    // doesn't compare email rn
+    override suspend fun authenticateAccount(): Boolean {
+        // loads the local account
+        val localAccount = accountLocalDataSource.observe().first()
+
+        // checks if account exists on network database and deletes the local account if it doesn't
+        if (!accountNetworkDataSource.doesPseudonymExist(localAccount.pseudonym)) {
+            accountLocalDataSource.deleteAccount()
+            return false
+        }
+
+        // loads the network account
+        val networkAccount = accountNetworkDataSource.loadAccount(localAccount.pseudonym)
+
+        return localAccount.passwordHash == networkAccount.passwordHash
+                && localAccount.passwordSalt == networkAccount.passwordSalt
     }
 
     private fun hashPassword(password: String, salt: String): String {
@@ -98,13 +123,4 @@ class DefaultAccountRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    @Throws(ServerConnectionFailedException::class)
-    private fun getAccountFromServer(pseudonym: String): Account {
-        TODO("Not yet implemented")
-    }
-
-    @Throws(ServerConnectionFailedException::class)
-    private suspend fun saveAccountToNetwork(pseudonym: String, passwordHash: String): Boolean {
-        TODO("Not yet implemented")
-    }
 }
