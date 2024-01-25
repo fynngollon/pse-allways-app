@@ -10,11 +10,11 @@ interface QuestionDao {
     @Query("") //TODO
     fun observeAll(): Flow<List<LocalQuestion>>
 
-    @Upsert
-    suspend fun upsert(localQuestion: LocalQuestion)
-
     @Upsert //TODO
     suspend fun upsertAll(localQuestions: List<LocalQuestion>)
+
+    @Upsert
+    suspend fun upsert(localQuestion: LocalQuestion)
 
     @Query("") //TODO
     suspend fun deleteQuestion(id: String): Int
