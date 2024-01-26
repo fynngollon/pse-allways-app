@@ -2,7 +2,6 @@ package com.pseteamtwo.allways.trip
 
 import org.osmdroid.util.GeoPoint
 import java.time.LocalDateTime
-import kotlin.time.Duration
 
 data class Trip(
     val id: String,
