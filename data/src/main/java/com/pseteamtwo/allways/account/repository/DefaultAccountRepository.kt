@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.security.MessageDigest
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -116,11 +117,16 @@ class DefaultAccountRepository @Inject constructor(
     }
 
     private fun hashPassword(password: String, salt: String): String {
-        TODO("Not yet implemented")
+        val md = MessageDigest.getInstance("SHA-256")
+        md.update(salt.toByteArray())
+        val hashedPassword = md.digest(password.toByteArray())
+        return hashedPassword.toString()
     }
 
     private fun createPseudonym(email: String): String {
-        TODO("Not yet implemented")
+        val md = MessageDigest.getInstance("SHA-256")
+        val hashedEmail = md.digest(email.toByteArray())
+        return hashedEmail.toString()
     }
 
 }
