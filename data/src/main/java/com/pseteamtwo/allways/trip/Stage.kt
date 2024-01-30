@@ -1,8 +1,7 @@
 package com.pseteamtwo.allways.trip
 
-import android.location.Location
 import org.osmdroid.util.GeoPoint
-import java.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
 
 data class Stage(
     var id: String,

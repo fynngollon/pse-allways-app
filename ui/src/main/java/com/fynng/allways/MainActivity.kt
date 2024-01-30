@@ -11,11 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.fynng.allways.ui.theme.AllWaysTheme
+import com.jakewharton.threetenabp.AndroidThreeTen
 
 // TODO
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // TODO("either update to android 8 or use this for duration calculation")
+        AndroidThreeTen.init(this)
+
         setContent {
             AllWaysTheme {
                 // A surface container using the 'background' color from the theme
