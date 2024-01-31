@@ -45,7 +45,7 @@ class AppPreferences {
     }
 
 
-    fun setBatteryDependancy(batteryCharge: Int, trackingRegularity: TrackingRegularity) {
+    fun setBatteryDependency(batteryCharge: Int, trackingRegularity: TrackingRegularity) {
         TODO("Not yet implemented")
     }
 

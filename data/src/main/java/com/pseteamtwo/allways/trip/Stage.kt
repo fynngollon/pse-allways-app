@@ -19,14 +19,14 @@ data class Stage(
     val endLocation: GeoPoint,
 ) {
 
-    val duration by lazy {
+    val duration: Int by lazy {
         val zoneId = ZoneId.of("Europe/Paris")
         val zonedStartDateTime = ZonedDateTime.of(startDateTime, zoneId)
         val zonedEndDateTime = ZonedDateTime.of(endDateTime, zoneId)
         Duration.between(zonedStartDateTime, zonedEndDateTime).toMinutes()
     }
 
-    val distance by lazy {
+    val distance: Int by lazy {
         (0 until gpsPoints.size - 1).sumOf {
             val result = FloatArray(1)
             Location.distanceBetween(
