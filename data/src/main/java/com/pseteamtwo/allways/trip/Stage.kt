@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.trip
 
-import android.location.Location
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime

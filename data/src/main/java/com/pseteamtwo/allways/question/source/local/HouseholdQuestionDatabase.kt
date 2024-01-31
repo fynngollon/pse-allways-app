@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 /**
- * The Room Database that contains the Account table.
+ * The Room Database that contains the HouseholdQuestions table.
  */
 //TODO("maybe exportSchema has to be false")
 @Database(entities = [LocalQuestion::class], version = 1, exportSchema = false)
