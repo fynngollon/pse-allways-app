@@ -3,7 +3,6 @@ package com.pseteamtwo.allways.trip.source.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trip.Stage
 import org.osmdroid.util.GeoPoint
 import java.time.LocalDateTime
 
@@ -12,7 +11,7 @@ import java.time.LocalDateTime
 )
 data class LocalTrip(
     @PrimaryKey val id: String,
-    var stages: List<Stage>,
+    var stagesId: List<String>,
     var purpose: Purpose,
     var isConfirmed: Boolean,
     var startDateTime: LocalDateTime,

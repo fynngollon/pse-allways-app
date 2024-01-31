@@ -6,7 +6,7 @@ import com.pseteamtwo.allways.question.Question
 import com.pseteamtwo.allways.question.QuestionType
 
 @Entity(
-    tableName = "question"
+    tableName = "questions"
 )
 data class LocalQuestion(
     @PrimaryKey val id: String,
