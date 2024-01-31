@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.fynng.ui"
+    namespace = "com.fynng.allways"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.fynng.ui"
+        applicationId = "com.fynng.allways"
         minSdk = 23
         targetSdk = 34
         versionCode = 1
