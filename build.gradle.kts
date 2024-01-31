@@ -6,3 +6,21 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.44" apply false
 
 }
+buildscript {
+    repositories {
+        google() // Add this line to include the Google Maven repository
+
+        // other repositories if any
+        mavenCentral()
+    }
+    // other configurations for the build script
+}
+
+allprojects {
+    repositories {
+        google() // Add this line to include the Google Maven repository
+
+        // other repositories if any
+        mavenCentral()
+    }
+}

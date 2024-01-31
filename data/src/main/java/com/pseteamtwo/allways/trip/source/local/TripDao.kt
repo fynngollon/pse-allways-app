@@ -7,21 +7,21 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TripDao {
-    @Query("") //TODO
+    @Query("SELECT * FROM trips")
     fun observeAll(): Flow<List<LocalTrip>>
 
-    @Query("") //TODO
-    fun observe(): Flow<LocalTrip>
+    @Query("SELECT * FROM trips WHERE id = :tripId")
+    fun observe(tripId: String): Flow<LocalTrip>
 
-    @Upsert //TODO
+    @Upsert
     suspend fun upsertAll(trips: List<LocalTrip>)
 
     @Upsert
     suspend fun upsert(trip: LocalTrip)
 
-    @Query("") //TODO
+    @Query("UPDATE trips SET isConfirmed = :isConfirmed WHERE id = :tripId")
     suspend fun updateConfirmed(tripId: String, isConfirmed: Boolean)
 
-    @Query("") //TODO
+    @Query("DELETE FROM trips WHERE id = :tripId")
     suspend fun delete(tripId: String): Int
 }

@@ -8,18 +8,18 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface GpsPointDao {
-    @Query("") //TODO
+    @Query("SELECT * FROM gpsPoints")
     fun observeAll(): StateFlow<List<LocalGpsPoint>>
 
-    @Query("") //TODO
-    fun observe(): Flow<LocalGpsPoint>
+    @Query("SELECT * FROM gpsPoints WHERE id = :gpsPointId")
+    fun observe(gpsPointId: String): Flow<LocalGpsPoint>
 
-    @Upsert //TODO
+    @Upsert
     suspend fun upsertAll(gpsPoints: List<LocalGpsPoint>)
 
     @Upsert
     suspend fun upsert(gpsPoint: LocalGpsPoint)
 
-    @Query("") //TODO
+    @Query("DELETE FROM gpsPoints WHERE id = :gpsPointId")
     suspend fun delete(gpsPointId: String): Int
 }

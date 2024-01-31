@@ -7,15 +7,15 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StageDao {
-    @Query("") //TODO
+    @Query("SELECT * FROM stages WHERE tripId = :tripId") //TODO does it give all trips
     fun getStagesForTrip(tripId: String): Flow<List<LocalStage>>
 
-    @Upsert //TODO
+    @Upsert
     suspend fun upsertAll(stages: List<LocalStage>)
 
     @Upsert
     suspend fun upsert(stage: LocalStage)
 
-    @Query("") //TODO
+    @Query("DELETE FROM stages WHERE id = :stageId")
     suspend fun delete(stageId: String): Int
 }
