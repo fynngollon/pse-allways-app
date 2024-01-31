@@ -12,7 +12,7 @@ android {
     defaultConfig {
         // applicationId = "com.pseteamtwo.allways"
         minSdk = 23
-        targetSdk = 34
+        // targetSdk = 34
         // versionCode = 1
         // versionName = "1.0"
 
@@ -63,6 +63,9 @@ dependencies {
     implementation("org.osmdroid:osmdroid-wms:6.1.14")
     implementation("org.osmdroid:osmdroid-mapsforge:6.1.14")
     implementation("org.osmdroid:osmdroid-geopackage:6.1.14")
+
+    // TODO("either update to android 8 or use this for duration calculation")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
     // default dependencies
     implementation("androidx.core:core-ktx:1.12.0")
