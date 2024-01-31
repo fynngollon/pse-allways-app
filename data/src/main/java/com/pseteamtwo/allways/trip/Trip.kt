@@ -11,7 +11,6 @@ data class Trip(
     val stages: List<Stage>,
     val purpose: Purpose,
     val isConfirmed: Boolean,
-    val distance: Int
 ) {
 
     val startDateTime
@@ -26,14 +25,10 @@ data class Trip(
     val endLocation
         get() = stages.last().endLocation
 
-    val duration: Long by lazy {
-        val zoneId = ZoneId.of("Europe/Paris")
-        val zonedStartDateTime = ZonedDateTime.of(startDateTime, zoneId)
-        val zonedEndDateTime = ZonedDateTime.of(endDateTime, zoneId)
-        Duration.between(zonedStartDateTime, zonedEndDateTime).toMinutes()
-    }
+    val duration
+        get() = stages.sumOf { it.duration }
 
-
-
+    val distance
+        get() = stages.sumOf { it.distance }
 
 }

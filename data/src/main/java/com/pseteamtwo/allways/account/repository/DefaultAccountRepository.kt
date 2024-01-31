@@ -30,6 +30,7 @@ class DefaultAccountRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     @ApplicationScope private val scope: CoroutineScope,
 ) : AccountRepository {
+
     override fun observe(): Flow<Account> {
         return accountLocalDataSource.observe().map { it.toExternal() }
     }
@@ -60,7 +61,7 @@ class DefaultAccountRepository @Inject constructor(
 
         // generates a random string as password salt
         val salt = withContext(dispatcher) {
-            UUID.randomUUID().toString()
+            UUID.randomUUID().toString() // TODO("is UUID correct for this or Random?")
         }
 
         // encrypts the password
@@ -80,17 +81,23 @@ class DefaultAccountRepository @Inject constructor(
     }
 
     override suspend fun deleteAccount() {
+        if (!authenticateAccount()) {
+            // TODO("What if it cant be verified")
+            return
+        }
+
         accountNetworkDataSource.deleteAccount(accountLocalDataSource.observe().first().toNetwork())
+        accountLocalDataSource.deleteAccount()
     }
 
     override suspend fun validateLogin(email: String, password: String): Boolean {
         // checks if an account exists with the email
-        if (accountNetworkDataSource.doesEmailExist(email)) {
+        if (!accountNetworkDataSource.doesEmailExist(email)) {
             return false
         }
 
         // compares the passwords
-        val networkAccount = accountNetworkDataSource.loadAccount(email) // TODO("should be pseudonym not email!!!, is loadAccount(email) better tho?")
+        val networkAccount = accountNetworkDataSource.loadAccount(email)
         val passwordHash = withContext(dispatcher) {
             hashPassword(password, networkAccount.passwordSalt)
         }
@@ -99,6 +106,8 @@ class DefaultAccountRepository @Inject constructor(
     }
 
     // doesn't compare email rn
+    // TODO do we need validate and authenticate?
+    // TODO needs review
     override suspend fun authenticateAccount(): Boolean {
         // loads the local account
         val localAccount = accountLocalDataSource.observe().first()
