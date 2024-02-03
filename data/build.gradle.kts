@@ -67,6 +67,8 @@ dependencies {
     // TODO("either update to android 8 or use this for duration calculation")
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
+    implementation("com.google.code.gson:gson:2.10")
+
     // default dependencies
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")

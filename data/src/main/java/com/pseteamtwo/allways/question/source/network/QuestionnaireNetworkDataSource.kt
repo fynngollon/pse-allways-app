@@ -1,14 +1,28 @@
 package com.pseteamtwo.allways.question.source.network
 
+import com.google.gson.JsonSyntaxException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
+import com.google.gson.Gson
+import java.io.File
 import kotlin.jvm.Throws
 
-interface QuestionnaireNetworkDataSource {
+abstract class QuestionnaireNetworkDataSource {
+    private val questionnaireFilePath = ""
 
     @Throws(ServerConnectionFailedException::class)
-    suspend fun loadQuestionnaire(): List<NetworkQuestion>
+    abstract suspend fun loadQuestionnaire(): List<NetworkQuestion>
 
-    private fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
-        TODO("Not yet implemented")
+    //Throws JsonSyntaxException
+    protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
+        val file = File(questionnaireFilePath)
+        var networkQuestions = listOf<NetworkQuestion>()
+
+        val jsonString = file.readText()
+        val gson = Gson()
+
+        //Attempts to parse
+        networkQuestions = gson.fromJson(jsonString, Array<NetworkQuestion>::class.java).toList()
+
+        return networkQuestions
     }
 }
