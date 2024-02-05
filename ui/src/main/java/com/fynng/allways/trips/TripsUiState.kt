@@ -1,6 +1,7 @@
 package com.fynng.allways.trips
 
 data class TripsUiState(
-    var trips: List<TripUiState>
-    // TODO
+    val tripUiStates: List<TripUiState> = emptyList(),
+    val loading: Boolean = false,
+    val serverConnectionFailed: Boolean = false
 )

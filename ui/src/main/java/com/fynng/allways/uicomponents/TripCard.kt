@@ -1,12 +1,9 @@
 package com.fynng.allways.uicomponents
 
-import android.widget.Space
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,44 +24,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-
-
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import com.fynng.allways.R
-import com.pseteamtwo.allways.trip.Mode
+import com.fynng.allways.trips.TripUiState
+import java.time.LocalDateTime
 import java.util.Locale
 
 
 @Composable
 fun TripCard(
-    modifier: Modifier,
-    mode: Mode?,
-    isConfirmed: Boolean,
-    startHour: Int,
-    startMinute: Int,
-    endHour: Int,
-    endMinute: Int,
-    startLocation: String,
-    endLocation: String,
-    duration: Int,
-    distance: Int,
+    modifier: Modifier = Modifier,
+    tripUiState: TripUiState,
 ) {
-    var showEditTripDialog = remember { mutableStateOf(false) }
+    val showEditTripDialog = remember { mutableStateOf(false) }
     Box(
         modifier = modifier,
         contentAlignment = Alignment.TopEnd
@@ -78,7 +59,7 @@ fun TripCard(
                     .clickable(
                         enabled = true,
                         onClickLabel = "Edit Trip",
-                    ) {showEditTripDialog.value = true},
+                    ) { showEditTripDialog.value = true },
                 border = BorderStroke(1.dp, Color.Black)
             ) {
                 Row(
@@ -93,7 +74,7 @@ fun TripCard(
                             .weight(2.5f)
                     ) {
                         Text(
-                            text = formatDistance(distance),
+                            text = formatDistance(tripUiState.distance),
                             style = MaterialTheme.typography.titleLarge
                         )
                     }
@@ -114,7 +95,7 @@ fun TripCard(
                                 modifier = modifier
                                     .padding(bottom = 4.dp)
                                     .weight(1f),
-                                text = startLocation,
+                                text = tripUiState.startLocationName,
                                 textAlign = TextAlign.Left,
                                 overflow = TextOverflow.Ellipsis,
                                 softWrap = true,
@@ -141,7 +122,7 @@ fun TripCard(
                                 modifier = modifier
                                     .padding(bottom = 4.dp)
                                     .weight(1f),
-                                text = endLocation,
+                                text = tripUiState.endLocationName,
                                 textAlign = TextAlign.Right,
                                 overflow = TextOverflow.Ellipsis,
                                 softWrap = true,
@@ -201,7 +182,9 @@ fun TripCard(
                                 modifier = modifier
                                     .weight(1f)
                                     .fillMaxSize(),
-                                text = formatTime(startHour, startMinute),
+                                text = formatTime(
+                                    tripUiState.startDateTime.hour,
+                                    tripUiState.startDateTime.minute),
                                 textAlign = TextAlign.Left,
                                 style = MaterialTheme.typography.bodySmall
                             )
@@ -209,7 +192,7 @@ fun TripCard(
                                 modifier = modifier
                                     .weight(2f)
                                     .fillMaxSize(),
-                                text = formatDuration(duration),
+                                text = formatDuration(tripUiState.duration),
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.bodySmall
                             )
@@ -217,7 +200,9 @@ fun TripCard(
                                 modifier = modifier
                                     .weight(1f)
                                     .fillMaxSize(),
-                                text = formatTime(endHour, endMinute),
+                                text = formatTime(
+                                    tripUiState.endDateTime.hour,
+                                    tripUiState.endDateTime.minute),
                                 textAlign = TextAlign.Right,
                                 style = MaterialTheme.typography.bodySmall
                             )
@@ -236,7 +221,7 @@ fun TripCard(
             }
 
         }
-        if(!isConfirmed) {
+        if(!tripUiState.isConfirmed) {
             Box(modifier = modifier.size(24.dp)) {
                 Canvas(modifier = modifier
                     .fillMaxSize()
@@ -258,6 +243,7 @@ fun TripCard(
         }
     }
     if(showEditTripDialog.value) {
+        tripUiState.createStageUiStates
         Dialog(
             onDismissRequest = { showEditTripDialog.value = false },
             properties = DialogProperties(
@@ -267,7 +253,10 @@ fun TripCard(
                 usePlatformDefaultWidth = false
             )
         ) {
-            EditTripDialog(modifier = modifier)
+            EditTripDialog(
+                modifier = modifier,
+                stageUiStates = tripUiState.stageUiStates
+                )
         }
     }
 }
@@ -281,12 +270,12 @@ fun formatDistance(distance: Int): String {
 }
 
 fun formatDuration(duration: Int): String {
-    if(duration >= 1440) {
-        return String.format("%d d %d h %02d min", duration/1440, (duration%1440)/60, (duration%1440)%60)
+    return if(duration >= 1440) {
+        String.format("%d d %d h %02d min", duration/1440, (duration%1440)/60, (duration%1440)%60)
     } else if (duration >= 60) {
-        return String.format("%d h %02d min", duration/60, duration%60)
+        String.format("%d h %02d min", duration/60, duration%60)
     } else {
-        return String.format("%d min", duration)
+        String.format("%d min", duration)
     }
 }
 
@@ -294,16 +283,23 @@ fun formatDuration(duration: Int): String {
 @Composable
 fun TripCardPreview() {
     TripCard(
-        mode = null,
-        isConfirmed = true,
-        startHour = 9,
-        startMinute = 5,
-        endHour = 9,
-        endMinute = 10,
-        startLocation = "KIT Mensadfh dfhfdhfd dfhdfh",
-        endLocation = "Karlsruhe",
-        duration = 1738,
-        distance = 4200,
-        modifier = Modifier
+        tripUiState = TripUiState(
+            id = "1",
+            stageUiStates = emptyList(),
+            purpose = null,
+            mode = null,
+            isConfirmed = false,
+            startDateTime = LocalDateTime.now(),
+            endDateTime = LocalDateTime.now(),
+            duration = 145,
+            distance = 4567,
+            startLocationName = "KIT",
+            startLocationLatitude = 2.0,
+            startLocationLongitude = 2.0,
+            endLocationName = "Karlsruhe Hbf",
+            endLocationLatitude = 2.0,
+            endLocationLongitude = 2.0,
+            createStageUiStates = {}
+        )
     )
 }
