@@ -2,24 +2,31 @@ package com.pseteamtwo.allways.trip.source.local
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface GpsPointDao {
-    @Query("SELECT * FROM gpsPoints")
+    @Query("SELECT * FROM gps_points")
     fun observeAll(): StateFlow<List<LocalGpsPoint>>
 
-    @Query("SELECT * FROM gpsPoints WHERE id = :gpsPointId")
-    fun observe(gpsPointId: String): Flow<LocalGpsPoint>
+    @Query("SELECT * FROM gps_points WHERE id = :gpsPointId")
+    fun observe(gpsPointId: Long): Flow<LocalGpsPoint>
+
+    @Query("SELECT * FROM gps_points WHERE id = :gpsPointId")
+    suspend fun get(gpsPointId: Long): LocalGpsPoint?
 
     @Upsert
     suspend fun upsertAll(gpsPoints: List<LocalGpsPoint>)
 
     @Upsert
-    suspend fun upsert(gpsPoint: LocalGpsPoint)
+    suspend fun insert(gpsPoint: LocalGpsPoint): Long
 
-    @Query("DELETE FROM gpsPoints WHERE id = :gpsPointId")
-    suspend fun delete(gpsPointId: String): Int
+    @Update
+    suspend fun update(gpsPoint: LocalGpsPoint)
+
+    @Query("DELETE FROM gps_points WHERE id = :gpsPointId")
+    suspend fun delete(gpsPointId: Long): Int
 }
