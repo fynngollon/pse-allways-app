@@ -1,5 +1,7 @@
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -7,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.DirectionsWalk
@@ -19,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,9 +38,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import com.pseteamtwo.allways.trip.Mode
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,14 +57,12 @@ fun StageCard() {
         mutableStateOf(IntSize.Zero)
     }
 
-    Card(
+    //Displays a Card containing information about one stage of a trip.
+    Card{
+        Column (
+        ){
 
-    ) {
-        Column(
-
-        ) {
-
-
+            //First Row of the card containing the starting point
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     modifier = Modifier
@@ -70,9 +76,12 @@ fun StageCard() {
                 )
                 BasicText(text = "Startort")
             }
+
+            //Second Row of the card containing the dashed line and the starting point, end point and mode of the stage.
             Row {
-                Column(
-                ) {
+
+                //First Column of the second row containing the dashed line
+                Column{
                     Canvas(
                         modifier = Modifier
                             .width(50.dp)
@@ -87,65 +96,64 @@ fun StageCard() {
                         )
                     }
                 }
+
+                //Second Column of the second row containing the starting point, end point and mode of the stage
                 Column(
                     modifier = Modifier
                         .onSizeChanged {
                             lineEnd = it
                         }
                 ) {
+                    //Row containing the starting time
                     Row(
                         modifier = Modifier
-                            .padding(20.dp)
+                            .padding(10.dp) ,
+                        verticalAlignment = Alignment.CenterVertically
 
                     ) {
-                        BasicText(text = "Von")
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .height(10.dp)
-                                .width(40.dp)
-                                .padding(start = 10.dp),
-                            value = "",
-                            onValueChange = {},
-                            trailingIcon = {
+                        /*Column() {
+                            Row(modifier = Modifier.padding(bottom = 10.dp)){
+                                Text(text = "Startzeitpunkt")
+                            }
+                            Row() {
+                                val state = rememberTimePickerState()
+                                TimeInput(
+                                    state = state,
+                                )
 
-                            })
-                        BasicText(modifier = Modifier.padding(start = 10.dp), text = ":")
+                            }
 
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .height(10.dp)
-                                .width(40.dp)
-                                .padding(start = 10.dp),
-                            value = "",
-                            onValueChange = {},
-                            trailingIcon = {
-                            })
+                        }*/
+                        
+                        BasicText(text = "Von: ")
+                        TimeField()
+
 
                     }
+
+                    //Row containing the mode
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(20.dp)
+                            .padding(10.dp)
 
                     ) {
                         var isExpanded by remember {
                             mutableStateOf(false)
                         }
                         val categories = arrayOf("Auto", "Zug", "zu Fuß")
-                        var mode by remember {
+                        var category by remember {
                             mutableStateOf(categories[0])
                         }
-
-                        if(mode == categories[0]) {
-                            modeIcon(Mode.Car)
-                        } else if(mode == categories[1]) {
-                            modeIcon(Mode.Train)
-                        } else if(mode == categories[2]) {
-                            modeIcon(Mode.Walk)
+                        var mode : Mode = when(category) {
+                            categories[0] -> Mode.Car
+                            categories[1] -> Mode.Train
+                            categories[2] -> Mode.Walk
+                            else -> {Mode.Car}
                         }
 
 
-                        BasicText(text = "Verkehrsmittel")
+                        BasicText(text = "Verkehrsmittel : ")
 
                         ExposedDropdownMenuBox(
                             expanded = isExpanded,
@@ -154,9 +162,12 @@ fun StageCard() {
                             }) {
 
                                 OutlinedTextField(
-                                    value = mode,
+                                    value = category,
                                     onValueChange = {},
                                     readOnly = true,
+                                    leadingIcon = {
+                                                  modeIcon(mode)
+                                    },
                                     trailingIcon = {
                                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
                                     },
@@ -177,14 +188,14 @@ fun StageCard() {
                                     },
                                     onClick = {
                                         isExpanded = false
-                                        mode = categories[0]
+                                        category = categories[0]
                                     })
                                 DropdownMenuItem(
                                     text = {
                                         Text(categories[1])
                                     },
                                     onClick = {
-                                        mode = categories[1]
+                                        category = categories[1]
                                         isExpanded = false
                                     })
                                 DropdownMenuItem(
@@ -192,42 +203,36 @@ fun StageCard() {
                                         Text(categories[2])
                                     },
                                     onClick = {
-                                        mode = categories[2]
+                                        category = categories[2]
                                         isExpanded = false
                                     })
                             }
                         }
 
                     }
+
+                    //Row containing the end time
                     Row(modifier = Modifier.padding(20.dp)) {
-                        BasicText(text = "Bis")
+                        /*Column() {
+                            Row(modifier = Modifier.padding(bottom = 10.dp)){
+                                Text(text = "Endzeitpunkt")
+                            }
+                            Row() {
+                                val state = rememberTimePickerState()
+                                TimeInput(
+                                    state = state,
+                                )
+                            }
 
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .height(10.dp)
-                                .width(40.dp)
-                                .padding(start = 10.dp),
-                            value = "",
-                            onValueChange = {},
-                            trailingIcon = {
+                        }*/
+                        BasicText(text = "Bis: ")
+                        TimeField()
 
-                            })
-                        BasicText(modifier = Modifier.padding(start = 10.dp), text = ":")
-
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .height(10.dp)
-                                .width(40.dp)
-                                .padding(start = 10.dp),
-                            value = "",
-                            onValueChange = {},
-                            trailingIcon = {
-
-                            })
                     }
                 }
             }
 
+            //Third row of the card containing the end point
             Row (verticalAlignment = Alignment.CenterVertically){
                 Icon(
                     modifier = Modifier
@@ -246,9 +251,51 @@ fun StageCard() {
 }
 
 @Composable
+fun TimeField() {
+    NumbersField(23)
+    BasicText(modifier = Modifier.padding(start = 10.dp, end = 10.dp), text = ":")
+    NumbersField(59)
+
+}
+
+//Composable Function for displaying a textfield that can only have numbers as input
+@Composable
+fun NumbersField(highestNumber : Int){
+    var text by remember { mutableStateOf("") }
+    BasicTextField(
+        modifier = Modifier
+            .height(20.dp)
+            .width(30.dp),
+            //.wrapContentHeight(Alignment.CenterVertically),
+        value = text,
+        //onValueChange = {if (it.isDigitsOnly()) text = it},
+        onValueChange = {if (it.isDigitsOnly()) {
+            if(it.toInt() in 0..highestNumber) {
+                text = it
+            }
+        }
+                                                },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+        decorationBox = {innerTextField ->
+            Row(
+                modifier = Modifier
+                    .border(
+                        BorderStroke(1.dp, Color.Black)
+                    )
+            ){
+                innerTextField()
+            }
+
+        }
+    )
+}
+
+//Composable Function for displaying an Icon for a given mode
+@Composable
 fun modeIcon(mode : Mode) {
-    var imageVector : Icons
     val size = 30.dp
+
     if(mode == Mode.Car) {
         Icon(
             modifier = Modifier
