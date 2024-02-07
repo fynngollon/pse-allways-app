@@ -2,9 +2,8 @@ package com.pseteamtwo.allways.trip
 
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
+import com.pseteamtwo.allways.trip.source.local.LocalStageWithoutGpsPoints
 import com.pseteamtwo.allways.trip.source.local.LocalTrip
-import com.pseteamtwo.allways.trip.source.network.NetworkStage
-import com.pseteamtwo.allways.trip.source.network.NetworkTrip
 
 /**
  * Data model mapping extension functions. There are three model types:
@@ -43,55 +42,42 @@ import com.pseteamtwo.allways.trip.source.network.NetworkTrip
  */
 //TODO("not sure if JvmName really is necessary")
 
+/*
 /**
  * Trip
  */
 //external to local
 fun Trip.toLocal() = LocalTrip(
     id = id,
-    stagesId = stages.map { stage -> stage.id },
+    stageIds = stages.map { stage -> stage.id },
     purpose = purpose,
     isConfirmed = isConfirmed,
-    startDateTime = startDateTime,
-    endDateTime = endDateTime,
-    startLocation = startLocation,
-    endLocation = endLocation,
-    duration = duration,
-    distance = distance
 )
+*/
 
 //local to external
 fun LocalTrip.toExternal() = Trip(
-    id = id,
-    stages = emptyList(), //TODO("how to get stages back from ids")
-    purpose = purpose,
-    isConfirmed = isConfirmed,
-    startDateTime = startDateTime,
-    endDateTime = endDateTime,
-    startLocation = startLocation,
-    endLocation = endLocation,
-    duration = duration,
-    distance = distance
+    id = tripData.id,
+    purpose = tripData.purpose,
+    isConfirmed = tripData.isConfirmed,
+    stages = stages.toExternal()
 )
 
+fun List<LocalTrip>.toExternal() = map(LocalTrip::toExternal)
+
+/*
 //network to local
 fun NetworkTrip.toLocal() = LocalTrip(
     id = id,
-    stagesId = stagesId,
+    stageIds = stageIds,
     purpose = purpose,
-    isConfirmed = true, //TODO("on download from network the trip is confirmed, isn't it?")
-    startDateTime = startDateTime,
-    endDateTime = endDateTime,
-    startLocation = startLocation,
-    endLocation = endLocation,
-    duration = duration,
-    distance = distance
+    isConfirmed = true
 )
 
 //local to network
 fun LocalTrip.toNetwork() = NetworkTrip(
     id = id,
-    stagesId = stagesId,
+    stageIds = stageIds,
     purpose = purpose,
     startDateTime = startDateTime,
     endDateTime = endDateTime,
@@ -100,51 +86,43 @@ fun LocalTrip.toNetwork() = NetworkTrip(
     duration = duration,
     distance = distance
 )
-
+*/
 
 /**
  * Stage
  */
 //external to local
-fun Stage.toLocal() = LocalStage(
-    id = id,
-    tripId = tripId,
-    gpsPointsId = gpsPoints.map { gpsPoint -> gpsPoint.id },
-    mode = mode,
-    startDateTime = startDateTime,
-    endDateTime = endDateTime,
-    startLocation = startLocation,
-    endLocation = endLocation,
-    duration = duration,
-    distance = distance
+fun Stage.toLocal(tripId: Long) = LocalStage(
+    stageData = LocalStageWithoutGpsPoints(
+        id = id,
+        tripId = tripId,
+        mode = mode,
+    ),
+    gpsPoints = gpsPoints.toLocal(id)
 )
+
+fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
 
 //local to external
 fun LocalStage.toExternal() = Stage(
-    id = id,
-    tripId = tripId,
-    gpsPoints = emptyList(), //TODO("how to get gpsPoints back from ids"),
-    mode = mode,
-    startDateTime = startDateTime,
-    endDateTime = endDateTime,
-    startLocation = startLocation,
-    endLocation = endLocation,
-    duration = duration,
-    distance = distance
+    id = stageData.id,
+    gpsPoints = gpsPoints.toExternal(),
+    mode = stageData.mode,
 )
 
+fun List<LocalStage>.toExternal() = map(LocalStage::toExternal)
+
+/*
 //network to local
 fun NetworkStage.toLocal() = LocalStage(
     id = id,
     tripId = tripId,
-    gpsPointsId = emptyList(), //TODO("networkStage has no gpsPoints saved, can it be just empty?")
+    gpsPointIds = emptyList(),
     mode = mode,
     startDateTime = startDateTime,
     endDateTime = endDateTime,
     startLocation = startLocation,
-    endLocation = endLocation,
-    duration = duration,
-    distance = distance
+    endLocation = endLocation
 )
 
 //local to network
@@ -159,19 +137,25 @@ fun LocalStage.toNetwork() = NetworkStage(
     duration = duration,
     distance = distance
 )
-
+*/
 
 /**
  * GpsPoint
  */
 //external to local
-fun GpsPoint.toLocal() = LocalGpsPoint(
+
+fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
     id = id,
+    stageId = stageId,
     location = location
 )
+
+fun List<GpsPoint>.toLocal(stageId: Long) = map { it.toLocal(stageId) }
 
 //local to external
 fun LocalGpsPoint.toExternal() = GpsPoint(
     id = id,
     location = location
 )
+
+fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)

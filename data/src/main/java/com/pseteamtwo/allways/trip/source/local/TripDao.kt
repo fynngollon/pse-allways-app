@@ -1,27 +1,36 @@
 package com.pseteamtwo.allways.trip.source.local
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TripDao {
-    @Query("") //TODO
+    @Query("SELECT * FROM trips")
     fun observeAll(): Flow<List<LocalTrip>>
 
-    @Query("") //TODO
-    fun observe(): Flow<LocalTrip>
+    @Query("SELECT * FROM trips WHERE id = :tripId")
+    fun observe(tripId: Long): Flow<LocalTrip>
 
-    @Upsert //TODO
-    suspend fun upsertAll(trips: List<LocalTrip>)
+    @Query("SELECT * FROM trips WHERE id = :tripId")
+    suspend fun get(tripId: Long): LocalTrip?
 
     @Upsert
-    suspend fun upsert(trip: LocalTrip)
+    suspend fun upsertAll(trips: List<LocalTrip>)
 
-    @Query("") //TODO
-    suspend fun updateConfirmed(tripId: String, isConfirmed: Boolean)
+    @Insert
+    suspend fun insert(trip: LocalTripWithoutStages): Long
 
-    @Query("") //TODO
-    suspend fun delete(tripId: String): Int
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun update(trip: LocalTrip)
+
+    @Query("UPDATE trips SET isConfirmed = :isConfirmed WHERE id = :tripId")
+    suspend fun updateConfirmed(tripId: Long, isConfirmed: Boolean)
+
+    @Query("DELETE FROM trips WHERE id = :tripId")
+    suspend fun delete(tripId: Long): Int
 }

@@ -2,7 +2,7 @@ package com.pseteamtwo.allways.trip.source.network
 
 import com.pseteamtwo.allways.trip.Mode
 import org.osmdroid.util.GeoPoint
-import java.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
 
 data class NetworkStage (
     val id: String,
