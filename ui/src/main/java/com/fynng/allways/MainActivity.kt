@@ -1,6 +1,5 @@
-package com.fynng.ui
+package com.fynng.allways
 
-import StageCard
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,15 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.fynng.allways.ui.theme.AllWaysTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 
 // TODO
 class MainActivity : ComponentActivity() {
-    lateinit var navController: NavHostController
-
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,28 +22,31 @@ class MainActivity : ComponentActivity() {
         AndroidThreeTen.init(this)
 
         setContent {
-            navController = rememberNavController()
-            StageCard()
-
-           /* Scaffold(
-                bottomBar = {
-                    BottomAppBar(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.primary,
-                    ) {
-                        BottomNavigation(navController = navController)
-                    }
-                },
-
-                ) { innerPadding ->
-                        Column(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                        ) {
-                            SetUpNavGraph(navController = navController)
+            AllWaysTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Greeting("Android")
                 }
-            }*/
+            }
         }
     }
 }
 
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    AllWaysTheme {
+        Greeting("Android")
+    }
+}
