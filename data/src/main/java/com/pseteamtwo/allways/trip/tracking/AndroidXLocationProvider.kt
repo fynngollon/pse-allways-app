@@ -1,5 +1,7 @@
 package com.pseteamtwo.allways.trip.tracking
 
+import com.google.android.gms.location.LocationCallback
+
 class AndroidXLocationProvider : LocationProvider {
     //TODO("LocationCallback does not exist")
     override fun startLocationUpdates(locationCallback: LocationCallback) {

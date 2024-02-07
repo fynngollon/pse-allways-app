@@ -1,6 +1,7 @@
 package com.fynng.allways.uicomponents
 
 
+import android.location.Location
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -34,9 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
-import com.fynng.allways.R
 import com.fynng.allways.trips.TripUiState
-import java.time.LocalDateTime
+import com.jakewharton.threetenabp.AndroidThreeTen
+import com.pseteamtwo.allways.R
+import org.threeten.bp.LocalDateTime
 import java.util.Locale
 
 
@@ -269,7 +271,7 @@ fun formatDistance(distance: Int): String {
     return if (distance > 1000)  String.format(Locale.GERMAN, "%.1f km", distance/1000f) else String.format("%d m", distance)
 }
 
-fun formatDuration(duration: Int): String {
+fun formatDuration(duration: Long): String {
     return if(duration >= 1440) {
         String.format("%d d %d h %02d min", duration/1440, (duration%1440)/60, (duration%1440)%60)
     } else if (duration >= 60) {
@@ -284,21 +286,19 @@ fun formatDuration(duration: Int): String {
 fun TripCardPreview() {
     TripCard(
         tripUiState = TripUiState(
-            id = "1",
+            id = 1,
             stageUiStates = emptyList(),
             purpose = null,
             mode = null,
             isConfirmed = false,
-            startDateTime = LocalDateTime.now(),
-            endDateTime = LocalDateTime.now(),
+            startDateTime = LocalDateTime.MAX,
+            endDateTime = LocalDateTime.MAX,
+            startLocation = Location("test"),
+            endLocation = Location("test"),
+            startLocationName = "KIT",
+            endLocationName = "Karlsruhe Hbf",
             duration = 145,
             distance = 4567,
-            startLocationName = "KIT",
-            startLocationLatitude = 2.0,
-            startLocationLongitude = 2.0,
-            endLocationName = "Karlsruhe Hbf",
-            endLocationLatitude = 2.0,
-            endLocationLongitude = 2.0,
             createStageUiStates = {}
         )
     )

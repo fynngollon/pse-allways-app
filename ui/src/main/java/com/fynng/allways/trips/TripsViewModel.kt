@@ -31,24 +31,12 @@ class TripsViewModel(private val tripAndStageRepository: TripAndStageRepository)
                             isConfirmed = trip.isConfirmed,
                             startDateTime = trip.startDateTime,
                             endDateTime = trip.endDateTime,
+                            startLocation = trip.startLocation,
+                            endLocation = trip.endLocation,
+                            startLocationName = "test",
+                            endLocationName = "test",
                             duration = trip.duration,
                             distance = trip.distance,
-                            /*startYear = trip.startDateTime.year,
-                            startMonth = trip.startDateTime.monthValue,
-                            startDay = trip.startDateTime.dayOfMonth,
-                            startHour = trip.startDateTime.hour,
-                            startMinute =  trip.startDateTime.minute,
-                            endYear = trip.endDateTime.year,
-                            endMonth = trip.endDateTime.monthValue,
-                            endDay = trip.endDateTime.dayOfMonth,
-                            endHour = trip.endDateTime.hour,
-                            endMinute =  trip.endDateTime.minute,*/
-                            startLocationName = "test",
-                            startLocationLatitude = trip.startLocation.latitude,
-                            startLocationLongitude = trip.startLocation.longitude,
-                            endLocationName = "test",
-                            endLocationLatitude = trip.endLocation.latitude,
-                            endLocationLongitude = trip.endLocation.longitude,
                             createStageUiStates = { createStageUiStates(trip.id) }
                         )
                     )
@@ -64,7 +52,7 @@ class TripsViewModel(private val tripAndStageRepository: TripAndStageRepository)
         }
     }
 
-    private fun createStageUiStates(tripId: String) {
+    private fun createStageUiStates(tripId: Long) {
         viewModelScope.launch {
             tripAndStageRepository.observeStagesOfTrip(tripId).collect {
                 stages ->
@@ -76,22 +64,10 @@ class TripsViewModel(private val tripAndStageRepository: TripAndStageRepository)
                             mode = stage.mode,
                             startDateTime = stage.startDateTime,
                             endDateTime = stage.endDateTime,
-                            /*startYear = stage.startDateTime.year,
-                            startMonth = stage.startDateTime.monthValue,
-                            startDay = stage.startDateTime.dayOfMonth,
-                            startHour = stage.startDateTime.hour,
-                            startMinute = stage.startDateTime.minute,
-                            endYear = stage.endDateTime.year,
-                            endMonth = stage.endDateTime.monthValue,
-                            endDay = stage.endDateTime.dayOfMonth,
-                            endHour = stage.endDateTime.hour,
-                            endMinute = stage.endDateTime.minute,*/
+                            startLocation = stage.startLocation,
+                            endLocation = stage.endLocation,
                             startLocationName = "test",
-                            startLocationLongitude = stage.startLocation.longitude,
-                            startLocationLatitude = stage.startLocation.latitude,
                             endLocationName = "test",
-                            endLocationLongitude = stage.endLocation.longitude,
-                            endLocationLatitude = stage.endLocation.latitude
                         )
                     )
                 }

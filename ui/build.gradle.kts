@@ -62,8 +62,9 @@ dependencies {
     implementation("org.osmdroid:osmdroid-wms:6.1.14")
     implementation("org.osmdroid:osmdroid-mapsforge:6.1.14")
     implementation("org.osmdroid:osmdroid-geopackage:6.1.14")
+    implementation(project(":data"))
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
 
     implementation("androidx.core:core-ktx:1.12.0")
