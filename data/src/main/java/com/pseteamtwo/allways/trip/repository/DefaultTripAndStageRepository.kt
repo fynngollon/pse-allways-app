@@ -26,12 +26,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -58,7 +59,9 @@ class DefaultTripAndStageRepository @Inject constructor(
     }
 
     override suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>> {
-        return tripLocalDataSource.observe(tripId).map { it.stages.toExternal() }
+        return tripLocalDataSource.observe(tripId).map { trip ->
+            trip.stages.toExternal().sortedBy { stage ->  stage.startDateTime } 
+        }
     }
 
     override suspend fun createTrip(stages: List<Stage>, purpose: Purpose) {
@@ -192,6 +195,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         stageLocalDataSource.update(localStage)
     }
 
+    // time continuity
     override suspend fun addUserStageBeforeTripStart(
         tripId: Long,
         mode: Mode,
@@ -228,6 +232,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         stageLocalDataSource.update(localStage)
     }
 
+    // time continuity
     override suspend fun addUserStageAfterTripEnd(
         tripId: Long,
         mode: Mode,
@@ -327,27 +332,43 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
     }
 
-    // TODO can this be called with only one trip by ui?
+    // TODO can this be called with only one trip by ui? IllegalArgumentException
     override suspend fun connectTrips(tripIds: List<Long>) {
-        val localStages = mutableListOf<LocalTrip>()
-        for (tripId in tripIds) {
-            tripLocalDataSource.get(tripId)?.let { localStages.add(it) }
+        val localTrips = mutableListOf<LocalTrip>()
+        tripIds.forEach { tripId ->
+            tripLocalDataSource.get(tripId)?.let { localTrips.add(it) }
         }
 
-        require(localStages.size >= 2) { "Needs at least two trip to connect" }
+        require(localTrips.size >= 2) { "Needs at least two trip to connect" }
 
-        // TODO
+        // Wirft eine TimeTravelException, wenn zwischen den zusammenzufügenden Wegen andere Wege existieren, die übergeben wurden.
+        // Wirft eine TeleportationException, wenn der Endort eines Weges nicht mit dem Startort des nächsten Weges übereinstimmt.
+
+        val localStages = mutableListOf<LocalStage>()
+        localTrips.forEach { localStages.addAll(it.stages) }
+
+        createTrip(localStages.toExternal(), Purpose.NONE)
+        tripIds.forEach { tripLocalDataSource.delete(it) }
     }
 
-    override suspend fun getTripsOfDate(date: Date): List<Trip> {
-        TODO("Not yet implemented")
+    override suspend fun getTripsOfDate(date: LocalDate): List<Trip> {
+        return getTripsOfTimespan(date.atStartOfDay(), date.plusDays(1).atStartOfDay())
     }
 
     override suspend fun getTripsOfTimespan(
         startTime: LocalDateTime,
         endTime: LocalDateTime
     ): List<Trip> {
-        TODO("Not yet implemented")
+        val startTimeInLong = startTime.toMillis()
+        val endTimeInLong = endTime.toMillis()
+
+        val allTrips = withContext(dispatcher) {
+            observeAllTrips().first()
+        }
+
+        return allTrips.filter { trip ->
+            trip.startDateTime.isAfter(startTime) && trip.startDateTime.isBefore(endTime)
+        }
     }
 
     /*

@@ -12,8 +12,8 @@ import com.pseteamtwo.allways.trip.Stage
 import com.pseteamtwo.allways.trip.Trip
 import kotlinx.coroutines.flow.Flow
 import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
-import java.util.Date
 import kotlin.jvm.Throws
 
 interface TripAndStageRepository {
@@ -68,7 +68,7 @@ interface TripAndStageRepository {
     @Throws(TimeTravelException::class, TeleportationException::class)
     suspend fun connectTrips(tripIds: List<Long>)
 
-    suspend fun getTripsOfDate(date: Date): List<Trip>
+    suspend fun getTripsOfDate(date: LocalDate): List<Trip>
 
     suspend fun getTripsOfTimespan(startTime: LocalDateTime, endTime: LocalDateTime): List<Trip>
 
