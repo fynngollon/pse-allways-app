@@ -1,4 +1,5 @@
-package com.fynng.ui.profile
+package com.fynng.allways.uicomponents
+
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,7 @@ import androidx.navigation.NavController
 fun ProfileScreen(
     navController: NavController,
 
-) {
+    ) {
     Column {
         Row (){
             Text(
@@ -23,7 +24,7 @@ fun ProfileScreen(
                 fontSize = 30.sp,
                 modifier = Modifier
                     .padding(start = 20.dp)
-                )
+            )
         }
     }
 }
@@ -39,16 +40,4 @@ fun TextQuestion(title: String, answer: String) {
 }
 
 @Composable
-fun RadioButtonQuestion(title: String, options: List<String>, answer: String) {
-
-}
-
-@Composable
-fun CheckboxQuestion(title: String, options: List<String>, answer: String) {
-
-}
-
-@Composable
-fun SpinnerQuestion(title: String, options: List<String>, answer: String) {
-
-}
+fun RadioButtonQuestion(title: String, options: List<String>, answer: String) {}
