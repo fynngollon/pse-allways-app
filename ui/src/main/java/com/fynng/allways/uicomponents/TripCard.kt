@@ -1,7 +1,6 @@
 package com.fynng.allways.uicomponents
 
 
-import android.location.Location
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -36,15 +35,15 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import com.fynng.allways.trips.TripUiState
-import com.jakewharton.threetenabp.AndroidThreeTen
+import com.fynng.allways.trips.TripsViewModel
 import com.pseteamtwo.allways.R
-import org.threeten.bp.LocalDateTime
 import java.util.Locale
 
 
 @Composable
 fun TripCard(
     modifier: Modifier = Modifier,
+    tripsViewModel: TripsViewModel,
     tripUiState: TripUiState,
 ) {
     val showEditTripDialog = remember { mutableStateOf(false) }
@@ -257,8 +256,9 @@ fun TripCard(
         ) {
             EditTripDialog(
                 modifier = modifier,
-                stageUiStates = tripUiState.stageUiStates
-                )
+                tripsViewModel = tripsViewModel,
+                tripUiState = tripUiState
+            )
         }
     }
 }
@@ -284,22 +284,5 @@ fun formatDuration(duration: Long): String {
 @Preview
 @Composable
 fun TripCardPreview() {
-    TripCard(
-        tripUiState = TripUiState(
-            id = 1,
-            stageUiStates = emptyList(),
-            purpose = null,
-            mode = null,
-            isConfirmed = false,
-            startDateTime = LocalDateTime.MAX,
-            endDateTime = LocalDateTime.MAX,
-            startLocation = Location("test"),
-            endLocation = Location("test"),
-            startLocationName = "KIT",
-            endLocationName = "Karlsruhe Hbf",
-            duration = 145,
-            distance = 4567,
-            createStageUiStates = {}
-        )
-    )
+
 }

@@ -53,6 +53,7 @@ fun TripsScreen(
                 }
                 TripCard(
                     modifier = modifier,
+                    tripsViewModel = tripsViewModel,
                     tripUiState = tripUiState
                 )
 
