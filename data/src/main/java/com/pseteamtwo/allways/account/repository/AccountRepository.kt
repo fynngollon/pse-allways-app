@@ -17,8 +17,8 @@ interface AccountRepository {
     suspend fun deleteAccount()
 
     @Throws(ServerConnectionFailedException::class)
-    suspend fun validateAccount(pseudonym: String, password: String): Boolean
+    suspend fun validateLogin(email: String, password: String): Boolean
 
     @Throws(ServerConnectionFailedException::class)
-    suspend fun authenticateAccount(pseudonym: String, passwordHash: String): Boolean
+    suspend fun authenticateAccount(): Boolean
 }

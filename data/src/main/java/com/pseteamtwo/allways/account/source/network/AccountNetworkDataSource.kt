@@ -5,7 +5,7 @@ import kotlin.jvm.Throws
 
 interface AccountNetworkDataSource {
     @Throws(ServerConnectionFailedException::class)
-    suspend fun loadAccount(pseudonym: String): NetworkAccount
+    suspend fun loadAccount(email: String): NetworkAccount
 
     @Throws(ServerConnectionFailedException::class)
     suspend fun saveAccount(account: NetworkAccount)

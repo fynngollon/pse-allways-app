@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -9,11 +10,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        //applicationId = "com.pseteamtwo.allways"
+        // applicationId = "com.pseteamtwo.allways"
         minSdk = 23
-        targetSdk = 34
-       // versionCode = 1
-        //versionName = "1.0"
+        // targetSdk = 34
+        // versionCode = 1
+        // versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -51,13 +52,29 @@ android {
 }
 
 dependencies {
-    // Room dependency
-    val roomVersion = "2.6.1"
+    // added dependencies
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
-    implementation("androidx.room:room-ktx:$roomVersion")
-    // To use Kotlin annotation processing tool (kapt)
-    //kapt("androidx.room:room-compiler:$roomVersion")
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-compiler:2.44.2")
 
+    implementation("org.osmdroid:osmdroid-android:6.1.14")
+    implementation("org.osmdroid:osmdroid-wms:6.1.14")
+    implementation("org.osmdroid:osmdroid-mapsforge:6.1.14")
+    implementation("org.osmdroid:osmdroid-geopackage:6.1.14")
+
+    // TODO("either update to android 8 or use this for duration calculation")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.location:location-ktx:2.4.0-beta01")
+
+    // default dependencies
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
@@ -67,7 +84,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("com.google.android.gms:play-services-location:21.1.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -75,4 +91,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

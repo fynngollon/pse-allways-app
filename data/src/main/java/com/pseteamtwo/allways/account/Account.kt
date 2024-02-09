@@ -1,6 +1,6 @@
 package com.pseteamtwo.allways.account
 
 data class Account(
-    var pseudonym: String,
-    var email: String
+    val pseudonym: String,
+    val email: String
 )
