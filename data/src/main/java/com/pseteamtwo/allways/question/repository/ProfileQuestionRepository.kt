@@ -1,6 +1,7 @@
 package com.pseteamtwo.allways.question.repository
 
 
+import com.pseteamtwo.allways.account.repository.AccountRepository
 import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.question.Question
@@ -16,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,6 +26,7 @@ class ProfileQuestionRepository @Inject constructor(
     private val profileQuestionDao:  QuestionDao,
     private val profileQuestionNetworkDataSource:  QuestionNetworkDataSource,
     private val profileQuestionnaireNetworkDataSource: QuestionnaireNetworkDataSource,
+    private val accountRepository: AccountRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     @ApplicationScope private val scope: CoroutineScope,
 ): QuestionRepository {
@@ -50,7 +53,11 @@ class ProfileQuestionRepository @Inject constructor(
     }
 
     override suspend fun refresh() {
-        TODO("Not yet implemented")
+        val networkQuestions = profileQuestionnaireNetworkDataSource.loadQuestionnaire()
+        val localQuestions = networkQuestions.toLocal()
+
+        profileQuestionDao.deleteAll()
+        profileQuestionDao.upsertAll(localQuestions)
     }
 
     override suspend fun saveQuestionsToNetwork(idList: List<String>) {
@@ -61,7 +68,10 @@ class ProfileQuestionRepository @Inject constructor(
             questions.add(profileQuestionDao.observe(id).first())
         }
 
+        val pseudonym = withContext(dispatcher) {
+            accountRepository.observe().first().pseudonym
+        }
         //saves all Questions to Network
-        profileQuestionNetworkDataSource.saveQuestions(questions.toNetwork())
+        profileQuestionNetworkDataSource.saveQuestions(questions.toNetwork(pseudonym))
     }
 }

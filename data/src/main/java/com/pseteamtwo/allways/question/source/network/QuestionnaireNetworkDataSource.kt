@@ -41,6 +41,22 @@ abstract class QuestionnaireNetworkDataSource {
         return networkQuestions
     }
 
+    /*protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
+        // No file validation needed, assuming jsonQuestionnaire is already valid
+
+        val format = Json {
+            ignoreUnknownKeys = true // Add this line to ignore unknown keys if needed
+        }
+
+        // Attempt to parse
+        val networkQuestions = try {
+            format.decodeFromString<List<NetworkQuestion>>(jsonQuestionnaire)
+        } catch (e: Exception) {
+            throw IncorrectJsonFileException()
+        }
+        return networkQuestions
+    }*/
+
     private fun areAllNetworkQuestionsCorrect(networkQuestions: List<NetworkQuestion>): Boolean {
         return networkQuestions.all { question ->
             if (question.answer != null || question.pseudonym != null) {
