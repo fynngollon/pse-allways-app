@@ -5,6 +5,8 @@ import com.pseteamtwo.allways.account.repository.AccountRepository
 import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.exception.NoTimeContinuityException
+import com.pseteamtwo.allways.exception.TeleportationException
+import com.pseteamtwo.allways.exception.TimeTravelException
 import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
@@ -55,7 +57,9 @@ class DefaultTripAndStageRepository @Inject constructor(
     }
 
     override suspend fun observeAllTrips(): Flow<List<Trip>> {
-        return tripLocalDataSource.observeAll().map { it.toExternal() }
+        return tripLocalDataSource.observeAll().map { trip ->
+            trip.toExternal().sortedBy { it.startDateTime }
+        }
     }
 
     override suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>> {
@@ -341,14 +345,43 @@ class DefaultTripAndStageRepository @Inject constructor(
 
         require(localTrips.size >= 2) { "Needs at least two trip to connect" }
 
-        // Wirft eine TimeTravelException, wenn zwischen den zusammenzufügenden Wegen andere Wege existieren, die übergeben wurden.
-        // Wirft eine TeleportationException, wenn der Endort eines Weges nicht mit dem Startort des nächsten Weges übereinstimmt.
+        // checks if the trips are subsequent
+        val allTrips = withContext(dispatcher) {
+            observeAllTrips().first()
+        }
+        if (isSubsequenceWithoutInterruptions(allTrips, localTrips.toList().toExternal())) {
+            throw TimeTravelException()
+        }
 
         val localStages = mutableListOf<LocalStage>()
         localTrips.forEach { localStages.addAll(it.stages) }
 
+        // checks if the end and start locations between the trips match
+        for (i in 1 until localStages.size - 1) {
+            if (localStages[0].gpsPoints.last().location
+                != localStages[1].gpsPoints.first().location) {
+                throw TeleportationException()
+            }
+        }
+
         createTrip(localStages.toExternal(), Purpose.NONE)
         tripIds.forEach { tripLocalDataSource.delete(it) }
+    }
+
+    private fun isSubsequenceWithoutInterruptions(allTrips: List<Trip>, connectedTrips: List<Trip>): Boolean {
+        var allTripsIndex = 0
+        var connectedTripsIndex = 0
+
+        while (allTripsIndex < allTrips.size && connectedTripsIndex < connectedTrips.size) {
+            if (allTrips[allTripsIndex].id == connectedTrips[connectedTripsIndex].id) {
+                connectedTripsIndex++
+                allTripsIndex++
+            } else {
+                allTripsIndex++
+            }
+        }
+
+        return connectedTripsIndex == connectedTrips.size
     }
 
     override suspend fun getTripsOfDate(date: LocalDate): List<Trip> {
