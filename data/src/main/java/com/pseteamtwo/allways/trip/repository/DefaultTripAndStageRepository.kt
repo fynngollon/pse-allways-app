@@ -5,6 +5,8 @@ import com.pseteamtwo.allways.account.repository.AccountRepository
 import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.exception.NoTimeContinuityException
+import com.pseteamtwo.allways.exception.TeleportationException
+import com.pseteamtwo.allways.exception.TimeTravelException
 import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
@@ -26,12 +28,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -54,11 +57,15 @@ class DefaultTripAndStageRepository @Inject constructor(
     }
 
     override suspend fun observeAllTrips(): Flow<List<Trip>> {
-        return tripLocalDataSource.observeAll().map { it.toExternal() }
+        return tripLocalDataSource.observeAll().map { trip ->
+            trip.toExternal().sortedBy { it.startDateTime }
+        }
     }
 
     override suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>> {
-        return tripLocalDataSource.observe(tripId).map { it.stages.toExternal() }
+        return tripLocalDataSource.observe(tripId).map { trip ->
+            trip.stages.toExternal().sortedBy { stage ->  stage.startDateTime } 
+        }
     }
 
     override suspend fun createTrip(stages: List<Stage>, purpose: Purpose) {
@@ -192,6 +199,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         stageLocalDataSource.update(localStage)
     }
 
+    // time continuity
     override suspend fun addUserStageBeforeTripStart(
         tripId: Long,
         mode: Mode,
@@ -228,6 +236,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         stageLocalDataSource.update(localStage)
     }
 
+    // time continuity
     override suspend fun addUserStageAfterTripEnd(
         tripId: Long,
         mode: Mode,
@@ -327,27 +336,72 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
     }
 
-    // TODO can this be called with only one trip by ui?
+    // TODO can this be called with only one trip by ui? IllegalArgumentException
     override suspend fun connectTrips(tripIds: List<Long>) {
-        val localStages = mutableListOf<LocalTrip>()
-        for (tripId in tripIds) {
-            tripLocalDataSource.get(tripId)?.let { localStages.add(it) }
+        val localTrips = mutableListOf<LocalTrip>()
+        tripIds.forEach { tripId ->
+            tripLocalDataSource.get(tripId)?.let { localTrips.add(it) }
         }
 
-        require(localStages.size >= 2) { "Needs at least two trip to connect" }
+        require(localTrips.size >= 2) { "Needs at least two trip to connect" }
 
-        // TODO
+        // checks if the trips are subsequent
+        val allTrips = withContext(dispatcher) {
+            observeAllTrips().first()
+        }
+        if (isSubsequenceWithoutInterruptions(allTrips, localTrips.toList().toExternal())) {
+            throw TimeTravelException()
+        }
+
+        val localStages = mutableListOf<LocalStage>()
+        localTrips.forEach { localStages.addAll(it.stages) }
+
+        // checks if the end and start locations between the trips match
+        for (i in 1 until localStages.size - 1) {
+            if (localStages[0].gpsPoints.last().location
+                != localStages[1].gpsPoints.first().location) {
+                throw TeleportationException()
+            }
+        }
+
+        createTrip(localStages.toExternal(), Purpose.NONE)
+        tripIds.forEach { tripLocalDataSource.delete(it) }
     }
 
-    override suspend fun getTripsOfDate(date: Date): List<Trip> {
-        TODO("Not yet implemented")
+    private fun isSubsequenceWithoutInterruptions(allTrips: List<Trip>, connectedTrips: List<Trip>): Boolean {
+        var allTripsIndex = 0
+        var connectedTripsIndex = 0
+
+        while (allTripsIndex < allTrips.size && connectedTripsIndex < connectedTrips.size) {
+            if (allTrips[allTripsIndex].id == connectedTrips[connectedTripsIndex].id) {
+                connectedTripsIndex++
+                allTripsIndex++
+            } else {
+                allTripsIndex++
+            }
+        }
+
+        return connectedTripsIndex == connectedTrips.size
+    }
+
+    override suspend fun getTripsOfDate(date: LocalDate): List<Trip> {
+        return getTripsOfTimespan(date.atStartOfDay(), date.plusDays(1).atStartOfDay())
     }
 
     override suspend fun getTripsOfTimespan(
         startTime: LocalDateTime,
         endTime: LocalDateTime
     ): List<Trip> {
-        TODO("Not yet implemented")
+        val startTimeInLong = startTime.toMillis()
+        val endTimeInLong = endTime.toMillis()
+
+        val allTrips = withContext(dispatcher) {
+            observeAllTrips().first()
+        }
+
+        return allTrips.filter { trip ->
+            trip.startDateTime.isAfter(startTime) && trip.startDateTime.isBefore(endTime)
+        }
     }
 
     /*
