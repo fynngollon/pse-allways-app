@@ -10,5 +10,5 @@ import androidx.room.RoomDatabase
 @Database(entities = [LocalQuestion::class], version = 1, exportSchema = false)
 abstract class ProfileQuestionDatabase : RoomDatabase() {
 
-    abstract fun questionDao(): QuestionDao
+    abstract fun profileQuestionDao(): ProfileQuestionDao
 }
