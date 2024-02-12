@@ -11,68 +11,68 @@ import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
 import com.pseteamtwo.allways.trip.Trip
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import org.osmdroid.util.GeoPoint
-import java.time.LocalDateTime
-import java.util.Date
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import kotlin.jvm.Throws
 
 interface TripAndStageRepository {
-    fun observeAllGpsPoints(): StateFlow<List<GpsPoint>>
 
-    fun observeAllTrips(): Flow<List<Trip>>
+    suspend fun observeAllTrips(): Flow<List<Trip>>
+
+    suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>>
 
     suspend fun createTrip(stages: List<Stage>, purpose: Purpose)
 
-    suspend fun createStage(gpsPoints: List<GpsPoint>, mode: Mode)
+    //suspend fun createStage(gpsPoints: List<GpsPoint>, mode: Mode): Stage
 
-    suspend fun createGpsPoint(location: Location)
+    suspend fun createGpsPoint(location: Location): GpsPoint
 
 
-    suspend fun updateTripPurpose(tripId: String, purpose: Purpose)
+    suspend fun updateTripPurpose(tripId: Long, purpose: Purpose)
 
     @Throws(NoTimeContinuityException::class)
     suspend fun updateStage(
-        stageId: String,
+        stageId: Long,
         mode: Mode,
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime,
+        startTime: LocalDateTime,
+        endTime: LocalDateTime,
         startLocation: GeoPoint,
         endLocation: GeoPoint
     )
 
     @Throws(NoTimeContinuityException::class)
     suspend fun addUserStageBeforeTripStart(
-        tripId: String,
+        tripId: Long,
         mode: Mode,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
-        startLocation: GeoPoint
+        startLocation: Location
     )
 
     @Throws(NoTimeContinuityException::class)
     suspend fun addUserStageAfterTripEnd(
-        tripId: String,
+        tripId: Long,
         mode: Mode,
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
-        endLocation: GeoPoint
+        endLocation: Location
     )
 
-    suspend fun separateStageFromTrip(stageId: String)
+    suspend fun separateStageFromTrip(stageId: Long)
 
-    suspend fun deleteTrip(tripId: String)
+    suspend fun deleteTrip(tripId: Long)
 
-    suspend fun deleteStage(stageId: String)
+    suspend fun deleteStage(stageId: Long)
 
     @Throws(TimeTravelException::class, TeleportationException::class)
-    suspend fun connectTrips(tripIds: List<String>)
+    suspend fun connectTrips(tripIds: List<Long>)
 
-    suspend fun getTripsOfDate(date: Date): List<Trip>
+    suspend fun getTripsOfDate(date: LocalDate): List<Trip>
 
     suspend fun getTripsOfTimespan(startTime: LocalDateTime, endTime: LocalDateTime): List<Trip>
 
-    suspend fun connectTripsAndStages()
+    //suspend fun connectTripsAndStages()
 
     @Throws(ServerConnectionFailedException::class)
     suspend fun loadTripsAndStagesFromNetwork()

@@ -1,23 +1,26 @@
 package com.pseteamtwo.allways.trip.source.local
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import com.pseteamtwo.allways.trip.Purpose
-import org.osmdroid.util.GeoPoint
-import java.time.LocalDateTime
 
 @Entity(
     tableName = "trips"
 )
-data class LocalTrip(
-    @PrimaryKey val id: String,
-    var stagesId: List<String>,
+data class LocalTripWithoutStages(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
     var purpose: Purpose,
     var isConfirmed: Boolean,
-    var startDateTime: LocalDateTime,
-    var endDateTime: LocalDateTime,
-    var startLocation: GeoPoint,
-    var endLocation: GeoPoint,
-    var duration: Int, //TODO("or java.time.Duration")
-    var distance: Int
+)
+
+data class LocalTrip(
+    @Embedded val tripData: LocalTripWithoutStages,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "tripId"
+    )
+    var stages: List<LocalStage>
 )
