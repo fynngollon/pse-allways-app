@@ -10,12 +10,8 @@ import kotlin.jvm.Throws
 interface QuestionRepository {
     fun observeAll(): Flow<List<Question>>
 
-    suspend fun createQuestion(
-        id: String,
-        title: String,
-        type: QuestionType,
-        options: List<String>
-    ): String
+    @Throws(ServerConnectionFailedException::class)
+    suspend fun loadQuestionnaire()
 
     @Throws(QuestionIdNotFoundException::class)
     suspend fun updateAnswer(id: String, answer: String)
@@ -27,5 +23,5 @@ interface QuestionRepository {
     suspend fun refresh()
 
     @Throws(ServerConnectionFailedException::class)
-    suspend fun saveQuestionsToNetwork(id: List<String>)
+    suspend fun saveQuestionsToNetwork(idList: List<String>)
 }

@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    //id("kotlinx-serialization") version "1.6.2"
 }
 
 android {
@@ -69,12 +70,15 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.10")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization:1.6.2")
+
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.location:location-ktx:2.4.0-beta01")
+
+    //implementation("androidx.location:location-ktx:2.4.0-beta01")
 
     // default dependencies
     implementation("androidx.core:core-ktx:1.12.0")
