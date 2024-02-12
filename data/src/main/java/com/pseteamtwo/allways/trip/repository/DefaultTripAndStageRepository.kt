@@ -35,6 +35,7 @@ import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -64,7 +65,7 @@ class DefaultTripAndStageRepository @Inject constructor(
 
     override suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>> {
         return tripLocalDataSource.observe(tripId).map { trip ->
-            trip.stages.toExternal().sortedBy { stage ->  stage.startDateTime } 
+            trip.stages.toExternal().sortedBy { stage ->  stage.startDateTime }
         }
     }
 
@@ -419,21 +420,6 @@ class DefaultTripAndStageRepository @Inject constructor(
     }
 
 
-    /*
-    private fun createTripId(): String {
-        TODO("Not yet implemented")
-    }
-
-    private fun createStageId(): String {
-        TODO("Not yet implemented")
-    }
-
-    private fun createGpsPointId(): String {
-        TODO("Not yet implemented")
-    }
-     */
-
-    // TODO
     private fun GeoPoint.toLocation(time: Long): Location {
         val location = Location("osmdroid")
         location.latitude = this.latitude

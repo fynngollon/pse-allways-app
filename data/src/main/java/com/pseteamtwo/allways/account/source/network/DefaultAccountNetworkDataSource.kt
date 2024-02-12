@@ -5,7 +5,7 @@ import kotlinx.coroutines.sync.Mutex
 class DefaultAccountNetworkDataSource : AccountNetworkDataSource {
     private val accessMutex = Mutex()
 
-    override suspend fun loadAccount(pseudonym: String): NetworkAccount {
+    override suspend fun loadAccount(email: String): NetworkAccount {
         TODO("Not yet implemented")
     }
 

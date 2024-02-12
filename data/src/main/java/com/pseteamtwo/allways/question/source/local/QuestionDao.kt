@@ -7,15 +7,20 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface QuestionDao {
-    @Query("") //TODO
+    @Query("SELECT * FROM questions WHERE id = :questionId")
+    fun observe(questionId: String): Flow<LocalQuestion>
+    @Query("SELECT * FROM questions")
     fun observeAll(): Flow<List<LocalQuestion>>
 
-    @Upsert //TODO
+    @Upsert
     suspend fun upsertAll(localQuestions: List<LocalQuestion>)
 
     @Upsert
     suspend fun upsert(localQuestion: LocalQuestion)
 
-    @Query("") //TODO
-    suspend fun deleteQuestion(id: String): Int
+    @Query("DELETE FROM questions WHERE id = :questionId")
+    suspend fun deleteQuestion(questionId: String): Int
+
+    @Query("DELETE FROM questions")
+    suspend fun deleteAll()
 }

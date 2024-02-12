@@ -8,8 +8,9 @@ import com.pseteamtwo.allways.account.source.local.AccountDatabase
 import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
 import com.pseteamtwo.allways.question.repository.HouseholdQuestionRepository
 import com.pseteamtwo.allways.question.repository.ProfileQuestionRepository
-import com.pseteamtwo.allways.question.repository.QuestionRepository
+import com.pseteamtwo.allways.question.source.local.HouseholdQuestionDao
 import com.pseteamtwo.allways.question.source.local.HouseholdQuestionDatabase
+import com.pseteamtwo.allways.question.source.local.ProfileQuestionDao
 import com.pseteamtwo.allways.question.source.local.ProfileQuestionDatabase
 import com.pseteamtwo.allways.question.source.local.QuestionDao
 import com.pseteamtwo.allways.question.source.network.HouseholdQuestionNetworkDataSource
@@ -63,7 +64,7 @@ object ProfileQuestionDatabaseModule {
     }
 
     @Provides
-    fun provideProfileQuestionDao(database: ProfileQuestionDatabase): QuestionDao = database.questionDao()
+    fun provideProfileQuestionDao(database: ProfileQuestionDatabase): ProfileQuestionDao = database.profileQuestionDao()
 }
 
 
@@ -99,7 +100,7 @@ object HouseholdQuestionDatabaseModule {
     }
 
     @Provides
-    fun provideHouseholdQuestionDao(database: HouseholdQuestionDatabase): QuestionDao = database.questionDao()
+    fun provideHouseholdQuestionDao(database: HouseholdQuestionDatabase): HouseholdQuestionDao = database.householdQuestionDao()
 }
 
 /** Trip */
