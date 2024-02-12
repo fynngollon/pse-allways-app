@@ -5,15 +5,23 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.fynng.allways.home.HomeScreen
+import com.fynng.allways.profile.ProfileScreen
+import com.fynng.allways.profile.ProfileViewModel
 import com.fynng.allways.statistics.StatisticsScreen
 import com.fynng.allways.trips.TripsScreen
-import com.fynng.allways.uicomponents.ProfileScreen
+import com.pseteamtwo.allways.question.repository.ProfileQuestionRepository
 
 
 @Composable
 fun SetUpNavGraph(
     navController: NavHostController
 ) {
+
+
+    var profileQuestionRepository: ProfileQuestionRepository = ProfileQuestionRepository()
+    var profileViewModel: ProfileViewModel = ProfileViewModel(profileQuestionRepository)
+
+
     NavHost(
         navController = navController,
         startDestination = Screen.Trips.route
@@ -36,7 +44,7 @@ fun SetUpNavGraph(
         composable(
             route = Screen.Profile.route
         ) {
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController, profileViewModel)
         }
 
     }

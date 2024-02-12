@@ -1,6 +1,11 @@
 package com.fynng.allways.profile
 
+import com.pseteamtwo.allways.question.QuestionType
+
 data class QuestionUiState(
-    var id: String
-    // TODO
+    val id: String,
+    val title: String,
+    val type: QuestionType,
+    val options: List<String>,
+    val answer: String
 )

@@ -54,10 +54,11 @@ android {
 dependencies {
     // added dependencies
     implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
 
     implementation("com.google.dagger:hilt-android:2.50")
-    kapt("com.google.dagger:hilt-compiler:2.44.2")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.44.2")
 
     implementation("org.osmdroid:osmdroid-android:6.1.14")
     implementation("org.osmdroid:osmdroid-wms:6.1.14")
@@ -72,7 +73,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.location:location-ktx:2.4.0-beta01")
+    //implementation("androidx.location:location-ktx:2.4.0-beta01")
 
     // default dependencies
     implementation("androidx.core:core-ktx:1.12.0")

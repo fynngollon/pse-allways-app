@@ -63,6 +63,9 @@ fun LocalTrip.toExternal() = Trip(
     stages = stages.toExternal()
 )
 
+@JvmName(
+    name = "toExternalTripList"
+)
 fun List<LocalTrip>.toExternal() = map(LocalTrip::toExternal)
 
 /*
@@ -101,9 +104,15 @@ fun Stage.toLocal(tripId: Long) = LocalStage(
     gpsPoints = gpsPoints.toLocal(id)
 )
 
+@JvmName(
+    name = "toLocalStageList"
+)
 fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
 
 //local to external
+@JvmName(
+    name = "toExternalStageList"
+)
 fun LocalStage.toExternal() = Stage(
     id = stageData.id,
     gpsPoints = gpsPoints.toExternal(),
@@ -150,12 +159,18 @@ fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
     location = location
 )
 
+@JvmName(
+    name = "toLocalGpsPointList"
+)
 fun List<GpsPoint>.toLocal(stageId: Long) = map { it.toLocal(stageId) }
 
 //local to external
+
 fun LocalGpsPoint.toExternal() = GpsPoint(
     id = id,
     location = location
 )
-
+@JvmName(
+    name = "toExternalGpsPointList"
+)
 fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)
