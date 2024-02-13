@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.question.source.network
 
-import com.google.gson.JsonSyntaxException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -40,7 +39,28 @@ abstract class QuestionnaireNetworkDataSource {
         }
 
         return networkQuestions
+    }*/
+
+    @Throws(IncorrectJsonFileException::class)
+    protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
+
+        //TODO Json String validation might be required
+        val format = Json {
+            ignoreUnknownKeys = true // Add this line to ignore unknown keys if needed
+        }
+
+        // Attempt to parse
+        val networkQuestions = try {
+            format.decodeFromString<List<NetworkQuestion>>(jsonQuestionnaire)
+        } catch (e: Exception) {
+            throw IncorrectJsonFileException()
+        }
+        if (!areAllNetworkQuestionsCorrect(networkQuestions)) {
+            throw IncorrectJsonFileException()
+        }
+        return networkQuestions
     }
+
     private fun areAllNetworkQuestionsCorrect(networkQuestions: List<NetworkQuestion>): Boolean {
         return networkQuestions.all { question ->
             if (question.answer != null || question.pseudonym != null) {
@@ -63,7 +83,7 @@ abstract class QuestionnaireNetworkDataSource {
     }
 }
 
-class QuestionTypeDeserializer : JsonDeserializer<QuestionType> {
+/*class QuestionTypeDeserializer : JsonDeserializer<QuestionType> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
@@ -71,20 +91,3 @@ class QuestionTypeDeserializer : JsonDeserializer<QuestionType> {
     ): QuestionType {
         return QuestionType.valueOf(json?.asString?.uppercase(Locale.ROOT) ?: "TEXT")
     }*/
-@Throws(IncorrectJsonFileException::class)
-    protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
-        // No file validation needed, assuming jsonQuestionnaire is already valid
-
-        val format = Json {
-            ignoreUnknownKeys = true // Add this line to ignore unknown keys if needed
-        }
-
-        // Attempt to parse
-        val networkQuestions = try {
-            format.decodeFromString<List<NetworkQuestion>>(jsonQuestionnaire)
-        } catch (e: Exception) {
-            throw IncorrectJsonFileException()
-        }
-        return networkQuestions
-    }
-}

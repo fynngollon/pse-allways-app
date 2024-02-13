@@ -6,6 +6,8 @@ class ProfileQuestionnaireNetworkDataSource : QuestionnaireNetworkDataSource() {
     private val accessMutex = Mutex()
 
     override suspend fun loadQuestionnaire(): List<NetworkQuestion> {
-        TODO("Not yet implemented")
+        val jsonQuestionnaire = ""
+        //TODO("Get jsonString from Network")
+        return convertJsonToQuestions(jsonQuestionnaire)
     }
 }
