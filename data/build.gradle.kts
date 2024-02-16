@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    //id("kotlinx-serialization") version "1.6.2"
 }
 
 android {
@@ -57,7 +58,7 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
 
     implementation("com.google.dagger:hilt-android:2.50")
-    kapt("com.google.dagger:hilt-compiler:2.44.2")
+    kapt("com.google.dagger:hilt-compiler:2.50")
 
     implementation("org.osmdroid:osmdroid-android:6.1.14")
     implementation("org.osmdroid:osmdroid-wms:6.1.14")
@@ -67,12 +68,14 @@ dependencies {
     // TODO("either update to android 8 or use this for duration calculation")
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.location:location-ktx:2.4.0-beta01")
+    implementation("com.google.code.gson:gson:2.10")
+
+    // for tracking
+    //implementation("androidx.location:location-services:2.6.0")
+
+    testImplementation("io.mockk:mockk:1.12.0")
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
 
     // default dependencies
     implementation("androidx.core:core-ktx:1.12.0")
@@ -96,4 +99,9 @@ dependencies {
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+}
+
+repositories {
+    mavenCentral()
+    google()
 }

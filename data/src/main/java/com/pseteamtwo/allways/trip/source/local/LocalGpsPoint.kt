@@ -3,7 +3,11 @@ package com.pseteamtwo.allways.trip.source.local
 import android.location.Location
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.pseteamtwo.allways.typeconverter.LocationConverter
+
 // stageId is nullable to allow LocalGpsPoint entries to exist without being associated with a LocalStage.
 // However, if a stageId is present, the onDelete = ForeignKey.CASCADE will ensure that when the
 // referenced LocalStage is deleted, all associated LocalGpsPoint entries with that stageId will also be deleted.
@@ -18,7 +22,8 @@ import androidx.room.PrimaryKey
         parentColumns = ["id"],
         childColumns = ["stageId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["stageId"])]
 )
 data class LocalGpsPoint(
     @PrimaryKey(autoGenerate = true)

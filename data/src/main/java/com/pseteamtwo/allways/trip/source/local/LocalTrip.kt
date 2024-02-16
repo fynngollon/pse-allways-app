@@ -9,18 +9,10 @@ import com.pseteamtwo.allways.trip.Purpose
 @Entity(
     tableName = "trips"
 )
-data class LocalTripWithoutStages(
+data class LocalTrip(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     var purpose: Purpose,
     var isConfirmed: Boolean,
-)
-
-data class LocalTrip(
-    @Embedded val tripData: LocalTripWithoutStages,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "tripId"
-    )
     var stages: List<LocalStage>
 )

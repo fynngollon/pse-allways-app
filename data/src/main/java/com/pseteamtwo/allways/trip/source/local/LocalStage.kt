@@ -16,32 +16,12 @@ import org.threeten.bp.LocalDateTime
         parentColumns = ["id"],
         childColumns = ["tripId"],
         onDelete = ForeignKey.CASCADE
-    )]//,
-    //indices = [Index(value = ["tripId", "startTime", "endTime"], unique = true)]
+    )]
 )
-data class LocalStageWithoutGpsPoints(
+data class LocalStage(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     var tripId: Long? = null,
     var mode: Mode,
-    //var startTime: Long = 0L,
-    //var endTime: Long = 0L
-)
-
-data class LocalStage(
-    @Embedded val stageData: LocalStageWithoutGpsPoints,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "stageId"
-    )
     var gpsPoints: List<LocalGpsPoint>
-) {
-    /*
-    init {
-        if (gpsPoints.isNotEmpty()) {
-            stageData.startTime = gpsPoints.first().location.time
-            stageData.endTime = gpsPoints.last().location.time
-        }
-    }
-     */
-}
+)
