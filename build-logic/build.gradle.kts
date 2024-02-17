@@ -1,14 +1,16 @@
 plugins {
     id("com.android.application")
+    //id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    //kotlin("jvm")
 }
 
 android {
-    namespace = "com.fynng.build_logic"
+    namespace = "com.pseteamtwo.build_logic"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.fynng.build_logic"
+        applicationId = "com.pseteamtwo.build_logic"
         minSdk = 23
         targetSdk = 34
         versionCode = 1
@@ -27,12 +29,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    //kotlinOptions {
+    //    jvmTarget = "19"
+    //}
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
+
 }
 
 dependencies {

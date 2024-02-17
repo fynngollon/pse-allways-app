@@ -1,5 +1,9 @@
 plugins {
     id("com.android.application")
+    //id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp") version "1.9.22-1.0.16"
+
     //id("kotlin-kapt")
     //id("com.google.devtools.ksp")
     //id("com.google.dagger.hilt.android")
@@ -33,19 +37,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
     }
     /*
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "19"
     }
      */
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
     packaging {
         resources {
@@ -54,31 +58,37 @@ android {
     }
 }
 
+
 dependencies {
-    // added dependencies
+    // KSP
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.16")
+
+    // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
-    //kapt("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
-
+    // Hilt - data injection
     implementation("com.google.dagger:hilt-android:2.50")
-    //kapt("com.google.dagger:hilt-compiler:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
 
+    // Open-Street-Map
     implementation("org.osmdroid:osmdroid-android:6.1.14")
     implementation("org.osmdroid:osmdroid-wms:6.1.14")
     implementation("org.osmdroid:osmdroid-mapsforge:6.1.14")
     implementation("org.osmdroid:osmdroid-geopackage:6.1.14")
 
-    // TODO("either update to android 8 or use this for duration calculation")
+    // TODO either update to android 8 or use this for duration calculation
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
+    // TODO probably not needed anymore
     implementation("com.google.code.gson:gson:2.10")
 
-    // for tracking
+    // AndroidX Location - for tracking
     //implementation("androidx.location:location-services:2.6.0") TODO not found
     //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found
 
+    // For testing
     testImplementation("io.mockk:mockk:1.12.0")
-
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
 
     // default dependencies

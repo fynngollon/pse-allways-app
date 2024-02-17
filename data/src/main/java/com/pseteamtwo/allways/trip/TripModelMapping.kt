@@ -2,7 +2,6 @@ package com.pseteamtwo.allways.trip
 
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
-import com.pseteamtwo.allways.trip.source.local.LocalStageWithoutGpsPoints
 import com.pseteamtwo.allways.trip.source.local.LocalTrip
 
 /**
@@ -57,9 +56,9 @@ fun Trip.toLocal() = LocalTrip(
 
 //local to external
 fun LocalTrip.toExternal() = Trip(
-    id = tripData.id,
-    purpose = tripData.purpose,
-    isConfirmed = tripData.isConfirmed,
+    id = id,
+    purpose = purpose,
+    isConfirmed = isConfirmed,
     stages = stages.toExternal()
 )
 
@@ -93,11 +92,9 @@ fun LocalTrip.toNetwork() = NetworkTrip(
  */
 //external to local
 fun Stage.toLocal(tripId: Long) = LocalStage(
-    stageData = LocalStageWithoutGpsPoints(
-        id = id,
-        tripId = tripId,
-        mode = mode,
-    ),
+    id = id,
+    tripId = tripId,
+    mode = mode,
     gpsPoints = gpsPoints.toLocal(id)
 )
 
@@ -105,9 +102,9 @@ fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
 
 //local to external
 fun LocalStage.toExternal() = Stage(
-    id = stageData.id,
+    id = id,
     gpsPoints = gpsPoints.toExternal(),
-    mode = stageData.mode,
+    mode = mode,
 )
 
 fun List<LocalStage>.toExternal() = map(LocalStage::toExternal)
