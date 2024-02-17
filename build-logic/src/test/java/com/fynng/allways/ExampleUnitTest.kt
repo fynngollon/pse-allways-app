@@ -1,4 +1,4 @@
-package com.fynng.build_logic
+package com.fynng.allways
 
 import org.junit.Test
 

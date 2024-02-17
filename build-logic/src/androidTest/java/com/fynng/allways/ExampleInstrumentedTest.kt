@@ -1,4 +1,4 @@
-package com.fynng.build_logic
+package com.fynng.allways
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

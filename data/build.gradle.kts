@@ -1,21 +1,26 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    id("com.android.application")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     //id("kotlinx-serialization") version "1.6.2"
 }
+
+kotlin {
+    jvmToolchain(17)
+}
+
 
 android {
     namespace = "com.pseteamtwo.allways"
     compileSdk = 34
 
     defaultConfig {
-        // applicationId = "com.pseteamtwo.allways"
+        //applicationId = "com.pseteamtwo.allways"
         minSdk = 23
-        // targetSdk = 34
-        // versionCode = 1
-        // versionName = "1.0"
+        targetSdk = 34
+        //versionCode = 1
+        //versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -57,6 +62,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
 
+
     implementation("com.google.dagger:hilt-android:2.50")
     kapt("com.google.dagger:hilt-compiler:2.50")
 
@@ -71,7 +77,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
 
     // for tracking
-    //implementation("androidx.location:location-services:2.6.0")
+    implementation("androidx.location:location-services:2.6.0")
+    implementation("androidx.location:location-ktx:2.4.0-beta01")
 
     testImplementation("io.mockk:mockk:1.12.0")
 

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.pseteamtwo.allways"
+    namespace = "com.fynng.allways"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.pseteamtwo.allways"
+        applicationId = "com.fynng.allways"
         minSdk = 23
         targetSdk = 34
         versionCode = 1
