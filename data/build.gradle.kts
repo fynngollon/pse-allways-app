@@ -1,15 +1,10 @@
 plugins {
     id("com.android.application")
-    id("kotlin-kapt")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
+    //id("kotlin-kapt")
+    //id("com.google.devtools.ksp")
+    //id("com.google.dagger.hilt.android")
     //id("kotlinx-serialization") version "1.6.2"
 }
-
-kotlin {
-    jvmToolchain(17)
-}
-
 
 android {
     namespace = "com.pseteamtwo.allways"
@@ -41,9 +36,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    /*
     kotlinOptions {
         jvmTarget = "1.8"
     }
+     */
     buildFeatures {
         compose = true
     }
@@ -60,11 +57,11 @@ android {
 dependencies {
     // added dependencies
     implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    //kapt("androidx.room:room-compiler:2.6.1")
 
 
     implementation("com.google.dagger:hilt-android:2.50")
-    kapt("com.google.dagger:hilt-compiler:2.50")
+    //kapt("com.google.dagger:hilt-compiler:2.50")
 
     implementation("org.osmdroid:osmdroid-android:6.1.14")
     implementation("org.osmdroid:osmdroid-wms:6.1.14")
@@ -77,8 +74,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
 
     // for tracking
-    implementation("androidx.location:location-services:2.6.0")
-    implementation("androidx.location:location-ktx:2.4.0-beta01")
+    //implementation("androidx.location:location-services:2.6.0") TODO not found
+    //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found
 
     testImplementation("io.mockk:mockk:1.12.0")
 
@@ -104,11 +101,17 @@ dependencies {
 }
 
 // Allow references to generated code
+/*
 kapt {
     correctErrorTypes = true
 }
 
+ */
+
+/*
 repositories {
     mavenCentral()
     google()
 }
+
+ */
