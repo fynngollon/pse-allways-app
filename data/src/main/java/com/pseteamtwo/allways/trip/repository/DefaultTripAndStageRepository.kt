@@ -38,6 +38,7 @@ import javax.inject.Singleton
 
 // stages can exist in the database without belonging to any trip:
 // they won't be observed then; once added to a trip they will be deleted alongside the trip
+
 @Singleton
 class DefaultTripAndStageRepository @Inject constructor(
     private val tripLocalDataSource: TripDao,
@@ -48,7 +49,8 @@ class DefaultTripAndStageRepository @Inject constructor(
     private val accountRepository: AccountRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     //@ApplicationScope private val scope: CoroutineScope,
-) : TripAndStageRepository {
+)
+    : TripAndStageRepository {
 
     internal fun observeAllGpsPoints(): StateFlow<List<LocalGpsPoint>> {
         return gpsPointLocalDataSource.observeAll()

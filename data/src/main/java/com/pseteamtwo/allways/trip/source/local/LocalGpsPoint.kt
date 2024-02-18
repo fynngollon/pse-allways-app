@@ -7,6 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.pseteamtwo.allways.typeconverter.LocationConverter
+import kotlinx.serialization.Serializable
 
 // stageId is nullable to allow LocalGpsPoint entries to exist without being associated with a LocalStage.
 // However, if a stageId is present, the onDelete = ForeignKey.CASCADE will ensure that when the
@@ -25,6 +26,7 @@ import com.pseteamtwo.allways.typeconverter.LocationConverter
     )],
     indices = [Index(value = ["stageId"])]
 )
+@Serializable
 data class LocalGpsPoint(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,

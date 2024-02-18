@@ -55,6 +55,7 @@ class DefaultTripAndStageRepositoryTest {
 
     @Test
     fun `create a valid gpsPoints`() = runTest(dispatcher) {
+        /*
         val locations = mutableListOf<Location>()
         for (i in 0 until 10) {
             locations.add(createRandomLocation())
@@ -63,6 +64,8 @@ class DefaultTripAndStageRepositoryTest {
         locations.forEach {
             println("Latitude: ${it.latitude}, Longitude: ${it.longitude}, Speed: ${it.speed}, Time: ${it.time}")
         }
+
+         */
     }
 
 

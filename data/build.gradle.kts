@@ -1,11 +1,9 @@
 plugins {
     id("com.android.application")
-    //id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
-
-    //id("kotlinx-serialization") version "1.6.2"
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -85,6 +83,9 @@ dependencies {
 
     // Google Play Services - for tracking
     implementation("com.google.android.gms:play-services-location:21.1.0")
+
+    // Json
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     // For testing
     testImplementation("io.mockk:mockk:1.12.0")
