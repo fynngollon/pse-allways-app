@@ -1,8 +1,10 @@
 plugins {
+
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -71,7 +73,7 @@ dependencies {
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
     implementation("com.google.code.gson:gson:2.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
