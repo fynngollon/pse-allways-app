@@ -3,17 +3,13 @@ package com.pseteamtwo.allways.question.repository
 import com.pseteamtwo.allways.question.Question
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 
 class ProfileQuestionRepository : QuestionRepository {
 
 
     override fun observeAll(): Flow<List<Question>> {
-
-        return flow <List<Question>>{
-            val startingValue = questions()
-            emit(startingValue)
-        }
+        return flowOf(questions())
     }
 
     override suspend fun createQuestion(
@@ -46,7 +42,7 @@ fun questions(): List<Question> {
     var question1: Question = Question(
         id = "1",
         title = "Anzahl Haustiere",
-        type = QuestionType.TEXT,
+        type = QuestionType.SPINNER,
         options = listOf("option1", "option2"),
         answer = "test"
     )

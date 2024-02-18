@@ -1,5 +1,8 @@
 package com.fynng.allways.statistics
 
 enum class ChartType {
-    // TODO
+    COLUMN,
+    LINE,
+    PIE,
+    SINGLE_VALUE
 }

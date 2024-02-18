@@ -42,5 +42,9 @@ class ProfileViewModel(private val profileQuestionRepository: ProfileQuestionRep
             }
         }
     }
+
+    fun updateAnswer(id: String, answer: String) {
+
+    }
 }
 

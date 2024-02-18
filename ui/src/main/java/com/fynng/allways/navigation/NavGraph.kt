@@ -8,8 +8,11 @@ import com.fynng.allways.home.HomeScreen
 import com.fynng.allways.profile.ProfileScreen
 import com.fynng.allways.profile.ProfileViewModel
 import com.fynng.allways.statistics.StatisticsScreen
+import com.fynng.allways.statistics.StatisticsViewModel
 import com.fynng.allways.trips.TripsScreen
 import com.pseteamtwo.allways.question.repository.ProfileQuestionRepository
+import com.pseteamtwo.allways.statistics.DefaultStatisticsRepository
+import com.pseteamtwo.allways.statistics.StatisticsRepository
 
 
 @Composable
@@ -20,6 +23,8 @@ fun SetUpNavGraph(
 
     var profileQuestionRepository: ProfileQuestionRepository = ProfileQuestionRepository()
     var profileViewModel: ProfileViewModel = ProfileViewModel(profileQuestionRepository)
+    var statisticsRepository: StatisticsRepository = DefaultStatisticsRepository()
+    var statisticsViewModel: StatisticsViewModel = StatisticsViewModel(statisticsRepository)
 
 
     NavHost(
@@ -39,7 +44,7 @@ fun SetUpNavGraph(
         composable(
             route = Screen.Statistics.route
         ) {
-            StatisticsScreen(navController = navController)
+            StatisticsScreen(navController = navController, statisticsViewModel)
         }
         composable(
             route = Screen.Profile.route

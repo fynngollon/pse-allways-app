@@ -1,6 +1,7 @@
 package com.fynng.allways.statistics
 
 data class ChartUiState(
-    var type: ChartType
-    // TODO
+    var type: ChartType,
+    var labels: List<String>,
+    var values: List<Int>
 )
