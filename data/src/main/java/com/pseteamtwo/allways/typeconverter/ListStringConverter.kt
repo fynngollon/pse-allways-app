@@ -1,6 +1,8 @@
 package com.pseteamtwo.allways.typeconverter
 
+import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
+
 
 class ListStringConverter {
     @TypeConverter

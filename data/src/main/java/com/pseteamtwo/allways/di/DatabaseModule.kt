@@ -24,6 +24,9 @@ import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.local.TripDatabase
 import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.TripNetworkDataSource
+import com.pseteamtwo.allways.typeconverter.ListOfLocalGpsPointConverter
+import com.pseteamtwo.allways.typeconverter.ListOfLocalStageConverter
+import com.pseteamtwo.allways.typeconverter.LocationConverter
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

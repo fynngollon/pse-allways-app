@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application") version "8.2.2" apply false
-    //id("com.android.library") version "8.2.2" apply false
     id("org.jetbrains.kotlin.android") version "1.9.22" apply false
+    id("org.jetbrains.kotlin.multiplatform") version "1.9.22" apply false
     id("com.google.devtools.ksp") version "1.9.22-1.0.16" apply false
     id("com.google.dagger.hilt.android") version "2.50" apply false
     kotlin("plugin.serialization") version "1.9.22" apply false
@@ -16,15 +16,8 @@ buildscript {
 
     dependencies {
         classpath(kotlin("gradle-plugin", version = "1.9.22"))
+        classpath("org.jetbrains.kotlin:kotlin-serialization:1.9.22")
     }
 }
 
-/*
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-*/
-
+apply(plugin = "org.jetbrains.kotlin.plugin.serialization")

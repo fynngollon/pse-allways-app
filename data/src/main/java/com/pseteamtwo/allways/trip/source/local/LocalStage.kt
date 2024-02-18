@@ -6,7 +6,12 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import com.pseteamtwo.allways.trip.Mode
+import com.pseteamtwo.allways.typeconverter.ListOfLocalGpsPointConverter
+import com.pseteamtwo.allways.typeconverter.LocationConverter
+import kotlinx.serialization.Contextual
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime
 
@@ -16,8 +21,10 @@ import org.threeten.bp.LocalDateTime
         parentColumns = ["id"],
         childColumns = ["tripId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["tripId"])]
 )
+@TypeConverters(ListOfLocalGpsPointConverter::class)
 data class LocalStage(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,

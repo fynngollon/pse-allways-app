@@ -52,7 +52,7 @@ class DefaultTripAndStageRepository @Inject constructor(
 )
     : TripAndStageRepository {
 
-    internal fun observeAllGpsPoints(): StateFlow<List<LocalGpsPoint>> {
+    internal fun observeAllGpsPoints(): Flow<List<LocalGpsPoint>> {
         return gpsPointLocalDataSource.observeAll()
     }
 

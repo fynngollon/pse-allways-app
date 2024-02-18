@@ -1,9 +1,9 @@
 plugins {
-    id("com.android.application")
+    kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.android")
+    id("com.android.application")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
-    kotlin("plugin.serialization")
 }
 
 android {
@@ -16,8 +16,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -50,8 +50,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-}
 
+}
 
 dependencies {
     // KSP
@@ -85,11 +85,11 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.1.0")
 
     // Json
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // For testing
     testImplementation("io.mockk:mockk:1.12.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // default dependencies
     implementation("androidx.core:core-ktx:1.12.0")
@@ -109,19 +109,3 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
-
-// Allow references to generated code
-/*
-kapt {
-    correctErrorTypes = true
-}
-
- */
-
-/*
-repositories {
-    mavenCentral()
-    google()
-}
-
- */
