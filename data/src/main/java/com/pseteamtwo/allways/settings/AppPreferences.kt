@@ -2,10 +2,9 @@ package com.pseteamtwo.allways.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.BatteryManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
-
 
 
 //TODO("maybe don't set default values here but anywhere else")
@@ -18,11 +17,11 @@ class AppPreferences(context: Context) {
     //TODO("why is this in a companion object?")
     companion object {
         //Settings keys
-        private val KEY_LANGUAGE = "language"
-        private val KEY_TRACKING_ENABLED = "tracking_enabled"
-        private val KEY_TRACKING_REGULARITY = "tracking_regularity"
-        private val KEY_BATTERY_DEPENDENCY_ENABLED = "battery_dependency_enabled"
-        private val KEY_BATTERY_DEPENDENCY = "battery_dependency"
+        private const val KEY_LANGUAGE = "language"
+        private const val KEY_TRACKING_ENABLED = "tracking_enabled"
+        private const val KEY_TRACKING_REGULARITY = "tracking_regularity"
+        private const val KEY_BATTERY_DEPENDENCY_ENABLED = "battery_dependency_enabled"
+        private const val KEY_BATTERY_DEPENDENCY = "battery_dependency"
     }
 
 
@@ -82,7 +81,7 @@ class AppPreferences(context: Context) {
             //update trackingRegularity depending on current battery charge of the device
             //and on the setting of batteryDependency
             if(isBatteryDependencyEnabled) {
-                val batteryLevel = getBatteryLevel() //TODO("getBatteryLevel function implementation")
+                val batteryLevel = getBatteryLevel() //TODO("context injection")
                 if(batteryLevel <= batteryDependency.first) {
                     this.trackingRegularity = batteryDependency.second //TODO("don't know if this uses the set()-function call how it should be")
                 }
@@ -101,6 +100,19 @@ class AppPreferences(context: Context) {
                 gson.toJson(trackingRegularity)
             ).apply()
         }
+
+    //TODO("Not sure if this code does what it is intended to do but cant test it yet")
+    private fun getBatteryLevel(context: Context): Double {
+        val batteryManager = context.getSystemService(BatteryManager::class.java)!!
+        val level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        val scale = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+
+        if (level < 0 || scale <= 0) {
+            return 0.0
+        }
+
+        return (level / scale.toDouble()) * 100.0
+    }
 
     /*
     fun setTrackingRegularity(trackingRegularity: TrackingRegularity) {
