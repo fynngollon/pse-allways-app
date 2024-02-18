@@ -2,11 +2,9 @@ plugins {
     id("com.android.application")
     //id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp") version "1.9.22-1.0.16"
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 
-    //id("kotlin-kapt")
-    //id("com.google.devtools.ksp")
-    //id("com.google.dagger.hilt.android")
     //id("kotlinx-serialization") version "1.6.2"
 }
 
@@ -15,11 +13,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        //applicationId = "com.pseteamtwo.allways"
+        applicationId = "com.pseteamtwo.allways"
         minSdk = 23
         targetSdk = 34
-        //versionCode = 1
-        //versionName = "1.0"
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -40,11 +38,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
     }
-    /*
     kotlinOptions {
         jvmTarget = "19"
     }
-     */
     buildFeatures {
         compose = true
     }
@@ -86,6 +82,9 @@ dependencies {
     // AndroidX Location - for tracking
     //implementation("androidx.location:location-services:2.6.0") TODO not found
     //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found
+
+    // Google Play Services - for tracking
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 
     // For testing
     testImplementation("io.mockk:mockk:1.12.0")

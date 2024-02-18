@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface QuestionDao {
-    @Query("") //TODO
-    fun observeAll(): Flow<List<LocalQuestion>>
+    //@Query("") //TODO
+    //fun observeAll(): Flow<List<LocalQuestion>>
 
     @Upsert //TODO
     suspend fun upsertAll(localQuestions: List<LocalQuestion>)
@@ -16,6 +16,6 @@ interface QuestionDao {
     @Upsert
     suspend fun upsert(localQuestion: LocalQuestion)
 
-    @Query("") //TODO
-    suspend fun deleteQuestion(id: String): Int
+    //@Query("") //TODO
+    //suspend fun deleteQuestion(id: String): Int
 }

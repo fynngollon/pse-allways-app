@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
  * The Room Database that contains the ProfileQuestions table.
  */
 //TODO("maybe exportSchema has to be false")
-@Database(entities = [LocalQuestion::class], version = 1, exportSchema = false)
+@Database(entities = [LocalQuestion::class], version = 1, exportSchema = true)
 abstract class ProfileQuestionDatabase : RoomDatabase() {
 
-    abstract fun questionDao(): QuestionDao
+    abstract fun profileQuestionDao(): ProfileQuestionDao
 }

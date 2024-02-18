@@ -12,8 +12,8 @@ interface GpsPointDao {
     @Query("SELECT * FROM gps_points")
     fun observeAll(): StateFlow<List<LocalGpsPoint>>
 
-    @Query("SELECT * FROM gps_points WHERE id = :gpsPointId")
-    fun observe(gpsPointId: Long): Flow<LocalGpsPoint>
+    //@Query("SELECT * FROM gps_points WHERE id = :gpsPointId")
+    //fun observe(gpsPointId: Long): Flow<LocalGpsPoint>
 
     @Query("SELECT * FROM gps_points WHERE id = :gpsPointId")
     suspend fun get(gpsPointId: Long): LocalGpsPoint?
