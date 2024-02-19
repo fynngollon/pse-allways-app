@@ -4,7 +4,6 @@ plugins {
     id("com.android.application")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
-    //id("kotlinx-serialization") version "1.6.2"
 }
 
 android {
@@ -63,6 +62,9 @@ dependencies {
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     ksp("androidx.room:room-compiler:2.6.1")
 
+    implementation("com.github.hantsy:jsonschema-kotlin:2.4.2")
+    implementation ("net.pwall.json:json-kotlin-schema:0.44")
+    
     // Hilt - data injection
     implementation("com.google.dagger:hilt-android:2.50")
     ksp("com.google.dagger:hilt-compiler:2.50")
