@@ -59,6 +59,7 @@ dependencies {
 
     // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
     ksp("androidx.room:room-compiler:2.6.1")
 
     // Hilt - data injection
@@ -88,6 +89,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // For testing
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 

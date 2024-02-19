@@ -147,6 +147,7 @@ fun LocalStage.toNetwork() = NetworkStage(
  */
 //external to local
 
+
 @JvmName("externalGpsPointToLocal")
 fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
     id = id,

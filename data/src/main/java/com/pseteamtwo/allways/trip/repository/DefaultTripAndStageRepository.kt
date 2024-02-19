@@ -49,8 +49,7 @@ class DefaultTripAndStageRepository @Inject constructor(
     private val accountRepository: AccountRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     //@ApplicationScope private val scope: CoroutineScope,
-)
-    : TripAndStageRepository {
+) : TripAndStageRepository {
 
     internal fun observeAllGpsPoints(): Flow<List<LocalGpsPoint>> {
         return gpsPointLocalDataSource.observeAll()

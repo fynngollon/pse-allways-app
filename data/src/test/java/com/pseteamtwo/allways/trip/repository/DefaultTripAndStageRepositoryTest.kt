@@ -1,37 +1,42 @@
 package com.pseteamtwo.allways.trip.repository
 
 import android.location.Location
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pseteamtwo.allways.account.repository.AccountRepository
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.StageDao
 import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.TripNetworkDataSource
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.CoroutineScope
+import com.pseteamtwo.allways.trip.toLocal
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestDispatcher
 import org.junit.Before
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import kotlin.random.Random
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
 
+@RunWith(AndroidJUnit4::class)
 class DefaultTripAndStageRepositoryTest {
 
-    // Mock dependencies
-    private val tripLocalDataSource = mockk<TripDao>()
-    private val tripNetworkDataSource = mockk<TripNetworkDataSource>()
-    private val stageLocalDataSource = mockk<StageDao>()
-    private val stageNetworkDataSource = mockk<StageNetworkDataSource>()
-    private val gpsPointLocalDataSource = mockk<GpsPointDao>()
-    private val accountRepository = mockk<AccountRepository>()
-    private val dispatcher = StandardTestDispatcher()
-
-    // The class under test
     private lateinit var repository: DefaultTripAndStageRepository
+
+    @Mock private lateinit var tripLocalDataSource: TripDao
+    @Mock private lateinit var tripNetworkDataSource: TripNetworkDataSource
+    @Mock private lateinit var stageLocalDataSource: StageDao
+    @Mock private lateinit var stageNetworkDataSource: StageNetworkDataSource
+    @Mock private lateinit var gpsPointLocalDataSource: GpsPointDao
+    @Mock private lateinit var accountRepository: AccountRepository
+    @Mock private lateinit var testDispatcher: TestDispatcher
+
 
     @Before
     fun setUp() {
+        // Initialize mocks and repository instance
+        MockitoAnnotations.openMocks(this)
         repository = DefaultTripAndStageRepository(
             tripLocalDataSource,
             tripNetworkDataSource,
@@ -39,36 +44,24 @@ class DefaultTripAndStageRepositoryTest {
             stageNetworkDataSource,
             gpsPointLocalDataSource,
             accountRepository,
-            dispatcher
+            testDispatcher
         )
     }
 
-    fun createRandomLocation(): Location {
-        val location = mockk<Location>()
-
-        // Mocking behavior to return random latitude and longitude
-        every { location.latitude } returns Random.nextDouble() * 180 - 90
-        every { location.longitude } returns Random.nextDouble() * 360 - 180
-
-        return location
-    }
-
     @Test
-    fun `create a valid gpsPoints`() = runTest(dispatcher) {
-        /*
-        val locations = mutableListOf<Location>()
-        for (i in 0 until 10) {
-            locations.add(createRandomLocation())
-        }
+    fun `create gps point`() {
+        // Create sample trip and stage data
+        val location = Location("Test")
+        location.latitude = 0.0
+        location.longitude = 0.0
+        location.time = System.currentTimeMillis()
+        location.speed = 0F
 
-        locations.forEach {
-            println("Latitude: ${it.latitude}, Longitude: ${it.longitude}, Speed: ${it.speed}, Time: ${it.time}")
-        }
+        runBlocking {
+            //val localGpsPoint = repository.createGpsPoint(location).toLocal(null)
 
-         */
+            // Verify that the data was saved to the local data sources
+            //verify(gpsPointLocalDataSource).insert(localGpsPoint)
+        }
     }
-
-
-
-
 }
