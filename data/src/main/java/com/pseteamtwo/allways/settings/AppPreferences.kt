@@ -3,9 +3,9 @@ package com.pseteamtwo.allways.settings
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.BatteryManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 
@@ -13,11 +13,8 @@ import javax.inject.Inject
 class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE) //TODO("not sure if private is right")
-
-    private val gson = Gson()
 
     //TODO("why is this in a companion object?")
     companion object {
@@ -35,14 +32,14 @@ class AppPreferences @Inject constructor(
             val jsonString =
                 sharedPreferences.getString(
                     KEY_LANGUAGE,
-                    gson.toJson(getDefaultLanguage())
-                )
-            return gson.fromJson(jsonString, Language::class.java)
+                    Json.encodeToString(getDefaultLanguage())
+                ) ?: ""
+            return Json.decodeFromString<Language>(jsonString)
         }
         set(language) {
             sharedPreferences.edit().putString(
                 KEY_LANGUAGE,
-                gson.toJson(language)
+                Json.encodeToString(language)
             ).apply()
         }
 
@@ -95,14 +92,14 @@ class AppPreferences @Inject constructor(
             val jsonString =
                 sharedPreferences.getString(
                     KEY_TRACKING_REGULARITY,
-                    gson.toJson(TrackingRegularity.MEDIUM)
-                )
-            return gson.fromJson(jsonString, TrackingRegularity::class.java)
+                    Json.encodeToString(TrackingRegularity.MEDIUM)
+                ) ?: ""
+            return Json.decodeFromString<TrackingRegularity>(jsonString)
         }
         set(trackingRegularity) {
             sharedPreferences.edit().putString(
                 KEY_TRACKING_REGULARITY,
-                gson.toJson(trackingRegularity)
+                Json.encodeToString(trackingRegularity)
             ).apply()
         }
 
@@ -152,19 +149,17 @@ class AppPreferences @Inject constructor(
 
     var batteryDependency: Pair<Int, TrackingRegularity>
         get() {
-            val typeOfSrc = object : TypeToken<Pair<Int, TrackingRegularity>>() {}.type
             val jsonString =
                 sharedPreferences.getString(
                     KEY_BATTERY_DEPENDENCY,
-                    gson.toJson(Pair(25, TrackingRegularity.RARELY), typeOfSrc)
-                )
-            return gson.fromJson(jsonString, typeOfSrc)
+                    Json.encodeToString(Pair(25, TrackingRegularity.RARELY))
+                ) ?: ""
+            return Json.decodeFromString<Pair<Int, TrackingRegularity>>(jsonString)
         }
         set(batteryDependency) {
-            val typeOfSrc = object : TypeToken<Pair<Int, TrackingRegularity>>() {}.type
             sharedPreferences.edit().putString(
                 KEY_BATTERY_DEPENDENCY,
-                gson.toJson(batteryDependency, typeOfSrc)
+                Json.encodeToString(batteryDependency)
             ).apply()
         }
 

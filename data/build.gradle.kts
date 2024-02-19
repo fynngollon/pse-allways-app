@@ -78,9 +78,6 @@ dependencies {
     // TODO either update to android 8 or use this for duration calculation
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
-    // TODO probably not needed anymore
-    implementation("com.google.code.gson:gson:2.10")
-
     // AndroidX Location - for tracking
     //implementation("androidx.location:location-services:2.6.0") TODO not found
     //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found
