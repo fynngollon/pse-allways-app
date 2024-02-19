@@ -1,11 +1,9 @@
 package com.pseteamtwo.allways.trip.tracking
 
-import com.google.android.gms.location.LocationCallback
+import android.app.Service
 
-interface LocationProvider {
-    //TODO("LocationCallback does not exist")
-    fun startLocationUpdates()
+abstract class LocationProvider: Service() {
+    abstract fun startLocationUpdates()
 
-    //TODO("LocationCallback does not exist")
-    fun stopLocationUpdates()
+    abstract fun stopLocationUpdates()
 }

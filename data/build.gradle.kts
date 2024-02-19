@@ -4,7 +4,6 @@ plugins {
     id("com.android.application")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
-    //id("kotlinx-serialization") version "1.6.2"
 }
 
 android {
@@ -56,7 +55,7 @@ android {
 
 dependencies {
     // KSP
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.16")
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
 
     // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
@@ -85,6 +84,7 @@ dependencies {
 
     // Google Play Services - for tracking
     implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.android.gms:play-services-activity-recognition:18.0.0")
 
     // Json
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")

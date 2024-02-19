@@ -1,51 +1,70 @@
 package com.pseteamtwo.allways.trip.tracking
 
 import android.Manifest
-import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.pseteamtwo.allways.settings.AppPreferences
+import javax.inject.Inject
 
-class GooglePlayServicesLocationProvider(
-    private val context: Context,
-    private val lifecycle: Lifecycle,
-    private val locationResultHandler: LocationResultHandler
-) : LocationProvider {
+// From Gemini:
+// Error Handling: While you include permission checks, consider adding more robust error handling.
+// For example, handle scenarios where GPS is unavailable or location updates fail consistently.
+// Consider Battery Optimization: Explore strategies like geofencing or foreground notifications to
+// minimize battery impact while maintaining functionality, especially if tracking intervals are long.
+class GooglePlayServicesLocationProvider : LocationProvider() {
 
-    private val fusedLocationClient: FusedLocationProviderClient by lazy {
-            LocationServices.getFusedLocationProviderClient(context);
-        }
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    @Inject private lateinit var locationResultHandler: DefaultLocationResultHandler
 
-    private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            handleLocationResult(locationResult)
+    private fun createRequest(): LocationRequest =
+        LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            AppPreferences(this).trackingRegularity.regularity
+        ).build()
+
+    fun updateRequest() {
+        locationRequest = createRequest()
+        stopLocationUpdates()
+        startLocationUpdates()
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onCreate() {
+        super.onCreate()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        locationRequest = createRequest()
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResultHandler.handleLocationResult(locationResult)
+            }
         }
     }
 
-    private fun handleLocationResult(locationResult: LocationResult) {
-        locationResultHandler.handleLocationResult(locationResult)
-    }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+
     override fun startLocationUpdates() {
-        // Start location updates using fusedLocationClient and pass the locationCallback
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 10 * 1000 // 10 seconds
+        if (AppPreferences(this).isTrackingEnabled) {
+            return
         }
 
         if (ActivityCompat.checkSelfPermission(
-                context,
+                this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
+                this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -58,6 +77,8 @@ class GooglePlayServicesLocationProvider(
             // for ActivityCompat#requestPermissions for more details.
             return
         }
+
+
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -65,9 +86,8 @@ class GooglePlayServicesLocationProvider(
         )
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     override fun stopLocationUpdates() {
-        // Stop location updates
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
+
 }
