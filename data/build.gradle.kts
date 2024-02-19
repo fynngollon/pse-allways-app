@@ -84,7 +84,6 @@ dependencies {
 
     // Google Play Services - for tracking
     implementation("com.google.android.gms:play-services-location:21.1.0")
-    implementation("com.google.android.gms:play-services-activity-recognition:18.0.0")
 
     // Json
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
