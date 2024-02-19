@@ -2,7 +2,6 @@ package com.pseteamtwo.allways.trip
 
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
-import com.pseteamtwo.allways.trip.source.local.LocalStageWithoutGpsPoints
 import com.pseteamtwo.allways.trip.source.local.LocalTrip
 
 /**
@@ -56,13 +55,15 @@ fun Trip.toLocal() = LocalTrip(
 */
 
 //local to external
+@JvmName("localToExternal")
 fun LocalTrip.toExternal() = Trip(
-    id = tripData.id,
-    purpose = tripData.purpose,
-    isConfirmed = tripData.isConfirmed,
+    id = id,
+    purpose = purpose,
+    isConfirmed = isConfirmed,
     stages = stages.toExternal()
 )
 
+@JvmName("localTripListToExternal")
 fun List<LocalTrip>.toExternal() = map(LocalTrip::toExternal)
 
 /*
@@ -92,24 +93,26 @@ fun LocalTrip.toNetwork() = NetworkTrip(
  * Stage
  */
 //external to local
+@JvmName("externalStageToLocal")
 fun Stage.toLocal(tripId: Long) = LocalStage(
-    stageData = LocalStageWithoutGpsPoints(
-        id = id,
-        tripId = tripId,
-        mode = mode,
-    ),
+    id = id,
+    tripId = tripId,
+    mode = mode,
     gpsPoints = gpsPoints.toLocal(id)
 )
 
+@JvmName("externalsToLocals")
 fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
 
 //local to external
+@JvmName("localStageToExternal")
 fun LocalStage.toExternal() = Stage(
-    id = stageData.id,
+    id = id,
     gpsPoints = gpsPoints.toExternal(),
-    mode = stageData.mode,
+    mode = mode,
 )
 
+@JvmName("localStageListToExternal")
 fun List<LocalStage>.toExternal() = map(LocalStage::toExternal)
 
 /*
@@ -144,18 +147,23 @@ fun LocalStage.toNetwork() = NetworkStage(
  */
 //external to local
 
+
+@JvmName("externalGpsPointToLocal")
 fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
     id = id,
     stageId = stageId,
     location = location
 )
 
+@JvmName("externalGpsPointListToLocal")
 fun List<GpsPoint>.toLocal(stageId: Long) = map { it.toLocal(stageId) }
 
 //local to external
+@JvmName("localGpsPointToExternal")
 fun LocalGpsPoint.toExternal() = GpsPoint(
     id = id,
     location = location
 )
 
+@JvmName("localGpsPointListToExternal")
 fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)

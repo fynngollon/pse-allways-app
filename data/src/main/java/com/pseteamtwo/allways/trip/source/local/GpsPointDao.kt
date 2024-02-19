@@ -9,11 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface GpsPointDao {
+    // TODO actually needs to be StateFlow!
     @Query("SELECT * FROM gps_points")
-    fun observeAll(): StateFlow<List<LocalGpsPoint>>
+    fun observeAll(): Flow<List<LocalGpsPoint>>
 
-    @Query("SELECT * FROM gps_points WHERE id = :gpsPointId")
-    fun observe(gpsPointId: Long): Flow<LocalGpsPoint>
+    //@Query("SELECT * FROM gps_points WHERE id = :gpsPointId")
+    //fun observe(gpsPointId: Long): Flow<LocalGpsPoint>
 
     @Query("SELECT * FROM gps_points WHERE id = :gpsPointId")
     suspend fun get(gpsPointId: Long): LocalGpsPoint?

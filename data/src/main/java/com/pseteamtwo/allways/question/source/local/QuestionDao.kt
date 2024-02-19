@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface QuestionDao {
     @Query("SELECT * FROM questions WHERE id = :questionId")
     fun observe(questionId: String): Flow<LocalQuestion>
+  
     @Query("SELECT * FROM questions")
     fun observeAll(): Flow<List<LocalQuestion>>
 
@@ -23,4 +24,5 @@ interface QuestionDao {
 
     @Query("DELETE FROM questions")
     suspend fun deleteAll()
+
 }

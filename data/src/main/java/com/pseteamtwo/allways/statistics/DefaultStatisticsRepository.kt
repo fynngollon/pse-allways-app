@@ -2,26 +2,27 @@ package com.pseteamtwo.allways.statistics
 
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Trip
-import com.pseteamtwo.allways.trip.repository.DefaultTripAndStageRepository
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import kotlinx.coroutines.flow.first
-import java.time.LocalDateTime
-import java.util.Date
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import java.util.EnumMap
+import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 @Singleton
-class DefaultStatisticsRepository : StatisticsRepository {
-    private val tripAndStageRepository: TripAndStageRepository = DefaultTripAndStageRepository() //TODO("Singleton/Interface")
-
+class DefaultStatisticsRepository @Inject constructor(
+    private val tripAndStageRepository: TripAndStageRepository
+): StatisticsRepository {
 
     override suspend fun getTripDistanceOfAll(): Int {
         val trips: List<Trip> = tripAndStageRepository.observeAllTrips().first()
         return trips.sumOf { it.distance }
     }
 
-    override suspend fun getTripDurationOfAll(): Int {
+    override suspend fun getTripDurationOfAll(): Long {
         val trips: List<Trip> = tripAndStageRepository.observeAllTrips().first()
         return trips.sumOf { it.duration }
     }
@@ -37,17 +38,17 @@ class DefaultStatisticsRepository : StatisticsRepository {
     override suspend fun getTripDurationOfTimespan(
         startTime: LocalDateTime,
         endTime: LocalDateTime
-    ): Int {
+    ): Long {
         val trips: List<Trip> = tripAndStageRepository.getTripsOfTimespan(startTime, endTime)
         return trips.sumOf { it.duration }
     }
 
-    override suspend fun getTripDistanceOfDate(date: Date): Int {
+    override suspend fun getTripDistanceOfDate(date: LocalDate): Int {
         val trips: List<Trip> = tripAndStageRepository.getTripsOfDate(date)
         return trips.sumOf { it.distance }
     }
 
-    override suspend fun getTripDurationOfDate(date: Date): Int {
+    override suspend fun getTripDurationOfDate(date: LocalDate): Long {
         val trips: List<Trip> = tripAndStageRepository.getTripsOfDate(date)
         return trips.sumOf { it.duration }
     }
@@ -58,13 +59,13 @@ class DefaultStatisticsRepository : StatisticsRepository {
         return ( trips.sumOf { it.distance } / trips.size.toDouble() ).roundToInt()
     }
 
-    override suspend fun getAverageTripDuration(): Int {
+    override suspend fun getAverageTripDuration(): Long {
         val trips: List<Trip> = tripAndStageRepository.observeAllTrips().first()
-        return ( trips.sumOf { it.duration } / trips.size.toDouble() ).roundToInt()
+        return ( trips.sumOf { it.duration } / trips.size.toDouble() ).roundToLong()
     }
 
-    override suspend fun getAverageTripSpeed(): Int {
-        return ( getAverageTripDistance() / getAverageTripDuration().toDouble() ).roundToInt()
+    override suspend fun getAverageTripSpeed(): Long {
+        return ( getAverageTripDistance() / getAverageTripDuration().toDouble() ).roundToLong()
     }
 
 
@@ -84,7 +85,7 @@ class DefaultStatisticsRepository : StatisticsRepository {
 
     override suspend fun getModalSplitOfDate(
         percentaged: Boolean,
-        date: Date
+        date: LocalDate
     ): EnumMap<Mode, Int> {
         val trips: List<Trip> = tripAndStageRepository.getTripsOfDate(date)
         return getModalSplitOfTrips(trips, percentaged)
