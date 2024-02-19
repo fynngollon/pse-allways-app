@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    //id("kotlinx-serialization") version "1.6.2"
 }
 
 android {

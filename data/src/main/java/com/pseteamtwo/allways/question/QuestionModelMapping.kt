@@ -49,27 +49,33 @@ fun List<LocalQuestion>.toExternal() = map(LocalQuestion::toExternal)
 
 
 //network to local
-fun NetworkQuestion.toLocal() = LocalQuestion(
-    id = id,
-    title = title,
-    type = type,
-    options = options,
-    answer = answer
-)
+fun NetworkQuestion.toLocal(): LocalQuestion {
+    // Handle potential null values for options and answer
+    val options = options ?: emptyList()
+    return LocalQuestion(
+        id = id,
+        title = title,
+        type = type,
+        options = options,
+        answer = answer.orEmpty()
+    )
+}
 
 @JvmName("networkToLocal")
 fun List<NetworkQuestion>.toLocal() = map(NetworkQuestion::toLocal)
 
 
 //local to network
-fun LocalQuestion.toNetwork() = NetworkQuestion(
-    id = id,
-    title = title,
-    type = type,
-    options = options,
-    answer = answer,
-    pseudonym = "" //TODO("need pseudonym as parameter in function call?")
-)
+fun LocalQuestion.toNetwork(pseudonym: String): NetworkQuestion {
+    return NetworkQuestion(
+        id = id,
+        title = title,
+        type = type,
+        options = options.ifEmpty { null },
+        answer = answer,
+        pseudonym = pseudonym
+    )
+}
 
 @JvmName("localToNetwork")
-fun List<LocalQuestion>.toNetwork() = map(LocalQuestion::toNetwork)
+fun List<LocalQuestion>.toNetwork(pseudonym: String) = map { it.toNetwork(pseudonym)}
