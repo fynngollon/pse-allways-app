@@ -5,7 +5,7 @@ import com.pseteamtwo.allways.trip.source.local.LocalStage
 import com.pseteamtwo.allways.trip.source.local.LocalTrip
 
 /**
- * Data model mapping extension functions. There are three model types:
+ * Data model mapping extension functions. There are three model types for trip, stage and gpsPoint:
  *
  *
  * - Trip: External model exposed to other layers in the architecture.
@@ -39,9 +39,9 @@ import com.pseteamtwo.allways.trip.source.local.LocalTrip
  * Without this, type erasure will cause compiler errors because these methods will have the same
  * signature on the JVM.
  */
-//TODO("not sure if JvmName really is necessary")
 
-/*
+
+/* TODO("remove all unnecessary functions and comments")
 /**
  * Trip
  */
@@ -55,6 +55,13 @@ fun Trip.toLocal() = LocalTrip(
 */
 
 //local to external
+/**
+ * Trip: local to external
+ *
+ * Converts a [LocalTrip] into an external [Trip] to expose it to other layers in the architecture.
+ *
+ * @receiver [LocalTrip]
+ */
 @JvmName("localToExternal")
 fun LocalTrip.toExternal() = Trip(
     id = id,
@@ -63,6 +70,14 @@ fun LocalTrip.toExternal() = Trip(
     stages = stages.toExternal()
 )
 
+/**
+ * Trip: local to external (List)
+ *
+ * Converts a list of [LocalTrip]s into a list of external [Trip]s to expose it
+ * to other layers in the architecture.
+ *
+ * @receiver [List]
+ */
 @JvmName("localTripListToExternal")
 fun List<LocalTrip>.toExternal() = map(LocalTrip::toExternal)
 
@@ -93,6 +108,13 @@ fun LocalTrip.toNetwork() = NetworkTrip(
  * Stage
  */
 //external to local
+/**
+ * Stage: external to local
+ *
+ * Converts an external [Stage] into a [LocalStage] to store it into the local database afterwards.
+ *
+ * @receiver [Stage]
+ */
 @JvmName("externalStageToLocal")
 fun Stage.toLocal(tripId: Long) = LocalStage(
     id = id,
@@ -101,10 +123,26 @@ fun Stage.toLocal(tripId: Long) = LocalStage(
     gpsPoints = gpsPoints.toLocal(id)
 )
 
-@JvmName("externalsToLocals")
+/**
+ * Stage: external to local (List)
+ *
+ * Converts a list of external [Stage]s into a list of [LocalStage]s to store it into the
+ * local database afterwards.
+ *
+ * @receiver [List]
+ */
+@JvmName("externalStageListToLocal")
 fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
 
 //local to external
+/**
+ * Stage: local to external
+ *
+ * Converts a [LocalStage] into an external [Stage] to expose it to
+ * other layers in the architecture.
+ *
+ * @receiver [LocalStage]
+ */
 @JvmName("localStageToExternal")
 fun LocalStage.toExternal() = Stage(
     id = id,
@@ -112,6 +150,14 @@ fun LocalStage.toExternal() = Stage(
     mode = mode,
 )
 
+/**
+ * Stage: local to external (List)
+ *
+ * Converts a list of [LocalStage]s into a list of external [Stage]s to expose it
+ * to other layers in the architecture.
+ *
+ * @receiver [List]
+ */
 @JvmName("localStageListToExternal")
 fun List<LocalStage>.toExternal() = map(LocalStage::toExternal)
 
@@ -147,7 +193,14 @@ fun LocalStage.toNetwork() = NetworkStage(
  */
 //external to local
 
-
+/**
+ * GpsPoint: external to local
+ *
+ * Converts an external [GpsPoint] into a [LocalGpsPoint] to store it into the
+ * local database afterwards.
+ *
+ * @receiver [GpsPoint]
+ */
 @JvmName("externalGpsPointToLocal")
 fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
     id = id,
@@ -155,15 +208,39 @@ fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
     location = location
 )
 
+/**
+ * GpsPoint: external to local (List)
+ *
+ * Converts a list of external [GpsPoint]s into a list of [LocalGpsPoint]s to store it into the
+ * local database afterwards.
+ *
+ * @receiver [List]
+ */
 @JvmName("externalGpsPointListToLocal")
 fun List<GpsPoint>.toLocal(stageId: Long) = map { it.toLocal(stageId) }
 
 //local to external
+/**
+ * GpsPoint: local to external
+ *
+ * Converts a [LocalGpsPoint] into an external [GpsPoint] to expose it to
+ * other layers in the architecture.
+ *
+ * @receiver [LocalGpsPoint]
+ */
 @JvmName("localGpsPointToExternal")
 fun LocalGpsPoint.toExternal() = GpsPoint(
     id = id,
     location = location
 )
 
+/**
+ * GpsPoint: local to external (List)
+ *
+ * Converts a list of [LocalGpsPoint]s into a list of external [GpsPoint]s to expose it
+ * to other layers in the architecture.
+ *
+ * @receiver [List]
+ */
 @JvmName("localGpsPointListToExternal")
 fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)

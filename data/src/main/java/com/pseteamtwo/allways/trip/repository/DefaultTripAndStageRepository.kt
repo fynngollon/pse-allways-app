@@ -183,8 +183,8 @@ class DefaultTripAndStageRepository @Inject constructor(
             && endLocation.compareTo(endLocationOfLocalStage)) {
             // start and end location haven't changed
             // set new start and end time
-            localStage.gpsPoints.first().location.time = startTimeMillis
-            localStage.gpsPoints.last().location.time = endTimeMillis
+            startLocationOfLocalStage.time = startTimeMillis
+            endLocationOfLocalStage.time = endTimeMillis
         } else {
             // start and end location have changed
             // create new GPS Points and update GPS Points List of Stage
