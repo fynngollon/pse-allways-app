@@ -7,15 +7,31 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
+import javax.inject.Singleton
 
 
+/**
+ * This class defines and enables editing of the settings for this application.
+ * This is accomplished by [SharedPreferences], which hold the settings.
+ * As [SharedPreferences] can only store primitive data types, complex types are serialized
+ * through [kotlinx.serialization] to a string representation.
+ * This class follows the singleton-pattern.
+ *
+ * @property context Enables access to resources and services of the system.
+ * @constructor Creates an instance of this class.
+ */
 //TODO("maybe don't set default values here but anywhere else")
+@Singleton
 class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE) //TODO("not sure if private is right")
 
+    /**
+     * This companion object holds various strings as keys for storing and accessing
+     * the settings in [SharedPreferences].
+     */
     //TODO("why is this in a companion object?")
     companion object {
         //Settings keys
@@ -27,6 +43,9 @@ class AppPreferences @Inject constructor(
     }
 
 
+    /**
+     * Defines the setting: language of this application.
+     */
     var language: Language
         get() {
             val jsonString =
@@ -44,7 +63,8 @@ class AppPreferences @Inject constructor(
         }
 
     private fun getDefaultLanguage(): Language {
-        TODO("Not yet implemented")
+        return Language.GERMAN
+        //TODO("should that be here or anywhere else?")
     }
 
     /*
@@ -57,6 +77,9 @@ class AppPreferences @Inject constructor(
     */
 
 
+    /**
+     * Defines the setting: is [com.pseteamtwo.allways.trip.tracking] currently allowed to run.
+     */
     var isTrackingEnabled: Boolean
         get() =
             sharedPreferences.getBoolean(
@@ -78,6 +101,13 @@ class AppPreferences @Inject constructor(
     */
 
 
+    /**
+     * This setting only effects the application while [isTrackingEnabled] is true.
+     * Defines the setting: how often should [com.pseteamtwo.allways.trip.tracking] track
+     * per minute.
+     * If [isBatteryDependencyEnabled] is true, the get() methode updates this setting according
+     * to the setting [batteryDependency] if necessary.
+     */
     var trackingRegularity: TrackingRegularity
         get() {
             //update trackingRegularity depending on current battery charge of the device
@@ -126,6 +156,11 @@ class AppPreferences @Inject constructor(
     */
 
 
+    /**
+     * This setting only effects the application while [isTrackingEnabled] is true.
+     * Defines the setting: should the setting [trackingRegularity] be dependant on the current
+     * battery level of the device this application is running on.
+     */
     var isBatteryDependencyEnabled: Boolean
         get() =
             sharedPreferences.getBoolean(
@@ -147,6 +182,13 @@ class AppPreferences @Inject constructor(
     */
 
 
+    /**
+     * This setting only effects the application while
+     * [isTrackingEnabled] and [isBatteryDependencyEnabled] is true.
+     * Defines the setting: if the battery level of the device this application is running on drops
+     * below the specified integer, the [trackingRegularity] setting should be changed to the
+     * specified [TrackingRegularity].
+     */
     var batteryDependency: Pair<Int, TrackingRegularity>
         get() {
             val jsonString =
