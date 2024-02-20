@@ -12,6 +12,15 @@ import javax.inject.Singleton
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
+/**
+ * This implementation of [StatisticsRepository] provides the functionality for the computing
+ * of statistics data out of the [Trip]s, [Stage]s and [GpsPoint]s saved in the according local
+ * databases. For this reason, this class uses the [TripAndStageRepository].
+ * This class follows the singleton-pattern.
+ *
+ * @property tripAndStageRepository The [TripAndStageRepository] used for computing.
+ * @constructor Create an instance of this class.
+ */
 @Singleton
 class DefaultStatisticsRepository @Inject constructor(
     private val tripAndStageRepository: TripAndStageRepository
@@ -91,6 +100,18 @@ class DefaultStatisticsRepository @Inject constructor(
         return getModalSplitOfTrips(trips, percentaged)
     }
 
+    /**
+     * Computes the modal split of the specified [Trip]s. That means, for every [Mode], the
+     * distances of all trips with the according [Mode] out of the provided trips are accumulated
+     * and then either returned in a map or - if percentaged is true - recomputed how much per mille
+     * of the total distance of the specified trips every [Mode] amounts to
+     * and then returned in a map.
+     *
+     * @param trips The [Trip]s the modal split shall be computed for
+     * @param percentaged If the returned modal split shall be in per mille or not
+     * @return Either the direct mapping of every mode to its according distance in the
+     * list of specified trips or the percentaged version of it.
+     */
     private fun getModalSplitOfTrips(
         trips: List<Trip>,
         percentaged: Boolean
