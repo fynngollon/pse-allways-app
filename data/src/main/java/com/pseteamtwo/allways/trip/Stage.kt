@@ -9,6 +9,21 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import kotlin.math.roundToInt
 
+/**
+ * Representation of a stage traveled by the user (to be also used outside this data module).
+ *
+ * A stage can be created by recording through [com.pseteamtwo.allways.trip.tracking] tracking
+ * or by the user himself. A stage should be part of only 1 [Trip].
+ *
+ * @property id The unique identification number of the stage for saving, editing and retrieving
+ * purposes as well as for preventing duplicates.
+ * @property gpsPoints A list of [GpsPoint]s of which the stage consists.
+ * If the stage is deleted, every of its [gpsPoints] should be deleted as well.
+ * @property mode The [Mode] the stage got traveled in.
+ * @constructor Creates a stage with the specified properties.
+ * The properties [startDateTime], [endDateTime], [startLocation], [endLocation], [duration]
+ * and [distance] are computed through the provided list of [GpsPoint]s.
+ */
 data class Stage(
     val id: Long,
     val gpsPoints: List<GpsPoint>,
