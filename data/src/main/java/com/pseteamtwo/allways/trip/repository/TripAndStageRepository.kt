@@ -75,7 +75,7 @@ interface TripAndStageRepository {
 
     /**
      * Updates every property of the specified [Stage] except [Stage.id] and [Stage.gpsPoints].
-     * Thus, the updated properties aren't computed out of [Stage.gpsPoints] anymore, this list
+     * Because the updated properties aren't computed out of [Stage.gpsPoints] anymore, this list
      * should be set to exactly 2 [GpsPoint]s each containing a [Location] composed out of
      * startTime and startLocation respectively endTime and endLocation.
      * Also ensures, that this updating does not interfere with physical logic of time.
