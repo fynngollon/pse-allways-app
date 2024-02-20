@@ -23,7 +23,7 @@ interface TripDao {
     suspend fun upsertAll(trips: List<LocalTrip>)
 
     @Insert
-    suspend fun insert(trip: LocalTripWithoutStages): Long
+    suspend fun insert(trip: LocalTrip): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(trip: LocalTrip)
@@ -33,4 +33,5 @@ interface TripDao {
 
     @Query("DELETE FROM trips WHERE id = :tripId")
     suspend fun delete(tripId: Long): Int
+
 }

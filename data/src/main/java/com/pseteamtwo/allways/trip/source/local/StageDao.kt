@@ -25,8 +25,8 @@ interface StageDao {
     @Upsert
     suspend fun upsertAll(stages: List<LocalStage>)
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(stage: LocalStageWithoutGpsPoints): Long
+    @Insert //(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(stage: LocalStage): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(stage: LocalStage)
