@@ -1,4 +1,4 @@
-package com.fynng.allways.uicomponents
+package com.fynng.allways.profile
 
 
 import androidx.compose.foundation.layout.Column

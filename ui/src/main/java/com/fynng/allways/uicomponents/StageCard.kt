@@ -4,34 +4,41 @@ package com.fynng.allways.uicomponents
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.DirectionsWalk
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.School
-import androidx.compose.material.icons.filled.Train
+
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
+
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+
+import androidx.compose.material3.TimeInput
+
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,60 +46,86 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
+import androidx.compose.ui.window.Dialog
+import com.fynng.allways.trips.StageUiState
 import com.pseteamtwo.allways.trip.Mode
+import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StageCard() {
+fun StageCard(
+    modifier: Modifier = Modifier,
+    stageUiState: StageUiState
+) {
+    var showStartLocationSelector by rememberSaveable {
+        mutableStateOf(false)
+    }
 
-    var lineStart by remember {
-        mutableStateOf(IntSize.Zero)
+    var showEndLocationSelector by rememberSaveable {
+        mutableStateOf(false)
     }
-    var lineEnd by remember {
-        mutableStateOf(IntSize.Zero)
-    }
+
 
     //Displays a Card containing information about one stage of a trip.
-    Card{
-        Column (
-        ){
-
+    /*Card(
+        modifier = modifier.height(200.dp)
+    ){
+        Column {
             //First Row of the card containing the starting point
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    modifier = Modifier
-                        .size(size = 30.dp)
-                        .padding(
-                            start = 5.dp,
-                            end = 5.dp
-                        ),
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "Person Icon"
+            Row(
+                modifier = modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Canvas(modifier = modifier
+                    .weight(1f)
+                ) {
+                    drawCircle(
+                        color = Color.Black,
+                        radius = 17.5f,
+                        center = Offset(size.width/2, size.height/2)
+                    )
+                }
+                BasicText(
+                    text = stageUiState.startLocationName,
+                    modifier = modifier.weight(7f)
                 )
-                BasicText(text = "Startort")
+                Button(
+                    onClick = { showStartLocationSelector = true },
+                    modifier = modifier
+                        .weight(3f)
+                        .height(50.dp)
+                        .padding(4.dp)
+                ) {
+                    Text(text = "ändern")
+                }
             }
 
             //Second Row of the card containing the dashed line and the starting point, end point and mode of the stage.
-            Row {
-
+            Row(
+                modifier = modifier.weight(2.5f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 //First Column of the second row containing the dashed line
-                Column{
+                Column(
+                    modifier = modifier.weight(1f)
+                ){
                     Canvas(
                         modifier = Modifier
-                            .width(50.dp)
+                            .fillMaxSize()
                     ) {
-                        val canvasWidth = size.width
-                        val canvasHeight = lineEnd.height.toFloat()
                         drawLine(
-                            start = Offset(x = 30f, y = 0f),
-                            end = Offset(x = 30f, y = lineEnd.height.toFloat()),
+                            start = Offset(x = size.width/2, y = 0f),
+                            end = Offset(x = size.width/2, y = size.height),
+                            strokeWidth = 4f,
                             color = Color.Black,
                             pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f),
                         )
@@ -101,19 +134,20 @@ fun StageCard() {
 
                 //Second Column of the second row containing the starting point, end point and mode of the stage
                 Column(
-                    modifier = Modifier
-                        .onSizeChanged {
-                            lineEnd = it
-                        }
+                    modifier = modifier
+                        .weight(10f)
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     //Row containing the starting time
                     Row(
                         modifier = Modifier
-                            .padding(10.dp) ,
-                        verticalAlignment = Alignment.CenterVertically
+                             ,
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
 
                     ) {
-                        /*Column() {
+                        *//*Column() {
                             Row(modifier = Modifier.padding(bottom = 10.dp)){
                                 Text(text = "Startzeitpunkt")
                             }
@@ -125,25 +159,32 @@ fun StageCard() {
 
                             }
 
-                        }*/
+                        }*//*
 
                         BasicText(text = "Von: ")
-                        TimeField()
 
-
+                        TimeField(
+                            modifier = modifier,
+                            initialHour = stageUiState.startDateTime.hour,
+                            initialMinute = stageUiState.startDateTime.minute,
+                            onHourChange = {hour: Int -> stageUiState.setStartTime(hour, stageUiState.startDateTime.minute)},
+                            onMinuteChange = {minute: Int -> stageUiState.setStartTime(stageUiState.startDateTime.hour, minute)}
+                        )
                     }
 
                     //Row containing the mode
                     Row(
+                        modifier = modifier
+                            .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(10.dp)
-
                     ) {
-                        var isExpanded by remember {
+                        var expanded by remember {
                             mutableStateOf(false)
                         }
-                        val categories = arrayOf("Auto", "Zug", "zu Fuß")
+
+                        var selectedMode by remember { mutableStateOf(stageUiState.mode) }
+
+                        *//*val categories = arrayOf("Auto", "Zug", "zu Fuß")
                         var category by remember {
                             mutableStateOf(categories[0])
                         }
@@ -152,26 +193,25 @@ fun StageCard() {
                             categories[1] -> Mode.REGIONAL_TRAIN
                             categories[2] -> Mode.WALK
                             else -> {Mode.CAR_DRIVER}
-                        }
+                        }*//*
 
 
-                        BasicText(text = "Verkehrsmittel : ")
+                        BasicText(text = "Verkehrsmittel: ")
 
                         ExposedDropdownMenuBox(
-                            expanded = isExpanded,
-                            onExpandedChange = {isExpanded = it
-
-                            }) {
+                            expanded = expanded,
+                            onExpandedChange = { expanded = !expanded }
+                        ) {
 
                             OutlinedTextField(
-                                value = category,
+                                value = selectedMode.name,
                                 onValueChange = {},
                                 readOnly = true,
                                 leadingIcon = {
-                                    modeIcon(mode)
+
                                 },
                                 trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                                 },
                                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                                 textStyle = TextStyle.Default.copy(fontSize = 13.sp),
@@ -181,41 +221,29 @@ fun StageCard() {
                                     .height(50.dp)
                             )
 
-                            ExposedDropdownMenu(expanded = isExpanded,
-                                onDismissRequest = { isExpanded = false }
+                            ExposedDropdownMenu(expanded = expanded,
+                                onDismissRequest = { expanded = false }
                             ) {
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(categories[0])
-                                    },
-                                    onClick = {
-                                        isExpanded = false
-                                        category = categories[0]
-                                    })
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(categories[1])
-                                    },
-                                    onClick = {
-                                        category = categories[1]
-                                        isExpanded = false
-                                    })
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(categories[2])
-                                    },
-                                    onClick = {
-                                        category = categories[2]
-                                        isExpanded = false
-                                    })
+                                for(mode in Mode.entries) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(mode.name)
+                                        },
+                                        onClick = {
+                                            expanded = false
+                                            selectedMode = mode
+                                            stageUiState.setMode(mode)
+                                        }
+                                    )
+                                }
                             }
                         }
 
                     }
 
                     //Row containing the end time
-                    Row(modifier = Modifier.padding(20.dp)) {
-                        /*Column() {
+                    Row(modifier = Modifier) {
+                        *//*Column() {
                             Row(modifier = Modifier.padding(bottom = 10.dp)){
                                 Text(text = "Endzeitpunkt")
                             }
@@ -226,44 +254,436 @@ fun StageCard() {
                                 )
                             }
 
-                        }*/
+                        }*//*
                         BasicText(text = "Bis: ")
-                        TimeField()
+                        TimeField(
+                            initialHour = stageUiState.endDateTime.hour,
+                            initialMinute = stageUiState.endDateTime.minute,
+                            onHourChange = {hour: Int -> stageUiState.setEndTime(hour, stageUiState.startDateTime.minute)},
+                            onMinuteChange = {minute: Int -> stageUiState.setEndTime(stageUiState.startDateTime.hour, minute)}
+                        )
 
                     }
                 }
             }
 
             //Third row of the card containing the end point
-            Row (verticalAlignment = Alignment.CenterVertically){
-                Icon(
-                    modifier = Modifier
-                        .size(size = 30.dp)
-                        .padding(
-                            start = 5.dp,
-                            end = 5.dp
-                        ),
-                    imageVector = Icons.Default.School,
-                    contentDescription = "school Icon"
+            Row (
+                modifier = modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Canvas(modifier = modifier
+                    .weight(1f)
+                ) {
+                    drawCircle(
+                        color = Color.Black,
+                        radius = 17.5f,
+                        center = Offset(size.width/2, size.height/2)
+                    )
+                }
+                BasicText(
+                    text = stageUiState.endLocationName,
+                    modifier = modifier.weight(7f)
                 )
-                BasicText(text = "Zielort")
+                Button(
+                    onClick = { showEndLocationSelector = true },
+                    modifier = modifier
+                        .weight(3f)
+                        .height(50.dp)
+                        .padding(4.dp)
+                ) {
+                    Text(text = "ändern")
+                }
             }
+        }
+    }*/
+    
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(250.dp)
+    ) {
+        Row {
+            Column(
+                modifier = modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Canvas(modifier = modifier
+                    .weight(0.5f)
+                    .fillMaxSize()
+                ) {
+                    drawCircle(
+                        color = Color.Black,
+                        radius = 17.5f,
+                        center = Offset(size.width/2, size.height)
+                    )
+                }
+                Canvas(modifier = modifier
+                    .weight(3.5f)
+                    .fillMaxSize()
+                    .padding(16.dp)
+                ) {
+                    drawLine(
+                        color = Color.Black,
+                        start = Offset(size.width/2, 0f),
+                        end = Offset(size.width/2, size.height),
+                        strokeWidth = 6f,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                    )
+                }
+                Canvas(modifier = modifier
+                    .weight(0.5f)
+                    .fillMaxSize()
+                ) {
+                    drawCircle(
+                        color = Color.Black,
+                        radius = 17.5f,
+                        center = Offset(size.width/2, 0f)
+                    )
+                }
+            }
+            Column(
+                modifier = modifier
+                    .weight(10f)
+                    .fillMaxSize(),
+            ) {
+                Row(
+                    modifier = modifier
+                        .weight(1f)
+                        .fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stageUiState.startLocationName,
+                        modifier = modifier.weight(7f)
+                    )
+                    Button(
+                        onClick = {showStartLocationSelector = true},
+                        modifier.weight(3f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(text = "Ändern")
+                    }
+                    Spacer(modifier = modifier.weight(0.25f))
+                }
+                Row(
+                    modifier = modifier
+                        .weight(2.5f)
+                        .fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Row(
+                            modifier = modifier
+                                .weight(1f)
+                                .fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Von:",
+                                modifier = modifier.weight(0.5f)
+                            )
+                            TimeField(
+                                modifier = modifier.weight(1f),
+                                initialHour = stageUiState.startDateTime.hour,
+                                initialMinute = stageUiState.startDateTime.minute,
+                                onHourChange = {hour: Int -> stageUiState.setStartTime(hour, stageUiState.startDateTime.minute)},
+                                onMinuteChange = {minute: Int -> stageUiState.setStartTime(stageUiState.startDateTime.hour, minute)}
+                            )
+                            Spacer(modifier = modifier.weight(3f))
+                        }
+                        Row(
+                            modifier = modifier
+                                .weight(1f)
+                                .fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            var expanded by rememberSaveable {
+                                mutableStateOf(false)
+                            }
+
+                            var selectedMode by rememberSaveable {
+                                mutableStateOf(stageUiState.mode)
+                            }
+
+                            Text(
+                                text = "Verkehrsmittel: ",
+                                modifier = modifier.weight(2.5f)
+                            )
+
+                            Spacer(modifier = modifier.weight(1.5f))
+
+                            ExposedDropdownMenuBox(
+                                expanded = expanded,
+                                onExpandedChange = { expanded = !expanded },
+                                modifier = modifier.weight(3f)
+                            ) {
+
+                                OutlinedTextField(
+                                    value = selectedMode.name,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    leadingIcon = {
+
+                                    },
+                                    trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                                    },
+                                    shape = RoundedCornerShape(4.dp),
+                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                    textStyle = TextStyle.Default.copy(fontSize = 13.sp),
+                                    modifier = Modifier
+                                        .menuAnchor()
+                                        .height(50.dp)
+                                )
+
+                                ExposedDropdownMenu(expanded = expanded,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+                                    for(mode in Mode.entries) {
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(mode.name)
+                                            },
+                                            onClick = {
+                                                expanded = false
+                                                selectedMode = mode
+                                                stageUiState.setMode(mode)
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = modifier.weight(0.25f))
+                        }
+                        Row(
+                            modifier = modifier
+                                .weight(1f)
+                                .fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Bis:",
+                                modifier = modifier.weight(0.5f)
+                                )
+                            TimeField(
+                                modifier = modifier.weight(1f),
+                                initialHour = stageUiState.endDateTime.hour,
+                                initialMinute = stageUiState.endDateTime.minute,
+                                onHourChange = {hour: Int -> stageUiState.setEndTime(hour, stageUiState.endDateTime.minute)},
+                                onMinuteChange = {minute: Int -> stageUiState.setStartTime(stageUiState.endDateTime.hour, minute)}
+                            )
+                            Spacer(modifier = modifier.weight(3f))
+                        }
+                    }
+                }
+                Row(
+                    modifier = modifier
+                        .weight(1f)
+                        .fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stageUiState.endLocationName,
+                        modifier = modifier.weight(7f)
+                    )
+                    Button(
+                        onClick = {showEndLocationSelector = true},
+                        modifier.weight(3f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(text = "Ändern")
+                    }
+                    Spacer(modifier = modifier.weight(0.25f))
+                }
+            }
+        }
+    }
+
+
+    // star
+    if (showStartLocationSelector) {
+        Dialog(onDismissRequest = {showStartLocationSelector = false}) {
+            LocationSelector(
+                modifier = modifier,
+                onDismissRequest = {showStartLocationSelector = false},
+                onConfirm = {
+                    geoPoint: GeoPoint, locationName: String ->
+                    stageUiState.setStartLocation(geoPoint)
+                    stageUiState.setStartLocationName(locationName)
+                },
+                startPosition = GeoPoint(stageUiState.startLocation)
+            )
+        }
+    }
+
+    // end Location
+    if (showEndLocationSelector) {
+        Dialog(onDismissRequest = {showEndLocationSelector = false}) {
+            LocationSelector(
+                modifier = modifier,
+                onDismissRequest = {showEndLocationSelector = false},
+                onConfirm = {
+                    geoPoint: GeoPoint, locationName: String ->
+                    stageUiState.setEndLocation(geoPoint)
+                    stageUiState.setEndLocationName(locationName)
+                },
+                startPosition = GeoPoint(stageUiState.endLocation),
+
+            )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimeField() {
-    NumbersField(23)
-    BasicText(modifier = Modifier.padding(start = 10.dp, end = 10.dp), text = ":")
-    NumbersField(59)
+fun TimeField(
+    modifier: Modifier = Modifier,
+    initialHour: Int,
+    initialMinute: Int,
+    onHourChange: (Int) -> Unit,
+    onMinuteChange: (Int) -> Unit
+) {
+    val timePickerState = rememberTimePickerState(
+        initialHour,
+        initialMinute,
+        true
+    )
 
+    var showTimeInputDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    Row(
+        modifier = modifier.width(60.dp),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        /*Text(
+            text = timePickerState.hour.toString(),
+            modifier = modifier
+                .clickable {
+                showTimeInputDialog = true
+                },
+            style = MaterialTheme.typography.titleMedium
+        )*/
+        BasicTextField(
+            value = if (timePickerState.hour < 10) "0" + timePickerState.hour.toString() else timePickerState.hour.toString(),
+            onValueChange = {},
+            modifier = Modifier
+                .height(20.dp)
+                .width(30.dp)
+                .clickable { showTimeInputDialog = true },
+            enabled = false,
+            textStyle = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center),
+            decorationBox = {innerTextField ->
+                Row(
+                    modifier = modifier
+                        .border(
+                            BorderStroke(0.25.dp, Color.Black),
+                            shape = RoundedCornerShape(2.dp)
+                        ),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    innerTextField()
+                }
+
+            }
+        )
+        Text(
+            text = " : ",
+            style = MaterialTheme.typography.titleMedium
+            )
+        BasicTextField(
+            value = if (timePickerState.minute < 10) "0" + timePickerState.minute.toString() else timePickerState.minute.toString(),
+            onValueChange = {},
+            modifier = Modifier
+                .height(20.dp)
+                .width(30.dp)
+                .clickable { showTimeInputDialog = true },
+            enabled = false,
+            textStyle = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center),
+            decorationBox = {innerTextField ->
+                Row(
+                    modifier = modifier
+                        .border(
+                            BorderStroke(0.25.dp, Color.Black),
+                            shape = RoundedCornerShape(2.dp)
+                        ),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    innerTextField()
+                }
+
+            }
+        )
+        /*Text(
+            text = timePickerState.minute.toString(),
+            modifier = modifier
+                .clickable {
+                showTimeInputDialog = true
+                },
+            style = MaterialTheme.typography.titleMedium
+        )*/
+    }
+
+    if(showTimeInputDialog) {
+        Dialog(onDismissRequest = { showTimeInputDialog = false }) {
+            TimeInput(state = timePickerState)
+        }
+    }
+
+
+    /*NumbersField(
+        startValue = hour,
+        highestNumber = 23,
+        onValueChange = onHourChange
+    )
+    BasicText(modifier = Modifier.padding(start = 10.dp, end = 10.dp), text = ":")
+    NumbersField(
+        startValue = minute,
+        highestNumber = 59,
+        onValueChange = onMinuteChange
+    )*/
 }
 
 //Composable Function for displaying a textfield that can only have numbers as input
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NumbersField(highestNumber : Int){
-    var text by remember { mutableStateOf("") }
+fun NumbersField(
+    startValue: Int,
+    highestNumber : Int,
+    onValueChange: (Int) -> Unit
+){
+    var text by rememberSaveable {mutableStateOf(String.format("%02d", startValue))}
+
+
+    TextField(
+        value = TextFieldValue(text),
+        onValueChange = {
+            textFieldValue = when(it.text.length) {
+                0 -> TextFieldValue("00", TextRange(2, +2))
+                1 -> TextFieldValue("0" + it, TextRange(2, 2))
+                else -> {
+                    if(it.text.take(1) == "0") {
+                        if (filter.matches(it.text.takeLast(2)))  TextFieldValue(it.text.takeLast(2), TextRange(2, 2))  else textFieldValue
+                    } else {
+                        if(filter.matches(it.text.take(2))) TextFieldValue(it.text.take(2), TextRange(2, 2))  else textFieldValue
+                    }
+                }
+            }
+        },
+        modifier = Modifier
+            .height(20.dp)
+            .width(30.dp)
+            .border(1.dp, Color.Black, RoundedCornerShape(4.dp)),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+    )
+
     BasicTextField(
         modifier = Modifier
             .height(20.dp)
@@ -271,11 +691,29 @@ fun NumbersField(highestNumber : Int){
         //.wrapContentHeight(Alignment.CenterVertically),
         value = text,
         //onValueChange = {if (it.isDigitsOnly()) text = it},
-        onValueChange = {if (it.isDigitsOnly()) {
-            if(it.toInt() in 0..highestNumber) {
-                text = it
+        onValueChange = {
+
+                text = when(it.length) {
+                    0 -> "00"
+                    1 -> if (it == "0") "00" else "0" + it
+                    else -> {
+                        if(it.take(1) == "0") {
+                            if (filter.matches(it.takeLast(2))) it.takeLast(2) else text
+                        } else {
+                            if(filter.matches(it.take(2))) it.take(2) else text
+                        }
+                    }
+                }
+
+
+            if (it.isDigitsOnly()) {
+            if(it != "") {
+                if(it.toInt() in 0..highestNumber) {
+                    text = it
+                    onValueChange(it.toInt())
+                }
             }
-        }
+             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
@@ -283,7 +721,8 @@ fun NumbersField(highestNumber : Int){
             Row(
                 modifier = Modifier
                     .border(
-                        BorderStroke(1.dp, Color.Black)
+                        BorderStroke(1.dp, Color.Black),
+                        shape = RoundedCornerShape(4.dp)
                     )
             ){
                 innerTextField()
@@ -291,46 +730,30 @@ fun NumbersField(highestNumber : Int){
 
         }
     )
-}
+}*/
 
-//Composable Function for displaying an Icon for a given mode
+@Preview
 @Composable
-fun modeIcon(mode : Mode) {
-    val size = 30.dp
-
-    if(mode == Mode.CAR_DRIVER) {
-        Icon(
-            modifier = Modifier
-                .size(size = size)
-                .padding(
-                    start = 5.dp,
-                    end = 5.dp
-                ),
-            imageVector = Icons.Default.DirectionsCar,
-            contentDescription = "Car Icon"
+fun StageCardPreview() {
+    StageCard(
+        stageUiState = StageUiState(
+            id = 1,
+            mode = Mode.NONE,
+            startDateTime = LocalDateTime.MAX,
+            endDateTime = LocalDateTime.MAX,
+            startLocation = GeoPoint(49.001061, 8.413361),
+            endLocation = GeoPoint(49.001061, 8.413361),
+            startLocationName = "Test",
+            endLocationName = "Test",
+            setMode = {mode: Mode -> },
+            setStartTime = {hour: Int, minute: Int -> },
+            setEndTime = {hour: Int, minute: Int -> },
+            setStartLocation = {geoPoint: GeoPoint ->  },
+            setEndLocation = {geoPoint: GeoPoint ->  },
+            setStartLocationName = {locationName: String -> },
+            setEndLocationName = {locationName: String -> },
+            updateStage = {}
         )
-    } else if(mode == Mode.REGIONAL_TRAIN) {
-        Icon(
-            modifier = Modifier
-                .size(size = size)
-                .padding(
-                    start = 5.dp,
-                    end = 5.dp
-                ),
-            imageVector = Icons.Default.Train,
-            contentDescription = "Train Icon"
-        )
-    } else if(mode == Mode.WALK) {
-        Icon(
-            modifier = Modifier
-                .size(size = size)
-                .padding(
-                    start = 5.dp,
-                    end = 5.dp
-                ),
-            imageVector = Icons.Default.DirectionsWalk,
-            contentDescription = "Walk Icon"
-        )
-    }
+    )
 }
 

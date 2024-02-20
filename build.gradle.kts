@@ -12,6 +12,7 @@ buildscript {
 
         // other repositories if any
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
     // other configurations for the build script
 }
@@ -22,5 +23,6 @@ allprojects {
 
         // other repositories if any
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }

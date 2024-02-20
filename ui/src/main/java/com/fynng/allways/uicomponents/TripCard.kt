@@ -1,6 +1,7 @@
 package com.fynng.allways.uicomponents
 
 
+import android.location.Location
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -19,8 +20,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -31,22 +35,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.SecureFlagPolicy
 import com.fynng.allways.trips.TripUiState
-import com.fynng.allways.trips.TripsViewModel
+
 import com.pseteamtwo.allways.R
+import com.pseteamtwo.allways.trip.Mode
+import com.pseteamtwo.allways.trip.Purpose
+import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDateTime
 import java.util.Locale
 
 
 @Composable
 fun TripCard(
     modifier: Modifier = Modifier,
-    tripsViewModel: TripsViewModel,
     tripUiState: TripUiState,
 ) {
-    val showEditTripDialog = remember { mutableStateOf(false) }
+    var showEditTripDialog by rememberSaveable { mutableStateOf(false) }
+
     Box(
         modifier = modifier,
         contentAlignment = Alignment.TopEnd
@@ -59,8 +64,11 @@ fun TripCard(
                     .padding(horizontal = 8.dp)
                     .clickable(
                         enabled = true,
-                        onClickLabel = "Edit Trip",
-                    ) { showEditTripDialog.value = true },
+                        onClickLabel = if (tripUiState.isConfirmed) "Weg bearbeiten" else "Weg bestätigen",
+                    ) {
+                        tripUiState.createStageUiStates()
+                        showEditTripDialog = true
+                    },
                 border = BorderStroke(1.dp, Color.Black)
             ) {
                 Row(
@@ -105,7 +113,7 @@ fun TripCard(
 
                             Column(
                                 modifier = modifier
-                                    .fillMaxHeight()
+                                    .fillMaxSize()
                                     .weight(1f),
                                 verticalArrangement = Arrangement.Bottom,
                                 horizontalAlignment = Alignment.CenterHorizontally
@@ -243,23 +251,12 @@ fun TripCard(
             )
         }
     }
-    if(showEditTripDialog.value) {
-        tripUiState.createStageUiStates
-        Dialog(
-            onDismissRequest = { showEditTripDialog.value = false },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-                securePolicy = SecureFlagPolicy.Inherit,
-                usePlatformDefaultWidth = false
-            )
-        ) {
-            EditTripDialog(
-                modifier = modifier,
-                tripsViewModel = tripsViewModel,
-                tripUiState = tripUiState
-            )
-        }
+    if(showEditTripDialog) {
+        EditTripDialog(
+            modifier = modifier,
+            tripUiState = tripUiState,
+            onDismissRequest = {showEditTripDialog = false}
+        )
     }
 }
 
@@ -284,5 +281,24 @@ fun formatDuration(duration: Long): String {
 @Preview
 @Composable
 fun TripCardPreview() {
-
+    TripCard(
+        tripUiState = TripUiState(
+            1,
+            emptyList(),
+            Purpose.NONE,
+            Mode.NONE,
+            false,
+            LocalDateTime.MAX,
+            LocalDateTime.MAX,
+            GeoPoint(49.001061, 8.413361),
+            GeoPoint(49.001061, 8.413361),
+            "KIT",
+            "KIT",
+            599,
+            4256,
+            createStageUiStates = {},
+            addStageUiStateAfter = {},
+            updateTrip = {}
+        )
+    )
 }

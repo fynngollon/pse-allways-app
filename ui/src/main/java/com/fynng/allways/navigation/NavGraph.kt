@@ -5,9 +5,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.fynng.allways.home.HomeScreen
+import com.fynng.allways.profile.ProfileScreen
 import com.fynng.allways.statistics.StatisticsScreen
 import com.fynng.allways.trips.TripsScreen
-import com.fynng.allways.uicomponents.ProfileScreen
+import com.fynng.allways.trips.TripsViewModel
+import com.pseteamtwo.allways.trip.repository.TestTripAndStageRepository
 
 
 @Composable
@@ -21,7 +23,10 @@ fun SetUpNavGraph(
         composable(
             route = Screen.Trips.route,
         ) {
-            TripsScreen(navController = navController)
+            TripsScreen(
+                tripsViewModel = TripsViewModel(TestTripAndStageRepository()),
+                navController = navController
+            )
         }
         composable(
             route = Screen.Home.route
