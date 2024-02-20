@@ -40,6 +40,25 @@ import javax.inject.Singleton
 // stages can exist in the database without belonging to any trip:
 // they won't be observed then; once added to a trip they will be deleted alongside the trip
 
+/**
+ * This implementation of [TripAndStageRepository] holds all local and network data access objects
+ * for [Trip]s, [Stage]s and [GpsPoint]s.
+ * For enabling saving those to the network database, it also has access to the [AccountRepository],
+ * because the tracking data has to be saved under the according user account
+ * on the network database.
+ * This class follows the singleton-pattern.
+ *
+ * @property tripLocalDataSource A [TripDao] to access the local trip database.
+ * @property tripNetworkDataSource A [TripNetworkDataSource] to access the network trip database.
+ * @property stageLocalDataSource A [StageDao] to access the local trip database.
+ * @property stageNetworkDataSource A [StageNetworkDataSource] to access the network stage database.
+ * @property gpsPointLocalDataSource A [TripDao] to access the local trip database.
+ * @property accountRepository A [AccountRepository] to access the user's account data for saving
+ * and retrieving data from the network database.
+ * @property dispatcher A dispatcher to allow asynchronous function calls because this class uses
+ * complex computing and many accesses to databases which shall not block the program flow.
+ * @constructor Create an instance of this class.
+ */
 @Singleton
 class DefaultTripAndStageRepository @Inject constructor(
     private val tripLocalDataSource: TripDao,
@@ -52,6 +71,11 @@ class DefaultTripAndStageRepository @Inject constructor(
     //@ApplicationScope private val scope: CoroutineScope,
 ) : TripAndStageRepository {
 
+    /**
+     * Retrieves all [GpsPoint]s saved in the local gpsPoint database.
+     *
+     * @return A flow of all [GpsPoint]s saved in the local gpsPoint database in form of a list.
+     */
     internal fun observeAllGpsPoints(): Flow<List<LocalGpsPoint>> {
         return gpsPointLocalDataSource.observeAll()
     }
@@ -92,6 +116,14 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
     }
 
+    /**
+     * Creates a new [LocalStage] with the provided parameters and converts it to a [Stage].
+     * Therefore creates a unique id for the new stage and saves it into the local stage database.
+     *
+     * @param localGpsPoints The list of [LocalGpsPoint]s which the new stage consists of.
+     * @param mode The [Mode] of the new stage.
+     * @return The created [Stage].
+     */
     // this seems to be for the tracking algorithm
     // creates trips that don't belong to any trip!
     internal suspend fun createStage(localGpsPoints: List<LocalGpsPoint>, mode: Mode): Stage {
@@ -151,8 +183,8 @@ class DefaultTripAndStageRepository @Inject constructor(
     override suspend fun updateStage(
         stageId: Long,
         mode: Mode,
-        startTime: LocalDateTime,
-        endTime: LocalDateTime,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
         startLocation: GeoPoint,
         endLocation: GeoPoint
     ) {
@@ -168,7 +200,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         localStage.mode = mode
 
         // check for time conflicts with other stages
-        if (isTimeConflict(startTime.toMillis(), endTime.toMillis(), stageId)) {
+        if (isTimeConflict(startDateTime.toMillis(), endDateTime.toMillis(), stageId)) {
             throw NoTimeContinuityException()
         }
 
@@ -176,8 +208,8 @@ class DefaultTripAndStageRepository @Inject constructor(
         // check if either of the locations has been changed
         val startLocationOfLocalStage = localStage.gpsPoints.first().location
         val endLocationOfLocalStage = localStage.gpsPoints.last().location
-        val startTimeMillis = startTime.toMillis()
-        val endTimeMillis = endTime.toMillis()
+        val startTimeMillis = startDateTime.toMillis()
+        val endTimeMillis = endDateTime.toMillis()
 
         if (startLocation.compareTo(startLocationOfLocalStage)
             && endLocation.compareTo(endLocationOfLocalStage)) {
