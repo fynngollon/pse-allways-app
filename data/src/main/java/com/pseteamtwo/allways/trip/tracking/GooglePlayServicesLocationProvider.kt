@@ -20,12 +20,13 @@ import javax.inject.Inject
 // For example, handle scenarios where GPS is unavailable or location updates fail consistently.
 // Consider Battery Optimization: Explore strategies like geofencing or foreground notifications to
 // minimize battery impact while maintaining functionality, especially if tracking intervals are long.
-class GooglePlayServicesLocationProvider : LocationProvider() {
+class GooglePlayServicesLocationProvider(
+    private var locationResultHandler: DefaultLocationResultHandler
+) : LocationProvider() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    @Inject private lateinit var locationResultHandler: DefaultLocationResultHandler
 
     private fun createRequest(): LocationRequest =
         LocationRequest.Builder(
