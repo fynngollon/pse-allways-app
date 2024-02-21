@@ -24,7 +24,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
         } finally {
             accessMutex.unlock() // Release lock after operation
         }*/
-        TODO("Not finished")
+        TODO("not yet finished")
     }
 
     override suspend fun saveAccount(account: NetworkAccount) {
@@ -36,15 +36,77 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             try {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("INSERT INTO tblaccounts (email, pseudonym, password_hash, password_salt) VALUES (?, ?, ?, ?)")
+                val statement = connection.prepareStatement("INSERT INTO `allways-app-accounts`.`tblaccounts` (email, pseudonym, password_hash, password_salt) VALUES (?, ?, ?, ?)")
                 statement.setString(1, account.email)
                 statement.setString(2, account.pseudonym)
                 statement.setString(3, account.passwordHash) // Ensure proper hashing and security best practices
                 statement.setString(4, account.passwordSalt) // Ensure proper hashing and security best practices
                 statement.executeUpdate()
-
                 //3. Close the prepared statement
                 statement.close()
+
+                //creates a table in the data-bank for the trips of the user with the given pseudonym
+                val tripTableString = "tbl${account.pseudonym}trips"
+                val createTripsStatement = connection.prepareStatement(
+                    "CREATE TABLE `allways-app`.`?` (\n" +
+                        "  `id` VARCHAR(100) NOT NULL,\n" +
+                        "  `stageIds` VARCHAR(200) NULL,\n" +
+                        "  `purpose` VARCHAR(100) NULL,\n" +
+                        "  `startDateTime` DATETIME NULL,\n" +
+                        "  `endDateTime` DATETIME NULL,\n" +
+                        "  `duration` INT NULL,\n" +
+                        "  `distance` INT NULL,\n" +
+                        "  `startLocation` VARCHAR(100) NULL,\n" +
+                        "  `endLocation` VARCHAR(100) NULL,\n" +
+                        "  PRIMARY KEY (`id`),\n" +
+                        "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);")
+                createTripsStatement.setString(1, tripTableString)
+
+                //creates a table in the data-bank for the stages of the user with the given pseudonym
+                val stageTableString = "tbl${account.pseudonym}stages"
+                val createStagesStatement = connection.prepareStatement(
+                    "CREATE TABLE `allways-app`.`?` (\n" +
+                        "  `id` VARCHAR(100) NOT NULL,\n" +
+                        "  `tripId` VARCHAR(100) NULL,\n" +
+                        "  `mode` VARCHAR(100) NULL,\n" +
+                        "  `startDateTime` DATETIME NULL,\n" +
+                        "  `endDateTime` DATETIME NULL,\n" +
+                        "  `duration` INT NULL,\n" +
+                        "  `distance` INT NULL,\n" +
+                        "  `startLocation` VARCHAR(100) NULL,\n" +
+                        "  `endLocation` VARCHAR(100) NULL,\n" +
+                        "  PRIMARY KEY (`id`),\n" +
+                        "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);")
+                createStagesStatement.setString(1, stageTableString)
+
+                //creates a table in the data-bank for the householdQuestions of the user with the given pseudonym
+                val householdQuestionTableString = "tbl${account.pseudonym}householdquestions"
+                val createHouseholdQuestionStatement = connection.prepareStatement(
+                    "CREATE TABLE `allways-app`.`?` (\n" +
+                        "  `id` VARCHAR(100) NOT NULL,\n" +
+                        "  `title` VARCHAR(100) NOT NULL,\n" +
+                        "  `type` VARCHAR(100) NOT NULL,\n" +
+                        "  `options` VARCHAR(200) NULL,\n" +
+                        "  `answer` VARCHAR(100) NULL,\n" +
+                        "  `pseudonym` VARCHAR(100) NULL,\n" +
+                        "  PRIMARY KEY (`id`),\n" +
+                        "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);")
+                createStagesStatement.setString(1, householdQuestionTableString)
+
+                //creates a table in the data-bank for the profileQuestions of the user with the given pseudonym
+                val profileQuestionTableString = "tbl${account.pseudonym}profilequestions"
+                val createProfileQuestionStatement = connection.prepareStatement(
+                    "CREATE TABLE `allways-app`.`?` (\n" +
+                        "  `id` VARCHAR(100) NOT NULL,\n" +
+                        "  `title` VARCHAR(100) NOT NULL,\n" +
+                        "  `type` VARCHAR(100) NOT NULL,\n" +
+                        "  `options` VARCHAR(200) NULL,\n" +
+                        "  `answer` VARCHAR(100) NULL,\n" +
+                        "  `pseudonym` VARCHAR(100) NULL,\n" +
+                        "  PRIMARY KEY (`id`),\n" +
+                        "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);")
+                createStagesStatement.setString(1, profileQuestionTableString)
+
             } finally {
 
                 // 4. Close the prepared connection
