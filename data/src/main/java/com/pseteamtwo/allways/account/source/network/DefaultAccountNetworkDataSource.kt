@@ -36,7 +36,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             try {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("INSERT INTO accounts (email, pseudonym, password_hash, password_salt) VALUES (?, ?, ?, ?)")
+                val statement = connection.prepareStatement("INSERT INTO tblaccounts (email, pseudonym, password_hash, password_salt) VALUES (?, ?, ?, ?)")
                 statement.setString(1, account.email)
                 statement.setString(2, account.pseudonym)
                 statement.setString(3, account.passwordHash) // Ensure proper hashing and security best practices
@@ -68,7 +68,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             try {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("DELETE FROM accounts WHERE email = ?")
+                val statement = connection.prepareStatement("DELETE FROM tblaccounts WHERE email = ?")
                 statement.setString(1, account.email)
                 statement.executeUpdate()
                 //3. Close the prepared statement
@@ -95,7 +95,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             try {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("SELECT 1 FROM accounts WHERE email = ?")
+                val statement = connection.prepareStatement("SELECT 1 FROM tblaccounts WHERE email = ?")
                 statement.setString(1, email)
                 val resultSet = statement.executeQuery()
 
@@ -132,7 +132,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             try {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("SELECT 1 FROM accounts WHERE pseudonym = ?")
+                val statement = connection.prepareStatement("SELECT 1 FROM tblaccounts WHERE pseudonym = ?")
                 statement.setString(1, pseudonym)
                 val resultSet = statement.executeQuery()
 
