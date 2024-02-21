@@ -45,7 +45,7 @@ class AccountDaoTest {
         )
         accountDatabase.accountDao().upsert(account)
 
-        // WHEN - Get the task by id from the database
+        // WHEN - Get the account by id from the database
         val loaded = accountDatabase.accountDao().observe().first()
 
         // THEN - The loaded data contains the expected values

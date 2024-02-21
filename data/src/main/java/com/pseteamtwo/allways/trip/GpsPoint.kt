@@ -9,7 +9,7 @@ import android.location.Location
  * It can be created by recording through [com.pseteamtwo.allways.trip.tracking] tracking
  * or by the user himself. If it is created by the user, [location] should only contain
  * latitude and longitude.
- * A gpsPoint should be part of only 1 [Stage].
+ * A gpsPoint should be part of 2 [Stage]s at most (1 time as beginning and 1 time as ending).
  *
  * @property id The unique identification number of the gpsPoint for saving, editing and retrieving
  * purposes as well as for preventing duplicates.

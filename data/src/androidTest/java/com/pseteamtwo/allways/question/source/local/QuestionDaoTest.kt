@@ -83,7 +83,7 @@ class QuestionDaoTest {
         )
         database.profileQuestionDao().upsert(newQuestion)
 
-        // WHEN - Get the task by id from the database
+        // WHEN - Get the question by id from the database
         val loaded = database.profileQuestionDao().observe(question.id).first()
 
         // THEN - The loaded data contains the expected values
@@ -97,7 +97,7 @@ class QuestionDaoTest {
 
     @Test
     fun insertQuestionsDeleteOneThenGetAll() = runTest {
-        // GIVEN - insert a task
+        // GIVEN - insert a question
         val question = LocalQuestion(
             "id",
             "title",

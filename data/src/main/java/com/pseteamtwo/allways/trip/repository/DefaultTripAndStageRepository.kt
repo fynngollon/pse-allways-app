@@ -456,6 +456,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         location.latitude = this.latitude
         location.longitude = this.longitude
         location.time = time
+        location.speed = 0f
         return location
     }
 
