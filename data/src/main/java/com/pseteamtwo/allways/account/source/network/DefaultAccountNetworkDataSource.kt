@@ -3,6 +3,7 @@ package com.pseteamtwo.allways.account.source.network
 import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlinx.coroutines.sync.Mutex
+import java.sql.SQLException
 
 class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDataSource() {
     private val accessMutex = Mutex()
@@ -113,6 +114,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 connection.close()
             }
 
+        } catch (sqlExc: SQLException) {
+            throw sqlExc
         } catch (e: Exception) {
             // 5. Handle errors (e.g., database connection issues, duplicate entries)
             throw Exception("Failed to save account", e)
