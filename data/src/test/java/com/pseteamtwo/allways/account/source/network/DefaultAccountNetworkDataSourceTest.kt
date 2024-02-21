@@ -27,7 +27,7 @@ class DefaultAccountNetworkDataSourceTest {
     fun testSavingAccountToNetwork() {
         runBlocking {
             try {
-                accountNetworkDataSource.deleteAccount(networkAccount)
+                accountNetworkDataSource.saveAccount(networkAccount)
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }

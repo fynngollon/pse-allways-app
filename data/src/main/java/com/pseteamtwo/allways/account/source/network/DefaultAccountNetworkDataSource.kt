@@ -37,7 +37,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             try {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("INSERT INTO `allways-app-accounts`.`tblaccounts` (email, pseudonym, password_hash, password_salt) VALUES (?, ?, ?, ?)")
+                val statement = connection.prepareStatement("INSERT INTO `allways-app-accounts`.`tblaccounts` (`email`, `pseudonym`, `passwordHash`, `passwordSalt`) VALUES (?, ?, ?, ?);")
                 statement.setString(1, account.email)
                 statement.setString(2, account.pseudonym)
                 statement.setString(3, account.passwordHash) // Ensure proper hashing and security best practices
@@ -49,7 +49,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 //creates a table in the data-bank for the trips of the user with the given pseudonym
                 val tripTableString = "tbl${account.pseudonym}trips"
                 val createTripsStatement = connection.prepareStatement(
-                    "CREATE TABLE `allways-app`.`?` (\n" +
+                    "CREATE TABLE `allways-app`. ? (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
                         "  `stageIds` VARCHAR(200) NULL,\n" +
                         "  `purpose` VARCHAR(100) NULL,\n" +
@@ -66,7 +66,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 //creates a table in the data-bank for the stages of the user with the given pseudonym
                 val stageTableString = "tbl${account.pseudonym}stages"
                 val createStagesStatement = connection.prepareStatement(
-                    "CREATE TABLE `allways-app`.`?` (\n" +
+                    "CREATE TABLE `allways-app`. ? (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
                         "  `tripId` VARCHAR(100) NULL,\n" +
                         "  `mode` VARCHAR(100) NULL,\n" +
@@ -83,7 +83,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 //creates a table in the data-bank for the householdQuestions of the user with the given pseudonym
                 val householdQuestionTableString = "tbl${account.pseudonym}householdquestions"
                 val createHouseholdQuestionStatement = connection.prepareStatement(
-                    "CREATE TABLE `allways-app`.`?` (\n" +
+                    "CREATE TABLE `allways-app`. ? (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
                         "  `title` VARCHAR(100) NOT NULL,\n" +
                         "  `type` VARCHAR(100) NOT NULL,\n" +
@@ -97,7 +97,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 //creates a table in the data-bank for the profileQuestions of the user with the given pseudonym
                 val profileQuestionTableString = "tbl${account.pseudonym}profilequestions"
                 val createProfileQuestionStatement = connection.prepareStatement(
-                    "CREATE TABLE `allways-app`.`?` (\n" +
+                    "CREATE TABLE `allways-app`. ? (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
                         "  `title` VARCHAR(100) NOT NULL,\n" +
                         "  `type` VARCHAR(100) NOT NULL,\n" +
@@ -134,7 +134,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             try {
                 // 2. Prepare and execute SQL statement
                 val statement = connection.prepareStatement(
-                    "DELETE FROM `allways-app-accounts`.`tblaccounts` WHERE (`email` = '?');")
+                    "DELETE FROM `allways-app-accounts`.`tblaccounts` WHERE (`email` = ?);")
                 statement.setString(1, account.email)
                 statement.executeUpdate()
                 //3. Close the prepared statement
