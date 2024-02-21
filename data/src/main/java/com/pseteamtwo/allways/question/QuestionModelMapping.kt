@@ -1,7 +1,11 @@
 package com.pseteamtwo.allways.question
 
+import com.pseteamtwo.allways.account.source.local.LocalAccount
+import com.pseteamtwo.allways.account.source.network.NetworkAccount
 import com.pseteamtwo.allways.question.source.local.LocalQuestion
 import com.pseteamtwo.allways.question.source.network.NetworkQuestion
+import com.pseteamtwo.allways.trip.Trip
+import com.pseteamtwo.allways.trip.source.local.LocalTrip
 
 /**
  * Data model mapping extension functions. There are three model types:
@@ -22,7 +26,15 @@ import com.pseteamtwo.allways.question.source.network.NetworkQuestion
  */
 //TODO("not sure if JvmName really is necessary")
 
-//external to local
+
+/**
+ * Question: external to local
+ *
+ * Converts an external [Question] into a [LocalQuestion] to store it
+ * into the local database afterwards.
+ *
+ * @receiver [Question]
+ */
 fun Question.toLocal() = LocalQuestion(
     id = id,
     title = title,
@@ -31,11 +43,27 @@ fun Question.toLocal() = LocalQuestion(
     answer = answer
 )
 
+/**
+ * Question: external to local (List)
+ *
+ * Converts a list of external [Question]s into a list of [LocalQuestion]s to store it
+ * into the local database afterwards.
+ *
+ * @receiver [List]
+ */
 @JvmName("externalToLocal")
 fun List<Question>.toLocal() = map(Question::toLocal)
 
 
 //local to external
+/**
+ * Question: local to external
+ *
+ * Converts a [LocalQuestion] into an external [Question] to expose it
+ * to other layers in the architecture.
+ *
+ * @receiver [LocalQuestion]
+ */
 fun LocalQuestion.toExternal() = Question(
     id = id,
     title = title,
@@ -44,11 +72,26 @@ fun LocalQuestion.toExternal() = Question(
     answer = answer
 )
 
+/**
+ * Question: local to external (List)
+ *
+ * Converts a list of [LocalQuestion]s into a list of external [Question]s to expose it
+ * to other layers in the architecture.
+ *
+ * @receiver [List]
+ */
 @JvmName("localToExternal")
 fun List<LocalQuestion>.toExternal() = map(LocalQuestion::toExternal)
 
 
-//network to local
+/**
+ * Question: network to local
+ *
+ * Converts a [NetworkQuestion] into a [LocalQuestion] to store it into
+ * the local database afterwards.
+ *
+ * @receiver [NetworkQuestion]
+ */
 fun NetworkQuestion.toLocal(): LocalQuestion {
     // Handle potential null values for options and answer
     val options = options ?: emptyList()
@@ -61,11 +104,25 @@ fun NetworkQuestion.toLocal(): LocalQuestion {
     )
 }
 
+/**
+ * Question: network to local (List)
+ *
+ * Converts a list of [NetworkQuestion]s into a list of [LocalQuestion]s to store it into
+ * the local database afterwards.
+ *
+ * @receiver [List]
+ */
 @JvmName("networkToLocal")
 fun List<NetworkQuestion>.toLocal() = map(NetworkQuestion::toLocal)
 
-
-//local to network
+/**
+ * Question: local to network
+ *
+ * Converts a [LocalQuestion] into a [NetworkQuestion] to store it into
+ * the network database afterwards.
+ *
+ * @receiver [LocalQuestion]
+ */
 fun LocalQuestion.toNetwork(pseudonym: String): NetworkQuestion {
     return NetworkQuestion(
         id = id,
@@ -77,5 +134,13 @@ fun LocalQuestion.toNetwork(pseudonym: String): NetworkQuestion {
     )
 }
 
+/**
+ * Question: local to network
+ *
+ * Converts a list of [LocalQuestion]s into a list of [NetworkQuestion]s to store it into
+ * the network database afterwards.
+ *
+ * @receiver [List]
+ */
 @JvmName("localToNetwork")
 fun List<LocalQuestion>.toNetwork(pseudonym: String) = map { it.toNetwork(pseudonym)}

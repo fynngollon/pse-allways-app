@@ -40,11 +40,10 @@ import com.pseteamtwo.allways.trip.source.local.LocalTrip
  * signature on the JVM.
  */
 
-
-/* TODO("remove all unnecessary functions and comments")
 /**
  * Trip
  */
+/* TODO("remove all unnecessary functions and comments")
 //external to local
 fun Trip.toLocal() = LocalTrip(
     id = id,
@@ -54,7 +53,7 @@ fun Trip.toLocal() = LocalTrip(
 )
 */
 
-//local to external
+
 /**
  * Trip: local to external
  *
@@ -107,7 +106,7 @@ fun LocalTrip.toNetwork() = NetworkTrip(
 /**
  * Stage
  */
-//external to local
+
 /**
  * Stage: external to local
  *
@@ -134,7 +133,6 @@ fun Stage.toLocal(tripId: Long) = LocalStage(
 @JvmName("externalStageListToLocal")
 fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
 
-//local to external
 /**
  * Stage: local to external
  *
@@ -191,7 +189,6 @@ fun LocalStage.toNetwork() = NetworkStage(
 /**
  * GpsPoint
  */
-//external to local
 
 /**
  * GpsPoint: external to local
@@ -219,7 +216,6 @@ fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
 @JvmName("externalGpsPointListToLocal")
 fun List<GpsPoint>.toLocal(stageId: Long) = map { it.toLocal(stageId) }
 
-//local to external
 /**
  * GpsPoint: local to external
  *
