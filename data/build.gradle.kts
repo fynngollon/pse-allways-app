@@ -62,7 +62,7 @@ dependencies {
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     ksp("androidx.room:room-compiler:2.6.1")
 
-    implementation("com.github.hantsy:jsonschema-kotlin:2.4.2")
+    //implementation("com.github.hantsy:jsonschema-kotlin:2.4.2")
     implementation ("net.pwall.json:json-kotlin-schema:0.44")
     
     // Hilt - data injection
