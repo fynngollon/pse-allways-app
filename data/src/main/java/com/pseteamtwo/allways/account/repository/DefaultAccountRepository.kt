@@ -24,12 +24,25 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.jvm.Throws
 
+/**
+ * This implementation of [AccountRepository] holds a local and a network data access object
+ * to access the stored account in the local database and to compare the account logged in to to
+ * all known accounts on the network account database.
+ * This class follows the singleton-pattern.
+ *
+ * @property accountLocalDataSource A [AccountDao] to access the local account database.
+ * @property accountNetworkDataSource A [AccountNetworkDataSource] to access the network
+ * account database.
+ * @property dispatcher A dispatcher to allow asynchronous function calls because this class uses
+ * complex computing and many accesses to databases which shall not block the program flow.
+ * @constructor Creates an instance of this class.
+ */
 @Singleton
 class DefaultAccountRepository @Inject constructor(
     private val accountLocalDataSource: AccountDao,
     private val accountNetworkDataSource: AccountNetworkDataSource,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope,
+    //@ApplicationScope private val scope: CoroutineScope,
 ) : AccountRepository {
 
     override fun observe(): Flow<Account> {
@@ -95,7 +108,7 @@ class DefaultAccountRepository @Inject constructor(
     override suspend fun validateLogin(email: String, password: String): Boolean {
         // checks if an account exists with the email
         if (!accountNetworkDataSource.doesEmailExist(email)) {
-            return false
+            throw AccountNotFoundException()
         }
 
         // compares the passwords

@@ -57,7 +57,7 @@ import javax.inject.Singleton
  * and retrieving data from the network database.
  * @property dispatcher A dispatcher to allow asynchronous function calls because this class uses
  * complex computing and many accesses to databases which shall not block the program flow.
- * @constructor Create an instance of this class.
+ * @constructor Creates an instance of this class.
  */
 @Singleton
 class DefaultTripAndStageRepository @Inject constructor(
