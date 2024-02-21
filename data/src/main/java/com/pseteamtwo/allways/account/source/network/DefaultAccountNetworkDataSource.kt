@@ -133,7 +133,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             try {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("DELETE FROM tblaccounts WHERE email = ?")
+                val statement = connection.prepareStatement(
+                    "DELETE FROM `allways-app-accounts`.`tblaccounts` WHERE (`email` = '?');")
                 statement.setString(1, account.email)
                 statement.executeUpdate()
                 //3. Close the prepared statement
@@ -142,7 +143,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 // 4. Close the prepared connection
                 connection.close()
             }
-
+            connection.close()
         } catch (e: Exception) {
             // 5. Handle errors (e.g., database connection issues, deletion failure)
             throw Exception("Failed to delete account", e)

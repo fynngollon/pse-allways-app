@@ -5,8 +5,8 @@ import java.sql.DriverManager
 
 abstract class BaseNetworkDataSource {
     fun createConnection(): Connection {
-        val url = "jdbc:mysql://localhost:3306/MySQL80"
-        val username = "root"
+        val url = "jdbc:postgresql://localhost:3306/allways-app"
+        val username = "AppUser"
         val password = "Allways#App"
 
         return DriverManager.getConnection(url, username, password)
