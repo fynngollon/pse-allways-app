@@ -1,11 +1,6 @@
 package com.pseteamtwo.allways.question.source.network
 
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
 import com.pseteamtwo.allways.exception.IncorrectJsonFileException
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.serialization.json.Json
