@@ -37,14 +37,12 @@ class TripDaoTest {
 
     private val stage1 = LocalStage(
         1000,
-        0,
-        listOf(location1, location2),
+        null,
         Mode.WALK
     )
     private val stage2 = LocalStage(
         1001,
-        0,
-        listOf(location2, location3),
+        null,
         Mode.MOTORCYCLE
     )
 
@@ -67,7 +65,6 @@ class TripDaoTest {
     fun insertTripAndGetBack() = runTest {
         // GIVEN - insert a trip
         val trip = LocalTrip(
-            stages = listOf(stage1, stage2),
             purpose = Purpose.WORK,
             isConfirmed = false
         )
@@ -82,7 +79,6 @@ class TripDaoTest {
         // THEN - The loaded data contains the expected values
         assertNotNull(loaded as LocalTrip)
         assertEquals(id, loaded.id)
-        assertEquals(trip.stages, loaded.stages)
         assertEquals(trip.purpose, loaded.purpose)
         assertEquals(trip.isConfirmed, loaded.isConfirmed)
     }

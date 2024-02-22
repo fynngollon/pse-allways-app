@@ -9,8 +9,11 @@ import com.pseteamtwo.allways.typeconverter.ListOfLocalGpsPointConverter
 /**
  * The Room Database that contains the Stages table.
  */
-@Database(entities = [LocalStage::class, LocalGpsPoint::class, LocalTrip::class], version = 1, exportSchema = false)
-@TypeConverters(ListOfLocalGpsPointConverter::class)
+@Database(
+    entities = [LocalStage::class, LocalGpsPoint::class, LocalTrip::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class StageDatabase : RoomDatabase() {
 
     abstract fun stageDao(): StageDao

@@ -1,11 +1,7 @@
 package com.pseteamtwo.allways.question
 
-import com.pseteamtwo.allways.account.source.local.LocalAccount
-import com.pseteamtwo.allways.account.source.network.NetworkAccount
 import com.pseteamtwo.allways.question.source.local.LocalQuestion
 import com.pseteamtwo.allways.question.source.network.NetworkQuestion
-import com.pseteamtwo.allways.trip.Trip
-import com.pseteamtwo.allways.trip.source.local.LocalTrip
 
 /**
  * Data model mapping extension functions. There are three model types:

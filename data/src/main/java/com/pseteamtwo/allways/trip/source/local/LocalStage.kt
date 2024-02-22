@@ -31,6 +31,18 @@ data class LocalStage(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     var tripId: Long? = null,
-    var gpsPoints: List<LocalGpsPoint>,
     var mode: Mode
+)
+
+
+
+data class LocalStageWithGpsPoints(
+    @Embedded
+    val stage: LocalStage,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "stageId"
+    )
+    val gpsPoints: List<LocalGpsPoint>
 )

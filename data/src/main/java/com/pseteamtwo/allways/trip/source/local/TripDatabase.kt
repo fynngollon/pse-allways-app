@@ -8,8 +8,11 @@ import com.pseteamtwo.allways.typeconverter.ListOfLocalStageConverter
 /**
  * The Room Database that contains the Trips table.
  */
-@Database(entities = [LocalTrip::class, LocalStage::class, LocalGpsPoint::class], version = 1, exportSchema = false)
-@TypeConverters(ListOfLocalStageConverter::class)
+@Database(
+    entities = [LocalTrip::class, LocalStage::class, LocalGpsPoint::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class TripDatabase : RoomDatabase() {
 
     abstract fun tripDao(): TripDao

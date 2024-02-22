@@ -51,13 +51,13 @@ class DefaultTripAndStageRepositoryTest {
 
     private val stage1 = Stage(
         1000,
-        listOf(location1, location2),
-        Mode.WALK
+        Mode.WALK,
+        listOf(location1, location2)
     )
     private val stage2 = Stage(
         1001,
-        listOf(location2, location3),
-        Mode.MOTORCYCLE
+        Mode.MOTORCYCLE,
+        listOf(location2, location3)
     )
 
     //Test dependencies

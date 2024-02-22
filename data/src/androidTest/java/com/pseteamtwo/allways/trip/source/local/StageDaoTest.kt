@@ -37,14 +37,12 @@ class StageDaoTest {
 
     private val stage1 = LocalStage(
         1000,
-        0,
-        listOf(location1, location2),
+        null,
         Mode.WALK
     )
     private val stage2 = LocalStage(
         1001,
-        0,
-        listOf(location2, location3),
+        null,
         Mode.MOTORCYCLE
     )
 
@@ -78,7 +76,6 @@ class StageDaoTest {
         assertNotNull(loaded as LocalStage)
         assertEquals(id, loaded.id)
         assertEquals(stage1.tripId, loaded.tripId)
-        assertEquals(stage1.gpsPoints, loaded.gpsPoints)
         assertEquals(stage1.mode, loaded.mode)
     }
 
