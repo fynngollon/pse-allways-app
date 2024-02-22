@@ -47,7 +47,7 @@ class GpsPointDaoTest {
         val allLoaded = gpsPointDatabase.gpsPointDao().observeAll().first()
         assertEquals(1, allLoaded.size)
 
-        // WHEN - Get the task by id from the database
+        // WHEN - Get the gpsPoint by id from the database
         val loaded = gpsPointDatabase.gpsPointDao().get(id)
 
         // THEN - The loaded data contains the expected values
