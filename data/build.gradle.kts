@@ -50,26 +50,25 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
     // KSP
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.16")
 
     // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
-    implementation("com.google.android.gms:play-services-location:21.1.0")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     ksp("androidx.room:room-compiler:2.6.1")
 
     //implementation("com.github.hantsy:jsonschema-kotlin:2.4.2")
     implementation ("net.pwall.json:json-kotlin-schema:0.44")
 
-    implementation("org.postgresql:postgresql:42.3.1")
-    //implementation("mysql:mysql-connector-java:8.0.23") //Implementierung Treiber für SQL
-    //implementation(kotlin("stdlib-jdk8")) //Implementierung Bibliothek
-
+    //implementation("org.postgresql:postgresql:42.3.1")
+    implementation("mysql:mysql-connector-java:8.0.23") //Implementierung Treiber für SQL
+    implementation(kotlin("stdlib-jdk8")) //Implementierung Bibliothek
+    
     // Hilt - data injection
     implementation("com.google.dagger:hilt-android:2.50")
     ksp("com.google.dagger:hilt-compiler:2.50")
@@ -83,11 +82,6 @@ dependencies {
     // TODO either update to android 8 or use this for duration calculation
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.core:core-ktx:1.12.0")
     // AndroidX Location - for tracking
     //implementation("androidx.location:location-services:2.6.0") TODO not found
     //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found

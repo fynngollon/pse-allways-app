@@ -13,20 +13,28 @@ import kotlinx.coroutines.flow.Flow
 interface StageDao {
 
     @Transaction
-    @Query("SELECT * FROM stages WHERE tripId = :tripId") //TODO does it give all trips
+    @Query("SELECT * FROM stages WHERE tripId = :tripId") //TODO does it give all trips?
     fun getStagesForTrip(tripId: Long): Flow<List<LocalStage>>
 
     @Query("SELECT * FROM stages WHERE id = :stageId")
     suspend fun get(stageId: Long): LocalStage?
 
+    @Transaction
+    @Query("SELECT * FROM stages WHERE id = :stageId")
+    suspend fun getStageWithGpsPoints(stageId: Long): LocalStageWithGpsPoints?
+
     @Query("SELECT * FROM stages")
     suspend fun getAll(): List<LocalStage>
+
+    @Transaction
+    @Query("SELECT * FROM stages")
+    suspend fun getAllStagesWithGpsPoints(): List<LocalStageWithGpsPoints>
 
     @Upsert
     suspend fun upsertAll(stages: List<LocalStage>)
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(stage: LocalStageWithoutGpsPoints): Long
+    @Insert //(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(stage: LocalStage): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(stage: LocalStage)

@@ -9,6 +9,7 @@ import com.pseteamtwo.allways.account.toNetwork
 import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
+import com.pseteamtwo.allways.exception.AccountNotFoundException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -23,23 +24,36 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.jvm.Throws
 
+/**
+ * This implementation of [AccountRepository] holds a local and a network data access object
+ * to access the stored account in the local database and to compare the account logged in to to
+ * all known accounts on the network account database.
+ * This class follows the singleton-pattern.
+ *
+ * @property accountLocalDataSource A [AccountDao] to access the local account database.
+ * @property accountNetworkDataSource A [AccountNetworkDataSource] to access the network
+ * account database.
+ * @property dispatcher A dispatcher to allow asynchronous function calls because this class uses
+ * complex computing and many accesses to databases which shall not block the program flow.
+ * @constructor Creates an instance of this class.
+ */
 @Singleton
 class DefaultAccountRepository @Inject constructor(
     private val accountLocalDataSource: AccountDao,
     private val accountNetworkDataSource: AccountNetworkDataSource,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope,
+    //@ApplicationScope private val scope: CoroutineScope,
 ) : AccountRepository {
 
     override fun observe(): Flow<Account> {
         return accountLocalDataSource.observe().map { it.toExternal() }
     }
 
+    @Throws(ServerConnectionFailedException::class, AccountAlreadyExistsException::class)
     override suspend fun createAccount(email: String, password: String) {
         // checks if the user is already logged in to an account
-        if (accountLocalDataSource.observe().count() > 0) {
-            // TODO("user is already logged in, is this case even possible")
-            return
+        assert (accountLocalDataSource.observe().count() == 0) {
+            "Another account is already saved in database"
         }
 
         // checks if email exists in network database
@@ -61,7 +75,7 @@ class DefaultAccountRepository @Inject constructor(
 
         // generates a random string as password salt
         val salt = withContext(dispatcher) {
-            UUID.randomUUID().toString() // TODO("is UUID correct for this or Random?")
+            UUID.randomUUID().toString()
         }
 
         // encrypts the password
@@ -80,20 +94,21 @@ class DefaultAccountRepository @Inject constructor(
         accountLocalDataSource.upsert(localAccount)
     }
 
+    @Throws(ServerConnectionFailedException::class, AccountNotFoundException::class)
     override suspend fun deleteAccount() {
         if (!authenticateAccount()) {
-            // TODO("What if it cant be verified")
-            return
+            throw AccountNotFoundException()
         }
 
         accountNetworkDataSource.deleteAccount(accountLocalDataSource.observe().first().toNetwork())
         accountLocalDataSource.deleteAccount()
     }
 
+    @Throws(ServerConnectionFailedException::class)
     override suspend fun validateLogin(email: String, password: String): Boolean {
         // checks if an account exists with the email
         if (!accountNetworkDataSource.doesEmailExist(email)) {
-            return false
+            throw AccountNotFoundException()
         }
 
         // compares the passwords
@@ -106,8 +121,8 @@ class DefaultAccountRepository @Inject constructor(
     }
 
     // doesn't compare email rn
-    // TODO do we need validate and authenticate?
     // TODO needs review
+    @Throws(ServerConnectionFailedException::class)
     override suspend fun authenticateAccount(): Boolean {
         // loads the local account
         val localAccount = accountLocalDataSource.observe().first()
