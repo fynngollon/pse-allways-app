@@ -12,10 +12,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fynng.allways.navigation.BottomNavigation
-import com.fynng.allways.navigation.SetUpNavGraph
+import com.pseteamtwo.allways.navigation.BottomNavigation
+import com.pseteamtwo.allways.navigation.SetUpNavGraph
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
 
@@ -44,7 +45,6 @@ class MainActivity : ComponentActivity() {
                             SetUpNavGraph(navController = navController)
                 }
             }
-
         }
     }
 }

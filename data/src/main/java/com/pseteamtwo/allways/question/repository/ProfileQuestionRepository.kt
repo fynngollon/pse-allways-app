@@ -12,7 +12,11 @@ class ProfileQuestionRepository : QuestionRepository {
         return flowOf(questions())
     }
 
-    override suspend fun createQuestion(
+    override suspend fun loadQuestionnaire() {
+        TODO("Not yet implemented")
+    }
+
+    suspend fun createQuestion(
         id: String,
         title: String,
         type: QuestionType,

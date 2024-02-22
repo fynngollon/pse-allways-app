@@ -1,9 +1,9 @@
 plugins {
     id("com.android.application")
-    //id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 
-    //id("com.google.devtools.ksp")
 }
 
 android {
@@ -33,11 +33,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_19
-        targetCompatibility = JavaVersion.VERSION_19
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "19"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose = true
@@ -50,7 +50,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
 }
 
 dependencies {
@@ -66,9 +65,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation(project(":data"))
-    implementation("androidx.compose.material:material-icons-extended:1.4.3")
-    implementation ("androidx.navigation:navigation-compose:2.4.2")
-    implementation("androidx.navigation:navigation-runtime-ktx:2.7.6")
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     implementation("co.yml:ycharts:2.1.0")
     implementation("com.patrykandpatrick.vico:compose:1.14.0")
 
@@ -80,6 +79,17 @@ dependencies {
 
     // Houses the core logic for charts and other elements. Included in all other modules.
     implementation("com.patrykandpatrick.vico:core:1.14.0")
+
+    //For hilt
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
+
+
+
 
     // For the view system.
     implementation("com.patrykandpatrick.vico:views:1.14.0")
