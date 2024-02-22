@@ -68,7 +68,7 @@ fun LocalTripWithStages.toExternal() = Trip(
     id = trip.id,
     purpose = trip.purpose,
     isConfirmed = trip.isConfirmed,
-    stages = stages.toExternal(),
+    stages = orderedStages.toExternal(),
 )
 
 /**
@@ -146,7 +146,7 @@ fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
 fun LocalStageWithGpsPoints.toExternal() = Stage(
     id = stage.id,
     mode = stage.mode,
-    gpsPoints = gpsPoints.toExternal()
+    gpsPoints = orderedGpsPoints.toExternal()
 )
 
 /**
