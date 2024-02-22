@@ -13,7 +13,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // Connect to the MySQL database
-            val connection = createConnection()
+            val connection = createAccountConnection()
 
             try {
                 // Prepare and execute SQL statement
@@ -59,7 +59,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createConnection() // Replace with your MySQL connection logic
+            val connection = createAccountConnection() // Replace with your MySQL connection logic
 
             try {
                 // 2. Prepare and execute SQL statement
@@ -160,7 +160,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createConnection() // Replace with your MySQL connection logic
+            val connection = createAccountConnection() // Replace with your MySQL connection logic
 
             try {
                 // 2. Prepare and execute SQL statement
@@ -199,7 +199,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createConnection() // Replace with your MySQL connection logic
+            val connection = createAccountConnection() // Replace with your MySQL connection logic
 
             try {
                 // 2. Prepare and execute SQL statement
@@ -236,7 +236,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createConnection() // Replace with your MySQL connection logic
+            val connection = createAccountConnection() // Replace with your MySQL connection logic
 
             try {
                 // 2. Prepare and execute SQL statement
