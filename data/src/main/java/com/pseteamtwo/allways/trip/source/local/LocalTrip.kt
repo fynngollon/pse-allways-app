@@ -11,7 +11,6 @@ import com.pseteamtwo.allways.typeconverter.ListOfLocalStageConverter
 @Entity(
     tableName = "trips"
 )
-@TypeConverters(ListOfLocalStageConverter::class)
 data class LocalTrip(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,

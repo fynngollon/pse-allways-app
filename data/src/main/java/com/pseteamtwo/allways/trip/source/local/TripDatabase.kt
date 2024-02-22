@@ -16,4 +16,6 @@ import com.pseteamtwo.allways.typeconverter.ListOfLocalStageConverter
 abstract class TripDatabase : RoomDatabase() {
 
     abstract fun tripDao(): TripDao
+    abstract fun stageDao(): StageDao
+    abstract fun gpsPointDao(): GpsPointDao
 }

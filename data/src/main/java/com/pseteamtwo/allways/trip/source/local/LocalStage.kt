@@ -26,7 +26,6 @@ import org.threeten.bp.LocalDateTime
     ],
     indices = [Index(value = ["tripId"])]
 )
-@TypeConverters(ListOfLocalGpsPointConverter::class)
 data class LocalStage(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,

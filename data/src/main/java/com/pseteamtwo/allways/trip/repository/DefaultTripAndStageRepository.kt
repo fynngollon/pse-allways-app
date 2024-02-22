@@ -96,8 +96,11 @@ class DefaultTripAndStageRepository @Inject constructor(
         require(stages.isNotEmpty())
         // stages are in local db and aren't assigned to a trip
         stages.forEach {
-            assert(stageLocalDataSource.get(it.id)?.tripId == 0L) {
-                "A Stage is either missing in the database or already assigned to another trip"
+            if(stageLocalDataSource.get(it.id) == null) {
+                assert(false) { "A stage is missing in the database" }
+            }
+            assert(stageLocalDataSource.get(it.id)?.tripId == null) {
+                "A stage is already assigned to another trip"
             }
         }
 

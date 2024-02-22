@@ -48,15 +48,15 @@ class StageDaoTest {
 
     // using an in-memory database because the information stored here disappears when the
     // process is killed
-    private lateinit var stageDatabase: StageDatabase
+    private lateinit var database: TripDatabase
 
 
     // Ensure that we use a new database for each test.
     @Before
     fun initDb() {
-        stageDatabase = Room.inMemoryDatabaseBuilder(
+        database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            StageDatabase::class.java
+            TripDatabase::class.java
         ).allowMainThreadQueries().build()
     }
 
@@ -64,13 +64,13 @@ class StageDaoTest {
     @Test
     fun insertStageAndGetBack() = runTest {
         // GIVEN - insert a stage
-        val id = stageDatabase.stageDao().insert(stage1)
+        val id = database.stageDao().insert(stage1)
 
-        val allLoaded = stageDatabase.stageDao().getAll()
+        val allLoaded = database.stageDao().getAll()
         assertEquals(1, allLoaded.size)
 
         // WHEN - Get the stage by id from the database
-        val loaded = stageDatabase.stageDao().get(id)
+        val loaded = database.stageDao().get(id)
 
         // THEN - The loaded data contains the expected values
         assertNotNull(loaded as LocalStage)

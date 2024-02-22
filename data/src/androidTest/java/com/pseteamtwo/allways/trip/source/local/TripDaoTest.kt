@@ -48,13 +48,13 @@ class TripDaoTest {
 
     // using an in-memory database because the information stored here disappears when the
     // process is killed
-    private lateinit var tripDatabase: TripDatabase
+    private lateinit var database: TripDatabase
 
 
     // Ensure that we use a new database for each test.
     @Before
     fun initDb() {
-        tripDatabase = Room.inMemoryDatabaseBuilder(
+        database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             TripDatabase::class.java
         ).allowMainThreadQueries().build()
@@ -68,13 +68,13 @@ class TripDaoTest {
             purpose = Purpose.WORK,
             isConfirmed = false
         )
-        val id = tripDatabase.tripDao().insert(trip)
+        val id = database.tripDao().insert(trip)
 
-        val allLoaded = tripDatabase.tripDao().observeAll().first()
+        val allLoaded = database.tripDao().observeAll().first()
         assertEquals(1, allLoaded.size)
 
         // WHEN - Get the trip by id from the database
-        val loaded = tripDatabase.tripDao().get(id)
+        val loaded = database.tripDao().get(id)
 
         // THEN - The loaded data contains the expected values
         assertNotNull(loaded as LocalTrip)
