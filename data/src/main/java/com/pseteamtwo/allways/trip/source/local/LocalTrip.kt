@@ -13,7 +13,7 @@ import com.pseteamtwo.allways.typeconverter.ListOfLocalStageConverter
 data class LocalTrip(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    var stages: List<LocalStage>,
     var purpose: Purpose,
-    var isConfirmed: Boolean,
-    var stages: List<LocalStage>
+    var isConfirmed: Boolean
 )
