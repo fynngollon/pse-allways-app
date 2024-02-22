@@ -32,4 +32,26 @@ class DefaultAccountNetworkDataSourceTest {
             }
         }
     }
+
+    @Test
+    fun testSearchForPseudonym() {
+        runBlocking {
+            try {
+                accountNetworkDataSource.doesPseudonymExist(networkAccount.pseudonym)
+            } catch (e: SQLException) {
+                assert(false){ "SQL Exception" }
+            }
+        }
+    }
+
+    @Test
+    fun testLoadAccount() {
+        runBlocking {
+            try {
+                accountNetworkDataSource.loadAccount(networkAccount.email)
+            } catch (e: SQLException) {
+                assert(false){ "SQL Exception" }
+            }
+        }
+    }
 }
