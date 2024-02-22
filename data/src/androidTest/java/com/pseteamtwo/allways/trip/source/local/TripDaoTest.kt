@@ -4,11 +4,8 @@ import android.location.Location
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trip.Stage
-import com.pseteamtwo.allways.trip.toLocal
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.flow.first
@@ -22,7 +19,7 @@ import org.osmdroid.util.GeoPoint
  * Instrumented test, which will execute on an Android device.
  *
  * This test tests [com.pseteamtwo.allways.trip.source.local.TripDao]
- * and [com.pseteamtwo.allways.trip.source.local.TripDatabase].
+ * and [com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase].
  */
 @RunWith(AndroidJUnit4::class)
 class TripDaoTest {
@@ -48,7 +45,7 @@ class TripDaoTest {
 
     // using an in-memory database because the information stored here disappears when the
     // process is killed
-    private lateinit var database: TripDatabase
+    private lateinit var database: TripAndStageDatabase
 
 
     // Ensure that we use a new database for each test.
@@ -56,7 +53,7 @@ class TripDaoTest {
     fun initDb() {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TripDatabase::class.java
+            TripAndStageDatabase::class.java
         ).allowMainThreadQueries().build()
     }
 

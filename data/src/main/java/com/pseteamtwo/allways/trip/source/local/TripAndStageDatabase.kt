@@ -2,8 +2,6 @@ package com.pseteamtwo.allways.trip.source.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.pseteamtwo.allways.typeconverter.ListOfLocalStageConverter
 
 /**
  * The Room Database that contains the Trips table.
@@ -13,7 +11,7 @@ import com.pseteamtwo.allways.typeconverter.ListOfLocalStageConverter
     version = 1,
     exportSchema = false
 )
-abstract class TripDatabase : RoomDatabase() {
+abstract class TripAndStageDatabase : RoomDatabase() {
 
     abstract fun tripDao(): TripDao
     abstract fun stageDao(): StageDao

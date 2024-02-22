@@ -23,7 +23,7 @@ import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.StageDao
 import com.pseteamtwo.allways.trip.source.local.TripDao
-import com.pseteamtwo.allways.trip.source.local.TripDatabase
+import com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase
 import com.pseteamtwo.allways.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.DefaultTripNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
@@ -136,22 +136,22 @@ object TripDatabaseModule {
 
     @Singleton
     @Provides
-    fun provideTripDatabase(@ApplicationContext context: Context): TripDatabase {
+    fun provideTripDatabase(@ApplicationContext context: Context): TripAndStageDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
-            TripDatabase::class.java,
+            TripAndStageDatabase::class.java,
             "Trip.db"
         ).build()
     }
 
     @Provides
-    fun provideTripDao(database: TripDatabase): TripDao = database.tripDao()
+    fun provideTripDao(database: TripAndStageDatabase): TripDao = database.tripDao()
 
     @Provides
-    fun provideStageDao(database: TripDatabase): StageDao = database.stageDao()
+    fun provideStageDao(database: TripAndStageDatabase): StageDao = database.stageDao()
 
     @Provides
-    fun provideGpsPointDao(database: TripDatabase): GpsPointDao = database.gpsPointDao()
+    fun provideGpsPointDao(database: TripAndStageDatabase): GpsPointDao = database.gpsPointDao()
 }
 
 /** Stage */

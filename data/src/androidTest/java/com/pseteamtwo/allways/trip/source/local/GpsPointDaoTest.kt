@@ -23,7 +23,7 @@ import org.osmdroid.util.GeoPoint
 class GpsPointDaoTest {
     // using an in-memory database because the information stored here disappears when the
     // process is killed
-    private lateinit var database: TripDatabase
+    private lateinit var database: TripAndStageDatabase
 
 
     // Ensure that we use a new database for each test.
@@ -31,7 +31,7 @@ class GpsPointDaoTest {
     fun initDb() {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TripDatabase::class.java
+            TripAndStageDatabase::class.java
         ).allowMainThreadQueries().build()
     }
 

@@ -4,14 +4,9 @@ import android.location.Location
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
-import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trip.Stage
-import com.pseteamtwo.allways.trip.toLocal
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -48,7 +43,7 @@ class StageDaoTest {
 
     // using an in-memory database because the information stored here disappears when the
     // process is killed
-    private lateinit var database: TripDatabase
+    private lateinit var database: TripAndStageDatabase
 
 
     // Ensure that we use a new database for each test.
@@ -56,7 +51,7 @@ class StageDaoTest {
     fun initDb() {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TripDatabase::class.java
+            TripAndStageDatabase::class.java
         ).allowMainThreadQueries().build()
     }
 

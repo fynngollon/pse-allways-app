@@ -17,10 +17,9 @@ import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.LocalStage
 import com.pseteamtwo.allways.trip.source.local.StageDao
 import com.pseteamtwo.allways.trip.source.local.TripDao
-import com.pseteamtwo.allways.trip.source.local.TripDatabase
+import com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase
 import com.pseteamtwo.allways.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.DefaultTripNetworkDataSource
-import com.pseteamtwo.allways.trip.toLocal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
@@ -74,7 +73,7 @@ class DefaultTripAndStageRepositoryTest {
     //Test dependencies
     private lateinit var accountRepository: AccountRepository
 
-    private lateinit var database: TripDatabase
+    private lateinit var database: TripAndStageDatabase
     private lateinit var accountDatabase: AccountDatabase
 
     private lateinit var tripDao: TripDao
@@ -97,7 +96,7 @@ class DefaultTripAndStageRepositoryTest {
     fun createRepository() {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TripDatabase::class.java
+            TripAndStageDatabase::class.java
         ).allowMainThreadQueries().build()
 
         accountDatabase = Room.inMemoryDatabaseBuilder(
