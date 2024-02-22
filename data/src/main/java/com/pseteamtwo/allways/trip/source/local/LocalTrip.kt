@@ -30,4 +30,11 @@ data class LocalTripWithStages(
         entityColumn = "tripId"
     )
     val stages: List<LocalStageWithGpsPoints>
-)
+) {
+
+    val orderedStages: List<LocalStageWithGpsPoints> by lazy {
+        val orderedStagesList = stages.toMutableList()
+        orderedStagesList.sortBy { it.orderedGpsPoints.first().location.time }
+        orderedStagesList.toList()
+    }
+}

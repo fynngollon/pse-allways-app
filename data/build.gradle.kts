@@ -7,6 +7,9 @@ plugins {
 }
 
 android {
+    packagingOptions {
+        exclude("META-INF/INDEX.LIST")
+    }
     namespace = "com.pseteamtwo.allways"
     compileSdk = 34
 
@@ -66,7 +69,7 @@ dependencies {
     implementation ("net.pwall.json:json-kotlin-schema:0.44")
 
     //implementation("org.postgresql:postgresql:42.3.1")
-    implementation("mysql:mysql-connector-java:8.0.23") //Implementierung Treiber für SQL
+    implementation("mysql:mysql-connector-java:8.0.33") //Implementierung Treiber für SQL
     implementation(kotlin("stdlib-jdk8")) //Implementierung Bibliothek
     
     // Hilt - data injection

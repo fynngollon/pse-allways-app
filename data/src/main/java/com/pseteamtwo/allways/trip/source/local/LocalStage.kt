@@ -44,4 +44,11 @@ data class LocalStageWithGpsPoints(
         entityColumn = "stageId"
     )
     val gpsPoints: List<LocalGpsPoint>
-)
+) {
+
+    val orderedGpsPoints: List<LocalGpsPoint> by lazy {
+        val orderedGpsPointsList = gpsPoints.toMutableList()
+        orderedGpsPointsList.sortBy { it.location.time }
+        orderedGpsPointsList.toList()
+    }
+}
