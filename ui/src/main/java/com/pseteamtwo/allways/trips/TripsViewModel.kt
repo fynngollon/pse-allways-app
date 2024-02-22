@@ -7,11 +7,12 @@ import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
-import com.fynng.allways.map.addressToString
+import com.pseteamtwo.allways.map.addressToString
 
 import com.pseteamtwo.allways.trip.Mode
 
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,10 +30,11 @@ import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneOffset
 import java.io.IOException
 import java.util.Locale
+import javax.inject.Inject
 
 
-
-class TripsViewModel(private val tripAndStageRepository: TripAndStageRepository) : ViewModel() {
+@HiltViewModel
+class TripsViewModel @Inject constructor(private val tripAndStageRepository: TripAndStageRepository) : ViewModel() {
     private var _tripsUiState: MutableStateFlow<TripsUiState> = MutableStateFlow(TripsUiState(loading = true))
     val tripsUiState: StateFlow<TripsUiState> = _tripsUiState.asStateFlow()
 
@@ -464,14 +466,14 @@ class TripsViewModel(private val tripAndStageRepository: TripAndStageRepository)
     ) {
         val stageUiState = getStageUiState(tripId, stageId)
         viewModelScope.launch {
-            tripAndStageRepository.updateStage(
+            /*tripAndStageRepository.updateStage(
                 stageId = stageUiState.id,
                 mode = stageUiState.mode,
                 startTime = stageUiState.startDateTime,
                 endTime = stageUiState.endDateTime,
                 startLocation = stageUiState.startLocation,
                 endLocation = stageUiState.endLocation
-            )
+            )*/
         }
     }
 

@@ -24,7 +24,6 @@ fun SetUpNavGraph(
             route = Screen.Trips.route,
         ) {
             TripsScreen(
-                tripsViewModel = TripsViewModel(TestTripAndStageRepository()),
                 navController = navController
             )
         }

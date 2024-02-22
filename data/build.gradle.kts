@@ -1,7 +1,7 @@
 plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.android")
-    id("com.android.application")
+    id("com.android.library")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
@@ -11,11 +11,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.pseteamtwo.allways"
+        //applicationId = "com.pseteamtwo.allways"
         minSdk = 23
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        //versionCode = 1
+        //versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables {
@@ -53,6 +53,13 @@ android {
 }
 
 dependencies {
+
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
     // KSP
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.16")
 

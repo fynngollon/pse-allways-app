@@ -9,17 +9,6 @@ plugins {
 }
 
 buildscript {
-    repositories {
-        google() // Add this line to include the Google Maven repository
-
-        // other repositories if any
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") }
-    }
-    // other configurations for the build script
-}
-
-allprojects {
     val agp_version by extra("8.2.2")
     repositories {
         google()

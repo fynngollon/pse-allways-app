@@ -1,5 +1,9 @@
 package com.pseteamtwo.allways
 
-class AllWaysApp {
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class AllWaysApp: Application() {
     // TODO
 }

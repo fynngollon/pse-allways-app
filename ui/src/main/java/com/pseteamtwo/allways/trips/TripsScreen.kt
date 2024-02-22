@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.pseteamtwo.allways.trip.repository.TestTripAndStageRepository
@@ -28,9 +29,9 @@ import org.threeten.bp.LocalDate
 @Composable
 fun TripsScreen(
     modifier: Modifier = Modifier,
-    tripsViewModel: TripsViewModel,
     navController: NavHostController
 ) {
+    val tripsViewModel: TripsViewModel = hiltViewModel()
     val tripsUiState by tripsViewModel.tripsUiState.collectAsState()
 
     Surface(
@@ -78,7 +79,6 @@ fun formatDate(date: LocalDate): String {
 @Composable
 fun TripsScreenPreview() {
     TripsScreen(
-        tripsViewModel = TripsViewModel(TestTripAndStageRepository()),
         navController = rememberNavController()
     )
 }

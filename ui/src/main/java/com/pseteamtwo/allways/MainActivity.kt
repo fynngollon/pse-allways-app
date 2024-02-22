@@ -15,14 +15,16 @@ import androidx.compose.ui.tooling.preview.Preview
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fynng.allways.navigation.BottomNavigation
-import com.fynng.allways.navigation.SetUpNavGraph
+import com.pseteamtwo.allways.navigation.BottomNavigation
+import com.pseteamtwo.allways.navigation.SetUpNavGraph
 
-import com.fynng.allways.ui.theme.AllWaysTheme
+import com.pseteamtwo.allways.ui.theme.AllWaysTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
+import dagger.hilt.android.AndroidEntryPoint
 
 
 // TODO
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
