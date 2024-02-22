@@ -36,6 +36,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.bonuspack.location.*
+import java.io.IOException
 
 import java.util.Locale
 
@@ -55,8 +56,13 @@ fun LocationSelector(
     val geocoder: GeocoderNominatim = GeocoderNominatim(Locale.getDefault(), Configuration.getInstance().userAgentValue)
 
     LaunchedEffect(key1 = null) {
-        addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(selectedPosition.latitude, selectedPosition.longitude, 1)}
-        selectedAddress = addresses[0]
+        try {
+            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(selectedPosition.latitude, selectedPosition.longitude, 1)}
+            selectedAddress = addresses[0]
+        } catch (exception: IOException) {
+            selectedAddress = Address(Locale.getDefault())
+        }
+
     }
 
     Dialog(
@@ -81,7 +87,6 @@ fun LocationSelector(
                         org.osmdroid.views.MapView(context).apply {
                             Configuration.getInstance().userAgentValue = context.packageName;
                             setTileSource(TileSourceFactory.MAPNIK)
-                            setBuiltInZoomControls(true)
                             setMultiTouchControls(true)
 
                             minZoomLevel = 4.0
@@ -106,8 +111,13 @@ fun LocationSelector(
                                                 controller.animateTo(p)
                                                 selectedPosition = p
                                                 CoroutineScope(Dispatchers.IO).launch {
-                                                    addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(selectedPosition.latitude, selectedPosition.longitude, 1)}
-                                                    selectedAddress = addresses[0]
+                                                    try {
+                                                        addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(selectedPosition.latitude, selectedPosition.longitude, 1)}
+                                                        selectedAddress = if(addresses.isNotEmpty()) addresses[0] else Address(Locale.getDefault())
+                                                    } catch (exception: IOException) {
+                                                        selectedAddress = Address(Locale.getDefault())
+                                                    }
+
                                                 }
                                             }
                                             return true
@@ -145,13 +155,9 @@ fun LocationSelector(
                         ) {
                             Text(text = "Bestätigen")
                         }
-
                     }
                 }
             }
         }
     }
-
-
 }
-

@@ -247,11 +247,12 @@ fun TripCard(
                     .size(24.dp),
                 painter = painterResource(id = R.drawable.help_fill1_wght400_grad0_opsz24),
                 contentDescription = "",
-                tint = Color(0xffFF8C00)
+                tint = Color(0xFFFF9549)
             )
         }
     }
     if(showEditTripDialog) {
+        //tripUiState.createStageUiStates()
         EditTripDialog(
             modifier = modifier,
             tripUiState = tripUiState,
@@ -297,6 +298,7 @@ fun TripCardPreview() {
             599,
             4256,
             createStageUiStates = {},
+            addStageUiStateBefore = {},
             addStageUiStateAfter = {},
             updateTrip = {}
         )

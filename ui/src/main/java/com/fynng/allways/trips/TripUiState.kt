@@ -21,6 +21,7 @@ data class TripUiState(
     val duration: Long,
     val distance: Int,
     val createStageUiStates: () -> Unit,
+    val addStageUiStateBefore: () -> Unit,
     val addStageUiStateAfter: () -> Unit,
     val updateTrip: () -> Unit
 ): Comparable<TripUiState> {

@@ -18,7 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.fynng.allways.uicomponents.TripCard
+import com.pseteamtwo.allways.trip.repository.TestTripAndStageRepository
 import org.threeten.bp.LocalDate
 
 
@@ -36,17 +38,14 @@ fun TripsScreen(
     ) {
         LazyColumn(
             modifier = modifier,
+            userScrollEnabled = true
         ) {
-            item {  }
             var date: LocalDate? = null
             items(tripsUiState.tripUiStates) {
                 tripUiState: TripUiState ->
                 if(date != tripUiState.startDateTime.toLocalDate()) {
                     Text(
-                        text = formatDate(
-                            tripUiState.startDateTime.year,
-                            tripUiState.startDateTime.monthValue,
-                            tripUiState.startDateTime.dayOfMonth),
+                        text = formatDate(tripUiState.startDateTime.toLocalDate()),
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(start = 8.dp, top = 16.dp),
@@ -66,14 +65,20 @@ fun TripsScreen(
     }
 }
 
-fun formatDate(year: Int, month: Int, day: Int): String {
-    return String.format("%02d.%02d.%04d", day, month, year)
+fun formatDate(date: LocalDate): String {
+    return String.format(
+        "%02d.%02d.%04d",
+        date.dayOfMonth,
+        date.monthValue,
+        date.year
+    )
 }
 
 @Preview
 @Composable
 fun TripsScreenPreview() {
-    /*TripsScreen(
-        tripsViewModel = TripsViewModel(TestTripAndStageRepository())
-    )*/
+    TripsScreen(
+        tripsViewModel = TripsViewModel(TestTripAndStageRepository()),
+        navController = rememberNavController()
+    )
 }

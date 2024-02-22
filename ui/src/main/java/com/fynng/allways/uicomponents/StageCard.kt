@@ -9,27 +9,35 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 
 import androidx.compose.material3.TimeInput
 
@@ -42,19 +50,25 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.fynng.allways.map.addressToString
 import com.fynng.allways.trips.StageUiState
 import com.pseteamtwo.allways.trip.Mode
 import org.osmdroid.util.GeoPoint
@@ -64,7 +78,7 @@ import org.threeten.bp.LocalDateTime
 @Composable
 fun StageCard(
     modifier: Modifier = Modifier,
-    stageUiState: StageUiState
+    stageUiState: StageUiState,
 ) {
     var showStartLocationSelector by rememberSaveable {
         mutableStateOf(false)
@@ -357,12 +371,15 @@ fun StageCard(
                         text = stageUiState.startLocationName,
                         modifier = modifier.weight(7f)
                     )
-                    Button(
-                        onClick = {showStartLocationSelector = true},
-                        modifier.weight(3f),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(text = "Ändern")
+                    if(stageUiState.isFirstStageOfTrip) {
+                        Button(
+                            onClick = {showStartLocationSelector = true},
+                            modifier.weight(3f),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B7DAF))
+                        ) {
+                            Text(text = "Ändern")
+                        }
                     }
                     Spacer(modifier = modifier.weight(0.25f))
                 }
@@ -387,11 +404,10 @@ fun StageCard(
                                 modifier = modifier.weight(0.5f)
                             )
                             TimeField(
-                                modifier = modifier.weight(1f),
+                                modifier = modifier.weight(1.25f),
                                 initialHour = stageUiState.startDateTime.hour,
                                 initialMinute = stageUiState.startDateTime.minute,
-                                onHourChange = {hour: Int -> stageUiState.setStartTime(hour, stageUiState.startDateTime.minute)},
-                                onMinuteChange = {minute: Int -> stageUiState.setStartTime(stageUiState.startDateTime.hour, minute)}
+                                onTimeChange = { hour: Int, minute: Int -> stageUiState.setStartTime(hour, minute)}
                             )
                             Spacer(modifier = modifier.weight(3f))
                         }
@@ -471,11 +487,10 @@ fun StageCard(
                                 modifier = modifier.weight(0.5f)
                                 )
                             TimeField(
-                                modifier = modifier.weight(1f),
+                                modifier = modifier.weight(1.25f),
                                 initialHour = stageUiState.endDateTime.hour,
                                 initialMinute = stageUiState.endDateTime.minute,
-                                onHourChange = {hour: Int -> stageUiState.setEndTime(hour, stageUiState.endDateTime.minute)},
-                                onMinuteChange = {minute: Int -> stageUiState.setStartTime(stageUiState.endDateTime.hour, minute)}
+                                onTimeChange = { hour: Int, minute: Int -> stageUiState.setEndTime(hour, minute)}
                             )
                             Spacer(modifier = modifier.weight(3f))
                         }
@@ -494,7 +509,8 @@ fun StageCard(
                     Button(
                         onClick = {showEndLocationSelector = true},
                         modifier.weight(3f),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B7DAF))
                     ) {
                         Text(text = "Ändern")
                     }
@@ -535,6 +551,7 @@ fun StageCard(
                 startPosition = GeoPoint(stageUiState.endLocation),
 
             )
+
         }
     }
 }
@@ -545,10 +562,130 @@ fun TimeField(
     modifier: Modifier = Modifier,
     initialHour: Int,
     initialMinute: Int,
-    onHourChange: (Int) -> Unit,
-    onMinuteChange: (Int) -> Unit
+    onTimeChange: (Int, Int) -> Unit,
 ) {
-    val timePickerState = rememberTimePickerState(
+    val focusManager = LocalFocusManager.current
+    val keyBoardController = LocalSoftwareKeyboardController.current
+
+    var hourTextFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = String.format("%02d", initialHour),
+                selection = TextRange(2)
+            )
+        )
+    }
+
+    var minuteTextFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = String.format("%02d", initialMinute),
+                selection = TextRange(0)
+            )
+        )
+    }
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        BasicTextField(
+            value = hourTextFieldValue,
+            onValueChange = {
+                if(Regex("0?[0-9]|1[0-9]|2[0-3]|").matches(it.text)) {
+                    hourTextFieldValue = TextFieldValue(
+                        text = it.text,
+                        selection = TextRange(it.text.length)
+                    )
+
+                }
+
+            },
+            modifier = modifier
+                .height(20.dp)
+                .width(30.dp),
+            enabled = true,
+            textStyle = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    keyBoardController?.hide()
+                    onTimeChange(hourTextFieldValue.text.toInt(), minuteTextFieldValue.text.toInt())
+                }
+            ),
+            decorationBox = {innerTextField ->
+                Row(
+                    modifier = modifier
+                        .border(
+                            BorderStroke(0.25.dp, Color.Black),
+                            shape = RoundedCornerShape(2.dp)
+                        ),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    innerTextField()
+                }
+
+            }
+
+        )
+        Text(
+            text = " : ",
+            style = MaterialTheme.typography.titleMedium
+        )
+        BasicTextField(
+            value = minuteTextFieldValue,
+            onValueChange = {
+                if(Regex("|0?[0-9]|[1-5][0-9]").matches(it.text)) {
+                    minuteTextFieldValue = TextFieldValue(
+                        text = it.text,
+                        selection = TextRange(it.text.length)
+                    )
+
+                }
+
+            },
+            modifier = modifier
+                .height(20.dp)
+                .width(30.dp),
+            enabled = true,
+            textStyle = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    keyBoardController?.hide()
+                    onTimeChange(hourTextFieldValue.text.toInt(), minuteTextFieldValue.text.toInt())
+                }
+            ),
+            decorationBox = {innerTextField ->
+                Row(
+                    modifier = modifier
+                        .border(
+                            BorderStroke(0.25.dp, Color.Black),
+                            shape = RoundedCornerShape(2.dp)
+                        ),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    innerTextField()
+                }
+
+            }
+
+        )
+        Text(
+            text = "  Uhr",
+        )
+    }
+
+
+    /*val timePickerState = rememberTimePickerState(
         initialHour,
         initialMinute,
         true
@@ -562,14 +699,14 @@ fun TimeField(
         modifier = modifier.width(60.dp),
         horizontalArrangement = Arrangement.Start
     ) {
-        /*Text(
+        Text(
             text = timePickerState.hour.toString(),
             modifier = modifier
                 .clickable {
                 showTimeInputDialog = true
                 },
             style = MaterialTheme.typography.titleMedium
-        )*/
+        )
         BasicTextField(
             value = if (timePickerState.hour < 10) "0" + timePickerState.hour.toString() else timePickerState.hour.toString(),
             onValueChange = {},
@@ -620,21 +757,56 @@ fun TimeField(
 
             }
         )
-        /*Text(
+        Text(
             text = timePickerState.minute.toString(),
             modifier = modifier
                 .clickable {
                 showTimeInputDialog = true
                 },
             style = MaterialTheme.typography.titleMedium
-        )*/
+        )
     }
 
     if(showTimeInputDialog) {
-        Dialog(onDismissRequest = { showTimeInputDialog = false }) {
-            TimeInput(state = timePickerState)
+        Dialog(
+            onDismissRequest = { showTimeInputDialog = false }
+        ) {
+            Card(
+                modifier = modifier
+                    .height(90.dp)
+                    .width(400.dp)
+            ) {
+                Row(
+                    modifier = modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+
+                    ) {
+                        TimeInput(
+                            state = timePickerState,
+                            modifier.offset(0.dp, 10.dp)
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            onTimeChange(timePickerState.hour, timePickerState.minute)
+                            showTimeInputDialog = false
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Check, contentDescription = "Bestätigen",
+                            modifier = modifier
+                                .size(48.dp)
+                        )
+                    }
+                }
+            }
         }
-    }
+    }*/
 
 
     /*NumbersField(
@@ -739,6 +911,8 @@ fun StageCardPreview() {
         stageUiState = StageUiState(
             id = 1,
             mode = Mode.NONE,
+            isFirstStageOfTrip = false,
+            isLastStageOfTrip = true,
             startDateTime = LocalDateTime.MAX,
             endDateTime = LocalDateTime.MAX,
             startLocation = GeoPoint(49.001061, 8.413361),
@@ -746,6 +920,8 @@ fun StageCardPreview() {
             startLocationName = "Test",
             endLocationName = "Test",
             setMode = {mode: Mode -> },
+            setStartDate = {},
+            setEndDate = {},
             setStartTime = {hour: Int, minute: Int -> },
             setEndTime = {hour: Int, minute: Int -> },
             setStartLocation = {geoPoint: GeoPoint ->  },

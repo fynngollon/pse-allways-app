@@ -2,11 +2,14 @@ package com.fynng.allways.trips
 
 import com.pseteamtwo.allways.trip.Mode
 import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 data class StageUiState(
     val id: Long,
     val mode: Mode,
+    val isFirstStageOfTrip: Boolean,
+    val isLastStageOfTrip: Boolean,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
     val startLocation: GeoPoint,
@@ -14,6 +17,8 @@ data class StageUiState(
     val startLocationName: String,
     val endLocationName: String,
     val setMode: (Mode) -> Unit,
+    val setStartDate: (LocalDate) -> Unit,
+    val setEndDate: (LocalDate) -> Unit,
     val setStartTime: (Int, Int) -> Unit,
     val setEndTime: (Int, Int) -> Unit,
     val setStartLocation: (GeoPoint) -> Unit,
