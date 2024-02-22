@@ -117,7 +117,7 @@ fun LocalTrip.toNetwork() = NetworkTrip(
  * @receiver [Stage]
  */
 @JvmName("externalStageToLocal")
-fun Stage.toLocal(tripId: Long) = LocalStage(
+fun Stage.toLocal(tripId: Long?) = LocalStage(
     id = id,
     tripId = tripId,
     mode = mode
@@ -132,7 +132,7 @@ fun Stage.toLocal(tripId: Long) = LocalStage(
  * @receiver [List]
  */
 @JvmName("externalStageListToLocal")
-fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
+fun List<Stage>.toLocal(tripId: Long?) = map { stage ->  stage.toLocal(tripId)}
 
 /**
  * Stage: local to external
@@ -200,7 +200,7 @@ fun LocalStage.toNetwork() = NetworkStage(
  * @receiver [GpsPoint]
  */
 @JvmName("externalGpsPointToLocal")
-fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
+fun GpsPoint.toLocal(stageId: Long?) = LocalGpsPoint(
     id = id,
     stageId = stageId,
     location = location
@@ -215,7 +215,7 @@ fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
  * @receiver [List]
  */
 @JvmName("externalGpsPointListToLocal")
-fun List<GpsPoint>.toLocal(stageId: Long) = map { it.toLocal(stageId) }
+fun List<GpsPoint>.toLocal(stageId: Long?) = map { it.toLocal(stageId) }
 
 /**
  * GpsPoint: local to external

@@ -31,16 +31,18 @@ data class Stage(
 
     val startDateTime: LocalDateTime by lazy {
         val timeInMillis: Long = gpsPoints.first().location.time
-        val instant: Instant = Instant.ofEpochMilli(timeInMillis)
-        val zoneId = ZoneId.of("Europe/Berlin")
-        LocalDateTime.ofInstant(instant, zoneId)
+        LocalDateTime.ofInstant(
+            Instant.ofEpochMilli(timeInMillis),
+            ZoneId.systemDefault()
+        )
     }
 
     val endDateTime: LocalDateTime by lazy {
         val timeInMillis: Long = gpsPoints.last().location.time
-        val instant: Instant = Instant.ofEpochMilli(timeInMillis)
-        val zoneId = ZoneId.of("Europe/Berlin")
-        LocalDateTime.ofInstant(instant, zoneId)
+        LocalDateTime.ofInstant(
+            Instant.ofEpochMilli(timeInMillis),
+            ZoneId.systemDefault()
+        )
     }
 
     val startLocation: Location

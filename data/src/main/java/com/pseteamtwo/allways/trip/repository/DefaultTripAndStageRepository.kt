@@ -35,6 +35,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.milliseconds
 
 // stages can exist in the database without belonging to any trip:
 // they won't be observed then; once added to a trip they will be deleted alongside the trip
@@ -103,6 +104,23 @@ class DefaultTripAndStageRepository @Inject constructor(
                 "A stage is already assigned to another trip"
             }
         }
+        //stages are continuous in physical logic of time and space
+        val listOfStages = stages.toMutableList()
+        listOfStages.sortBy { it.startDateTime.toMillis() }
+        for(i in 0 until listOfStages.size - 1) {
+            val prevEndLocation =
+                listOfStages[i].gpsPoints.last().location
+            val nextStartLocation =
+                listOfStages[i+1].gpsPoints.first().location
+            if(!prevEndLocation.compareTo(nextStartLocation)) {
+                assert(false) { "Locations between trips to connect have to be same" }
+            }
+            val prevEndTime = prevEndLocation.time
+            val nextStartTime = nextStartLocation.time
+            if(prevEndTime > nextStartTime) {
+                assert(false) { "Times between trips do not allow time travel" }
+            }
+        }
 
         val localTripWithoutIds = LocalTrip(
             purpose = purpose,
@@ -132,10 +150,14 @@ class DefaultTripAndStageRepository @Inject constructor(
         require(localGpsPoints.isNotEmpty())
         // gpsPoints are in local db and aren't assigned to a stage
         localGpsPoints.forEach {
-            assert(gpsPointLocalDataSource.get(it.id)?.stageId == 0L) {
-                "A GpsPoint is either missing in the database or already assigned to another stage"
+            if(gpsPointLocalDataSource.get(it.id) == null) {
+                assert(false) { "A gpsPoint is missing in the database" }
+            }
+            assert(gpsPointLocalDataSource.get(it.id)?.stageId == null) {
+                "A gpsPoint is already assigned to another stage"
             }
         }
+
         val localStageWithoutUpdatedIds = LocalStage(
             mode = mode
         )
@@ -443,7 +465,7 @@ class DefaultTripAndStageRepository @Inject constructor(
                 localTripsWithStages[i].orderedStages.last().orderedGpsPoints.last().location
             val nextStartLocation =
                 localTripsWithStages[i+1].orderedStages.first().orderedGpsPoints.first().location
-            if(prevEndLocation == nextStartLocation) {//TODO("not sure if comparable like that")
+            if(!prevEndLocation.compareTo(nextStartLocation)) {
                 throw TeleportationException("Locations between trips to connect have to be same")
             }
 
@@ -546,4 +568,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         return latitude == location.latitude && longitude == location.longitude
     }
 
+    private fun Location.compareTo(location: Location): Boolean {
+        return latitude == location.latitude && longitude == location.longitude
+    }
 }
