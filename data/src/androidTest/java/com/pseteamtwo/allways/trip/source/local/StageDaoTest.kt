@@ -4,14 +4,9 @@ import android.location.Location
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
-import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trip.Stage
-import com.pseteamtwo.allways.trip.toLocal
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -37,28 +32,26 @@ class StageDaoTest {
 
     private val stage1 = LocalStage(
         1000,
-        0,
-        listOf(location1, location2),
+        null,
         Mode.WALK
     )
     private val stage2 = LocalStage(
         1001,
-        0,
-        listOf(location2, location3),
+        null,
         Mode.MOTORCYCLE
     )
 
     // using an in-memory database because the information stored here disappears when the
     // process is killed
-    private lateinit var stageDatabase: StageDatabase
+    private lateinit var database: TripAndStageDatabase
 
 
     // Ensure that we use a new database for each test.
     @Before
     fun initDb() {
-        stageDatabase = Room.inMemoryDatabaseBuilder(
+        database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            StageDatabase::class.java
+            TripAndStageDatabase::class.java
         ).allowMainThreadQueries().build()
     }
 
@@ -66,19 +59,18 @@ class StageDaoTest {
     @Test
     fun insertStageAndGetBack() = runTest {
         // GIVEN - insert a stage
-        val id = stageDatabase.stageDao().insert(stage1)
+        val id = database.stageDao().insert(stage1)
 
-        val allLoaded = stageDatabase.stageDao().getAll()
+        val allLoaded = database.stageDao().getAll()
         assertEquals(1, allLoaded.size)
 
         // WHEN - Get the stage by id from the database
-        val loaded = stageDatabase.stageDao().get(id)
+        val loaded = database.stageDao().get(id)
 
         // THEN - The loaded data contains the expected values
         assertNotNull(loaded as LocalStage)
         assertEquals(id, loaded.id)
         assertEquals(stage1.tripId, loaded.tripId)
-        assertEquals(stage1.gpsPoints, loaded.gpsPoints)
         assertEquals(stage1.mode, loaded.mode)
     }
 

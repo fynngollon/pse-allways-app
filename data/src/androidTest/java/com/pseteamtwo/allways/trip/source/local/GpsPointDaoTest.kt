@@ -23,15 +23,15 @@ import org.osmdroid.util.GeoPoint
 class GpsPointDaoTest {
     // using an in-memory database because the information stored here disappears when the
     // process is killed
-    private lateinit var gpsPointDatabase: GpsPointDatabase
+    private lateinit var database: TripAndStageDatabase
 
 
     // Ensure that we use a new database for each test.
     @Before
     fun initDb() {
-        gpsPointDatabase = Room.inMemoryDatabaseBuilder(
+        database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            GpsPointDatabase::class.java
+            TripAndStageDatabase::class.java
         ).allowMainThreadQueries().build()
     }
 
@@ -42,13 +42,13 @@ class GpsPointDaoTest {
         val gpsPoint = LocalGpsPoint(
             location = GeoPoint(0.000, 0.001).toLocation(0)
         )
-        val id = gpsPointDatabase.gpsPointDao().insert(gpsPoint)
+        val id = database.gpsPointDao().insert(gpsPoint)
 
-        val allLoaded = gpsPointDatabase.gpsPointDao().observeAll().first()
+        val allLoaded = database.gpsPointDao().observeAll().first()
         assertEquals(1, allLoaded.size)
 
         // WHEN - Get the gpsPoint by id from the database
-        val loaded = gpsPointDatabase.gpsPointDao().get(id)
+        val loaded = database.gpsPointDao().get(id)
 
         // THEN - The loaded data contains the expected values
         assertNotNull(loaded as LocalGpsPoint)

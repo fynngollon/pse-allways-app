@@ -2,9 +2,11 @@ package com.pseteamtwo.allways.trip
 
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
+import com.pseteamtwo.allways.trip.source.local.LocalStageWithGpsPoints
 import com.pseteamtwo.allways.trip.source.local.LocalTrip
+import com.pseteamtwo.allways.trip.source.local.LocalTripWithStages
 
-/**
+/** TODO("kdoc comments are outdated")
  * Data model mapping extension functions. There are three model types for trip, stage and gpsPoint:
  *
  *
@@ -62,11 +64,11 @@ fun Trip.toLocal() = LocalTrip(
  * @receiver [LocalTrip]
  */
 @JvmName("localToExternal")
-fun LocalTrip.toExternal() = Trip(
-    id = id,
-    purpose = purpose,
-    isConfirmed = isConfirmed,
-    stages = stages.toExternal()
+fun LocalTripWithStages.toExternal() = Trip(
+    id = trip.id,
+    purpose = trip.purpose,
+    isConfirmed = trip.isConfirmed,
+    stages = stages.toExternal(),
 )
 
 /**
@@ -78,7 +80,7 @@ fun LocalTrip.toExternal() = Trip(
  * @receiver [List]
  */
 @JvmName("localTripListToExternal")
-fun List<LocalTrip>.toExternal() = map(LocalTrip::toExternal)
+fun List<LocalTripWithStages>.toExternal() = map(LocalTripWithStages::toExternal)
 
 /*
 //network to local
@@ -118,8 +120,7 @@ fun LocalTrip.toNetwork() = NetworkTrip(
 fun Stage.toLocal(tripId: Long) = LocalStage(
     id = id,
     tripId = tripId,
-    mode = mode,
-    gpsPoints = gpsPoints.toLocal(id)
+    mode = mode
 )
 
 /**
@@ -142,10 +143,10 @@ fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
  * @receiver [LocalStage]
  */
 @JvmName("localStageToExternal")
-fun LocalStage.toExternal() = Stage(
-    id = id,
-    gpsPoints = gpsPoints.toExternal(),
-    mode = mode,
+fun LocalStageWithGpsPoints.toExternal() = Stage(
+    id = stage.id,
+    mode = stage.mode,
+    gpsPoints = gpsPoints.toExternal()
 )
 
 /**
@@ -157,7 +158,7 @@ fun LocalStage.toExternal() = Stage(
  * @receiver [List]
  */
 @JvmName("localStageListToExternal")
-fun List<LocalStage>.toExternal() = map(LocalStage::toExternal)
+fun List<LocalStageWithGpsPoints>.toExternal() = map(LocalStageWithGpsPoints::toExternal)
 
 /*
 //network to local
