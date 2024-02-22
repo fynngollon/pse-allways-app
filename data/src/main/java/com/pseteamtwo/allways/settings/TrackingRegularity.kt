@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
  * between 2 trackings of the device's location.
  */
 @Serializable
-enum class TrackingRegularity(val regularity: Int) {
+enum class TrackingRegularity(val regularity: Long) {
     /**
      * This tracking regularity means that the tracking is disabled.
      */
@@ -22,15 +22,15 @@ enum class TrackingRegularity(val regularity: Int) {
     /**
      * This regularity means that the tracking should be done once per minute.
      */
-    RARELY(60),
+    RARELY(60000),
 
     /**
      * This regularity means that the tracking should be done twice per minute.
      */
-    MEDIUM(30),
+    MEDIUM(30000),
 
     /**
      * This regularity means that the tracking should be done 6 times per minute.
      */
-    OFTEN(10);
+    OFTEN(10000);
 }
