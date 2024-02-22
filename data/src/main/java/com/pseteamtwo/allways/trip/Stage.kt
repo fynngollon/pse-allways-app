@@ -1,7 +1,6 @@
 package com.pseteamtwo.allways.trip
 
 import android.location.Location
-import org.osmdroid.util.GeoPoint
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
@@ -26,8 +25,8 @@ import kotlin.math.roundToInt
  */
 data class Stage(
     val id: Long,
-    val gpsPoints: List<GpsPoint>,
     val mode: Mode,
+    val gpsPoints: List<GpsPoint>
 ) {
 
     val startDateTime: LocalDateTime by lazy {

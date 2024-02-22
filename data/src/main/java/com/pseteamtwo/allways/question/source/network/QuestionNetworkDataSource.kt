@@ -8,7 +8,7 @@ interface QuestionNetworkDataSource {
     suspend fun loadQuestions(pseudonym: String): List<NetworkQuestion>
 
     @Throws(ServerConnectionFailedException::class)
-    suspend fun saveQuestions(questions: List<NetworkQuestion>)
+    suspend fun saveQuestions(pseudonym: String, questions: List<NetworkQuestion>)
 
-    //TODO("maybe delete function")
+    suspend fun deleteQuestion(pseudonym: String, id: String)
 }

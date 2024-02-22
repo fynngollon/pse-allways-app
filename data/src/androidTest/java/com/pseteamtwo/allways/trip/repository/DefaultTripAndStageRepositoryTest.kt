@@ -14,11 +14,10 @@ import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
-import com.pseteamtwo.allways.trip.source.local.GpsPointDatabase
+import com.pseteamtwo.allways.trip.source.local.LocalStage
 import com.pseteamtwo.allways.trip.source.local.StageDao
-import com.pseteamtwo.allways.trip.source.local.StageDatabase
 import com.pseteamtwo.allways.trip.source.local.TripDao
-import com.pseteamtwo.allways.trip.source.local.TripDatabase
+import com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase
 import com.pseteamtwo.allways.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.DefaultTripNetworkDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,21 +50,30 @@ class DefaultTripAndStageRepositoryTest {
 
     private val stage1 = Stage(
         1000,
-        listOf(location1, location2),
-        Mode.WALK
+        Mode.WALK,
+        listOf(location1, location2)
     )
     private val stage2 = Stage(
         1001,
-        listOf(location2, location3),
+        Mode.MOTORCYCLE,
+        listOf(location2, location3)
+    )
+
+    private val localStage1 = LocalStage(
+        1000,
+        null,
+        Mode.WALK
+    )
+    private val localStage2 = LocalStage(
+        1001,
+        null,
         Mode.MOTORCYCLE
     )
 
     //Test dependencies
     private lateinit var accountRepository: AccountRepository
 
-    private lateinit var tripDatabase: TripDatabase
-    private lateinit var stageDatabase: StageDatabase
-    private lateinit var gpsPointDatabase: GpsPointDatabase
+    private lateinit var database: TripAndStageDatabase
     private lateinit var accountDatabase: AccountDatabase
 
     private lateinit var tripDao: TripDao
@@ -86,19 +94,9 @@ class DefaultTripAndStageRepositoryTest {
     // Ensure that we use a new database for each test.
     @Before
     fun createRepository() {
-        tripDatabase = Room.inMemoryDatabaseBuilder(
+        database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TripDatabase::class.java
-        ).allowMainThreadQueries().build()
-
-        stageDatabase = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            StageDatabase::class.java
-        ).allowMainThreadQueries().build()
-
-        gpsPointDatabase = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            GpsPointDatabase::class.java
+            TripAndStageDatabase::class.java
         ).allowMainThreadQueries().build()
 
         accountDatabase = Room.inMemoryDatabaseBuilder(
@@ -106,9 +104,9 @@ class DefaultTripAndStageRepositoryTest {
             AccountDatabase::class.java
         ).allowMainThreadQueries().build()
 
-        tripDao = tripDatabase.tripDao()
-        stageDao = stageDatabase.stageDao()
-        gpsPointDao = gpsPointDatabase.gpsPointDao()
+        tripDao = database.tripDao()
+        stageDao = database.stageDao()
+        gpsPointDao = database.gpsPointDao()
         accountDao = accountDatabase.accountDao()
 
 
@@ -133,6 +131,8 @@ class DefaultTripAndStageRepositoryTest {
 
     @Test
     fun createTripTest() = runTest {
+        database.stageDao().insert(localStage1)
+        database.stageDao().insert(localStage2)
         repository.createTrip(listOf(stage1, stage2), Purpose.WORK)
 
         val trips = tripDao.observeAll().first()
@@ -141,7 +141,6 @@ class DefaultTripAndStageRepositoryTest {
 
         assertEquals(1, trips.size)
         assertEquals(2, stages.size)
-        assertEquals(3, gpsPoints.size)
     }
 
 

@@ -4,11 +4,8 @@ import android.location.Location
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trip.Stage
-import com.pseteamtwo.allways.trip.toLocal
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.flow.first
@@ -22,7 +19,7 @@ import org.osmdroid.util.GeoPoint
  * Instrumented test, which will execute on an Android device.
  *
  * This test tests [com.pseteamtwo.allways.trip.source.local.TripDao]
- * and [com.pseteamtwo.allways.trip.source.local.TripDatabase].
+ * and [com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase].
  */
 @RunWith(AndroidJUnit4::class)
 class TripDaoTest {
@@ -37,28 +34,26 @@ class TripDaoTest {
 
     private val stage1 = LocalStage(
         1000,
-        0,
-        listOf(location1, location2),
+        null,
         Mode.WALK
     )
     private val stage2 = LocalStage(
         1001,
-        0,
-        listOf(location2, location3),
+        null,
         Mode.MOTORCYCLE
     )
 
     // using an in-memory database because the information stored here disappears when the
     // process is killed
-    private lateinit var tripDatabase: TripDatabase
+    private lateinit var database: TripAndStageDatabase
 
 
     // Ensure that we use a new database for each test.
     @Before
     fun initDb() {
-        tripDatabase = Room.inMemoryDatabaseBuilder(
+        database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            TripDatabase::class.java
+            TripAndStageDatabase::class.java
         ).allowMainThreadQueries().build()
     }
 
@@ -67,22 +62,20 @@ class TripDaoTest {
     fun insertTripAndGetBack() = runTest {
         // GIVEN - insert a trip
         val trip = LocalTrip(
-            stages = listOf(stage1, stage2),
             purpose = Purpose.WORK,
             isConfirmed = false
         )
-        val id = tripDatabase.tripDao().insert(trip)
+        val id = database.tripDao().insert(trip)
 
-        val allLoaded = tripDatabase.tripDao().observeAll().first()
+        val allLoaded = database.tripDao().observeAll().first()
         assertEquals(1, allLoaded.size)
 
         // WHEN - Get the trip by id from the database
-        val loaded = tripDatabase.tripDao().get(id)
+        val loaded = database.tripDao().get(id)
 
         // THEN - The loaded data contains the expected values
         assertNotNull(loaded as LocalTrip)
         assertEquals(id, loaded.id)
-        assertEquals(trip.stages, loaded.stages)
         assertEquals(trip.purpose, loaded.purpose)
         assertEquals(trip.isConfirmed, loaded.isConfirmed)
     }

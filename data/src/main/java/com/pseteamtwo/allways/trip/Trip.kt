@@ -1,11 +1,7 @@
 package com.pseteamtwo.allways.trip
 
 import android.location.Location
-import org.osmdroid.util.GeoPoint
-import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 
 /**
  * Representation of a trip traveled by the user (to be also used outside this data module).
@@ -27,9 +23,9 @@ import org.threeten.bp.ZonedDateTime
  */
 data class Trip(
     val id: Long,
-    val stages: List<Stage>,
     val purpose: Purpose,
-    val isConfirmed: Boolean
+    val isConfirmed: Boolean,
+    val stages: List<Stage>
 ) {
     val startDateTime: LocalDateTime
         get() = stages.first().startDateTime
