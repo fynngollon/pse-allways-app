@@ -4,8 +4,8 @@ import com.google.android.gms.location.LocationCallback
 
 interface LocationProvider {
     //TODO("LocationCallback does not exist")
-    fun startLocationUpdates(locationCallback: LocationCallback)
+    fun startLocationUpdates()
 
     //TODO("LocationCallback does not exist")
-    fun stopLocationUpdates(locationCallback: LocationCallback)
+    fun stopLocationUpdates()
 }

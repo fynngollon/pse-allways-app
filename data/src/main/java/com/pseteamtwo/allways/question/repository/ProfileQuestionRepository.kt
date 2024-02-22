@@ -1,36 +1,29 @@
 package com.pseteamtwo.allways.question.repository
 
-import com.pseteamtwo.allways.question.Question
-import com.pseteamtwo.allways.question.QuestionType
-import kotlinx.coroutines.flow.Flow
 
-class ProfileQuestionRepository : QuestionRepository {
-    override fun observeAll(): Flow<List<Question>> {
-        TODO("Not yet implemented")
-    }
+import com.pseteamtwo.allways.account.repository.AccountRepository
+import com.pseteamtwo.allways.di.ApplicationScope
+import com.pseteamtwo.allways.di.DefaultDispatcher
+import com.pseteamtwo.allways.question.source.local.ProfileQuestionDao
+import com.pseteamtwo.allways.question.source.network.ProfileQuestionNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.ProfileQuestionnaireNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.QuestionnaireNetworkDataSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
+import javax.inject.Singleton
 
-    override suspend fun createQuestion(
-        id: String,
-        title: String,
-        type: QuestionType,
-        options: List<String>
-    ): String {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateAnswer(id: String, answer: String) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteQuestion(id: String) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun refresh() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun saveQuestionsToNetwork(id: List<String>) {
-        TODO("Not yet implemented")
-    }
+@Singleton
+class ProfileQuestionRepository @Inject constructor(
+    profileQuestionDao: ProfileQuestionDao,
+    profileQuestionNetworkDataSource: ProfileQuestionNetworkDataSource,
+    profileQuestionnaireNetworkDataSource: ProfileQuestionnaireNetworkDataSource,
+    accountRepository: AccountRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
+    @ApplicationScope scope: CoroutineScope,
+): DefaultQuestionRepository<ProfileQuestionDao,
+        ProfileQuestionNetworkDataSource, ProfileQuestionnaireNetworkDataSource>(
+    profileQuestionDao, profileQuestionNetworkDataSource, profileQuestionnaireNetworkDataSource,
+    accountRepository, dispatcher, scope
+) {
 }

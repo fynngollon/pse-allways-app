@@ -1,7 +1,8 @@
 plugins {
-    id("com.android.library")
+    kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    id("com.android.application")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 
@@ -10,13 +11,13 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        // applicationId = "com.pseteamtwo.allways"
+        applicationId = "com.pseteamtwo.allways"
         minSdk = 23
-        // targetSdk = 34
-        // versionCode = 1
-        // versionName = "1.0"
-
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -32,17 +33,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "19"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
     packaging {
         resources {
@@ -52,20 +53,34 @@ android {
 }
 
 dependencies {
-    // added dependencies
+    // KSP
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.16")
+
+    // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("com.google.android.gms:play-services-location:21.1.0")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    ksp("androidx.room:room-compiler:2.6.1")
 
+    //implementation("com.github.hantsy:jsonschema-kotlin:2.4.2")
+    implementation ("net.pwall.json:json-kotlin-schema:0.44")
+
+    implementation("org.postgresql:postgresql:42.3.1")
+    //implementation("mysql:mysql-connector-java:8.0.23") //Implementierung Treiber für SQL
+    //implementation(kotlin("stdlib-jdk8")) //Implementierung Bibliothek
+
+    // Hilt - data injection
     implementation("com.google.dagger:hilt-android:2.50")
-    annotationProcessor("com.google.dagger:hilt-compiler:2.44.2")
+    ksp("com.google.dagger:hilt-compiler:2.50")
 
+    // Open-Street-Map
     implementation("org.osmdroid:osmdroid-android:6.1.14")
     implementation("org.osmdroid:osmdroid-wms:6.1.14")
     implementation("org.osmdroid:osmdroid-mapsforge:6.1.14")
     implementation("org.osmdroid:osmdroid-geopackage:6.1.14")
 
-    // TODO("either update to android 8 or use this for duration calculation")
+    // TODO either update to android 8 or use this for duration calculation
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -73,6 +88,20 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.core:core-ktx:1.12.0")
+    // AndroidX Location - for tracking
+    //implementation("androidx.location:location-services:2.6.0") TODO not found
+    //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found
+
+    // Google Play Services - for tracking
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+
+    // Json
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // For testing
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // default dependencies
     implementation("androidx.core:core-ktx:1.12.0")
@@ -91,9 +120,4 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
 }

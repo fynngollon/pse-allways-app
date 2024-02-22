@@ -2,6 +2,8 @@ package com.pseteamtwo.allways.account
 
 import com.pseteamtwo.allways.account.source.local.LocalAccount
 import com.pseteamtwo.allways.account.source.network.NetworkAccount
+import com.pseteamtwo.allways.trip.Trip
+import com.pseteamtwo.allways.trip.source.local.LocalTrip
 
 /**
  * Data model mapping extension functions. There are three model types:
@@ -16,13 +18,29 @@ import com.pseteamtwo.allways.account.source.network.NetworkAccount
  * Obtained using `toLocal`.
  */
 
-//localToExternal
+
+/**
+ * Account: local to external
+ *
+ * Converts a [LocalAccount] into an external [Account] to expose it
+ * to other layers in the architecture.
+ *
+ * @receiver [LocalAccount]
+ */
 fun LocalAccount.toExternal() = Account(
     email = email,
     pseudonym = pseudonym
 )
 
-//networkToLocal
+
+/**
+ * Account: network to local
+ *
+ * Converts a [NetworkAccount] into a [LocalAccount] to store it into
+ * the local database afterwards.
+ *
+ * @receiver [NetworkAccount]
+ */
 fun NetworkAccount.toLocal() = LocalAccount(
     email = email,
     pseudonym = pseudonym,
@@ -30,7 +48,14 @@ fun NetworkAccount.toLocal() = LocalAccount(
     passwordSalt = passwordSalt
 )
 
-//localToNetwork
+/**
+ * Account: local to network
+ *
+ * Converts a [LocalAccount] into a [NetworkAccount] to store it into
+ * the network database afterwards.
+ *
+ * @receiver [LocalAccount]
+ */
 fun LocalAccount.toNetwork() = NetworkAccount(
     email = email,
     pseudonym = pseudonym,
