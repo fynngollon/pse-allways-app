@@ -1,4 +1,4 @@
-package com.fynng.allways.uicomponents
+package com.pseteamtwo.allways.uicomponents
 
 import android.location.Address
 import androidx.compose.foundation.layout.Box

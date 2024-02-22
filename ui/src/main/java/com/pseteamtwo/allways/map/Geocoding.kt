@@ -1,4 +1,4 @@
-package com.fynng.allways.map
+package com.pseteamtwo.allways.map
 
 import android.location.Address
 import kotlinx.coroutines.CoroutineScope

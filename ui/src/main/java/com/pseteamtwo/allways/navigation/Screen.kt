@@ -1,4 +1,4 @@
-package com.fynng.allways.navigation
+package com.pseteamtwo.allways.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoGraph

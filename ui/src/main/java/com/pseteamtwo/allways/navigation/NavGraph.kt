@@ -1,15 +1,15 @@
-package com.fynng.allways.navigation
+package com.pseteamtwo.allways.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.fynng.allways.home.HomeScreen
-import com.fynng.allways.profile.ProfileScreen
-import com.fynng.allways.statistics.StatisticsScreen
-import com.fynng.allways.trips.TripsScreen
-import com.fynng.allways.trips.TripsViewModel
+import com.pseteamtwo.allways.home.HomeScreen
+import com.pseteamtwo.allways.profile.ProfileScreen
+import com.pseteamtwo.allways.statistics.StatisticsScreen
 import com.pseteamtwo.allways.trip.repository.TestTripAndStageRepository
+import com.pseteamtwo.allways.trips.TripsScreen
+import com.pseteamtwo.allways.trips.TripsViewModel
 
 
 @Composable
