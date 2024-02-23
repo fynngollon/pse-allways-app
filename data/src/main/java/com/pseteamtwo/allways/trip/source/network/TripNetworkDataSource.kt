@@ -5,10 +5,10 @@ import kotlin.jvm.Throws
 
 interface TripNetworkDataSource {
     @Throws(ServerConnectionFailedException::class)
-    suspend fun loadTrips(): List<NetworkTrip>
+    suspend fun loadTrips(pseudonym: String): List<NetworkTrip>
 
     @Throws(ServerConnectionFailedException::class)
-    suspend fun saveTrips(trips: List<NetworkTrip>)
+    suspend fun saveTrips(pseudonym: String, trips: List<NetworkTrip>)
 
     @Throws(ServerConnectionFailedException::class)
     suspend fun deleteTrip(pseudonym: String, id: String): Int

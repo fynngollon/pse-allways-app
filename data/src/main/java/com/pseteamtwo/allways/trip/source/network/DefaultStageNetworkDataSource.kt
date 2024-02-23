@@ -16,12 +16,12 @@ class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSou
             val connection = createDataConnection()
 
             connection.use {
-                // Prepare and execute SQL statement to retrieve all questions
+                // Prepare and execute SQL statement to retrieve all stages
                 val sqlLoadStatement = "SELECT * FROM `allways-app`.`%s`;"
                 val statement = connection.prepareStatement(sqlLoadStatement.format("tbl${pseudonym}stages"))
                 val resultSet = statement.executeQuery()
 
-                // Extract data from the result set and convert to NetworkQuestion objects
+                // Extract data from the result set and convert to NetworkStage objects
                 val stages = mutableListOf<NetworkStage>()
                 while (resultSet.next()) {
                     val stage = NetworkStage(
