@@ -4,7 +4,7 @@ import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.coroutines.sync.Mutex
 
-class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkDataSource() {
+class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkDataSource(){
     private val accessMutex = Mutex()
 
     override suspend fun loadQuestions(pseudonym: String): List<NetworkQuestion> {
