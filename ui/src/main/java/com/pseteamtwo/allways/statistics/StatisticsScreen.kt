@@ -42,7 +42,7 @@ import com.patrykandpatrick.vico.core.entry.entryModelOf
 import java.util.stream.IntStream.range
 
 @Composable
-fun StatisticsScreen(navController: NavController, statisticsViewModel: StatisticsViewModel) {
+fun StatisticsScreen(navController: NavController) {
 
         val labels: List<String> = listOf("mon", "tue", "wnd", "thu", "fri")
         val values: List<Int> = listOf(2, 2, 3, 1, 2)

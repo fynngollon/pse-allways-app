@@ -7,5 +7,6 @@ data class QuestionUiState(
     val title: String,
     val type: QuestionType,
     val options: List<String>,
-    val answer: String
+    var answer: String,
+    var sendToServer: Boolean
 )

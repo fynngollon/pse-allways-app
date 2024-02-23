@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.pseteamtwo.allways.home.HomeScreen
 import com.pseteamtwo.allways.profile.ProfileScreen
+import com.pseteamtwo.allways.statistics.StatisticsScreen
 import com.pseteamtwo.allways.trips.TripsScreen
 
 
@@ -36,7 +37,7 @@ fun SetUpNavGraph(
         composable(
             route = Screen.Statistics.route
         ) {
-            //StatisticsScreen(navController = navController, statisticsViewModel)
+            StatisticsScreen(navController = navController)
         }
         composable(
             route = Screen.Profile.route

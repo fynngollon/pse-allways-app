@@ -1,28 +1,61 @@
 package com.pseteamtwo.allways.di
 
+import android.content.Context
+import androidx.room.Room
+import com.pseteamtwo.allways.account.repository.AccountRepository
+import com.pseteamtwo.allways.account.repository.DefaultAccountRepository
+import com.pseteamtwo.allways.account.source.local.AccountDao
+import com.pseteamtwo.allways.account.source.local.AccountDatabase
+import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
+import com.pseteamtwo.allways.account.source.network.DefaultAccountNetworkDataSource
+import com.pseteamtwo.allways.question.repository.HouseholdQuestionRepository
 import com.pseteamtwo.allways.question.repository.ProfileQuestionRepository
+import com.pseteamtwo.allways.question.repository.QuestionRepository
+import com.pseteamtwo.allways.question.source.local.HouseholdQuestionDao
+import com.pseteamtwo.allways.question.source.local.HouseholdQuestionDatabase
+import com.pseteamtwo.allways.question.source.local.ProfileQuestionDao
+import com.pseteamtwo.allways.question.source.local.ProfileQuestionDatabase
+import com.pseteamtwo.allways.question.source.network.HouseholdQuestionNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.HouseholdQuestionnaireNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.ProfileQuestionNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.ProfileQuestionnaireNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.QuestionNetworkDataSource
+import com.pseteamtwo.allways.trip.repository.DefaultTripAndStageRepository
+import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
+import com.pseteamtwo.allways.trip.source.local.GpsPointDao
+import com.pseteamtwo.allways.trip.source.local.GpsPointDatabase
+import com.pseteamtwo.allways.trip.source.local.StageDao
+import com.pseteamtwo.allways.trip.source.local.StageDatabase
+import com.pseteamtwo.allways.trip.source.local.TripDao
+import com.pseteamtwo.allways.trip.source.local.TripDatabase
+import com.pseteamtwo.allways.trip.source.network.DefaultStageNetworkDataSource
+import com.pseteamtwo.allways.trip.source.network.DefaultTripNetworkDataSource
+import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
+import com.pseteamtwo.allways.trip.source.network.TripNetworkDataSource
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-    @Provides
+    /*@Provides
     @Singleton
     fun provideProfileQuestionRepository(): ProfileQuestionRepository {
         return ProfileQuestionRepository()
     }
-}
 
+*/
 
 
 
 
 /** Profile Question */
-/*
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ProfileQuestionRepositoryModule {
@@ -53,6 +86,39 @@ object ProfileQuestionDatabaseModule {
             ProfileQuestionDatabase::class.java,
             "ProfileQuestion.db"
         ).build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileQuestionNetworkDataSource() : ProfileQuestionNetworkDataSource
+    {
+        return ProfileQuestionNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideHouseholdQuestionnaireNetworkDataSource() : HouseholdQuestionnaireNetworkDataSource
+    {
+        return HouseholdQuestionnaireNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideHouseholdQuestionNetworkDataSource() : HouseholdQuestionNetworkDataSource
+    {
+        return HouseholdQuestionNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileQuestionnaireNetworkDataSource(): ProfileQuestionnaireNetworkDataSource {
+        return ProfileQuestionnaireNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDefaultAccountNetworkDataSource(): DefaultAccountNetworkDataSource {
+        return DefaultAccountNetworkDataSource()
     }
 
     @Provides
@@ -116,6 +182,8 @@ abstract class TripDataSourceModule {
     abstract fun bindTripDataSource(dataSource: DefaultTripNetworkDataSource): TripNetworkDataSource
 }
 
+
+
 @Module
 @InstallIn(SingletonComponent::class)
 object TripDatabaseModule {
@@ -132,6 +200,12 @@ object TripDatabaseModule {
 
     @Provides
     fun provideTripDao(database: TripDatabase): TripDao = database.tripDao()
+
+    @Singleton
+    @Provides
+    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource  {
+        return DefaultTripNetworkDataSource()
+    }
 }
 
 /** Stage */
@@ -236,4 +310,5 @@ object AccountDatabaseModule {
 
     @Provides
     fun provideAccountDao(database: AccountDatabase): AccountDao = database.accountDao()
-}*/
+}
+}

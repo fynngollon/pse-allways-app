@@ -2,6 +2,7 @@ package com.pseteamtwo.allways.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pseteamtwo.allways.question.repository.HouseholdQuestionRepository
 import com.pseteamtwo.allways.question.repository.ProfileQuestionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(private val profileQuestionRepository: ProfileQuestionRepository) : ViewModel() {
+class ProfileViewModel @Inject constructor(
+    private val profileQuestionRepository: ProfileQuestionRepository,
+    private val householdQuestionRepository: HouseholdQuestionRepository) : ViewModel() {
 
     private var _profileUiState: MutableStateFlow<ProfileUiState> = MutableStateFlow(ProfileUiState(loading = true))
     val profileUiState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
@@ -21,15 +24,17 @@ class ProfileViewModel @Inject constructor(private val profileQuestionRepository
         viewModelScope.launch {
             profileQuestionRepository.observeAll().collect {
                 questions ->
-                var questionUiStates: MutableList<QuestionUiState> = mutableListOf()
+                var profileQuestionUiStates: MutableList<QuestionUiState> = mutableListOf()
+
                 for (question in questions) {
-                    questionUiStates.add(
+                    profileQuestionUiStates.add(
                         QuestionUiState(
                             id = question.id,
                             title = question.title,
                             type = question.type,
                             options = question.options,
-                            answer = question.answer
+                            answer = question.answer,
+                            sendToServer = false
                         )
                     )
                 }
@@ -37,7 +42,34 @@ class ProfileViewModel @Inject constructor(private val profileQuestionRepository
                 _profileUiState.update {
                     it ->
                     it.copy(
-                        questions = questionUiStates,
+                        profileQuestions = profileQuestionUiStates,
+                        loading = false,
+                        serverConnectionFailed = false
+                    )
+                }
+            }
+
+            householdQuestionRepository.observeAll().collect {
+                questions ->
+                var householdQuestionUiStates: MutableList<QuestionUiState> = mutableListOf()
+
+                for (question in questions) {
+                    householdQuestionUiStates.add(
+                        QuestionUiState(
+                            id = question.id,
+                            title = question.title,
+                            type = question.type,
+                            options = question.options,
+                            answer = question.answer,
+                            sendToServer = false
+                        )
+                    )
+                }
+
+                _profileUiState.update {
+                        it ->
+                    it.copy(
+                        householdQuestions = householdQuestionUiStates,
                         loading = false,
                         serverConnectionFailed = false
                     )
@@ -46,8 +78,42 @@ class ProfileViewModel @Inject constructor(private val profileQuestionRepository
         }
     }
 
-    fun updateAnswer(id: String, answer: String) {
+    fun updateProfileAnswer(id: String, answer: String) {
+        viewModelScope.launch {
+            profileQuestionRepository.updateAnswer(id, answer)
 
+        }
+    }
+
+    fun updateHouseholdAnswer(id: String, answer: String) {
+        viewModelScope.launch {
+            householdQuestionRepository.updateAnswer(id, answer)
+        }
+    }
+
+    fun donateProfileQuestions(profileQuestions: List<QuestionUiState>) {
+        val profileQuestionsToSend: MutableList<String> = mutableListOf()
+        for(question in profileQuestions) {
+            if(question.sendToServer) {
+                profileQuestionsToSend.add(question.id)
+            }
+        }
+        viewModelScope.launch {
+            profileQuestionRepository.saveQuestionsToNetwork(profileQuestionsToSend)
+        }
+    }
+
+    fun donateHouseholdQuestions(householdQuestions: List<QuestionUiState>) {
+        val householdQuestionsToSend: MutableList<String> = mutableListOf()
+        for(question in householdQuestions) {
+            if(question.sendToServer) {
+                householdQuestionsToSend.add(question.id)
+            }
+        }
+        viewModelScope.launch {
+            householdQuestionRepository.saveQuestionsToNetwork(householdQuestionsToSend)
+
+        }
     }
 }
 

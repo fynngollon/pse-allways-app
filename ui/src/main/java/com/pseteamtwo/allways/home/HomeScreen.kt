@@ -24,7 +24,11 @@ fun HomeScreen(
     val profileViewModel: ProfileViewModel = hiltViewModel()
     
     if (showDonateDataDialog) {
-        DonateDataDialog(onDismiss = { showDonateDataDialog = false}, questions = profileViewModel.profileUiState.value.questions)
+        DonateDataDialog(
+            onDismiss = { showDonateDataDialog = false},
+            profileViewModel,
+            profileQuestions = profileViewModel.profileUiState.value.profileQuestions,
+            householdQuestions = profileViewModel.profileUiState.value.householdQuestions)
     }
 
 
@@ -34,6 +38,6 @@ fun HomeScreen(
             showDonateDataDialog = true
             }
         ) {
-        Text(text = "Änderungen speichern")
+        Text(text = "Daten spenden")
     }
 }
