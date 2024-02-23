@@ -27,21 +27,45 @@ data class Trip(
     val isConfirmed: Boolean,
     val stages: List<Stage>
 ) {
+    /**
+     * Start time of the trip.
+     * Calculated as start time of the first stage of this trip.
+     */
     val startDateTime: LocalDateTime
         get() = stages.first().startDateTime
 
+    /**
+     * End time of the trip.
+     * Calculated as end time of the last stage of this trip.
+     */
     val endDateTime: LocalDateTime
         get() = stages.last().endDateTime
 
+    /**
+     * Start location of the trip.
+     * Calculated as start location of the first stage of this trip.
+     */
     val startLocation: Location
         get() = stages.first().startLocation
 
+    /**
+     * End location of the trip.
+     * Calculated as end location of the last stage of this trip.
+     */
     val endLocation: Location
         get() = stages.last().endLocation
 
+    /**
+     * Duration of the whole trip. (Should equal difference [endDateTime] - [startDateTime]).
+     * Calculated as the sum of the durations of the stages of this trip.
+     */
     val duration: Long
         get() = stages.sumOf { it.duration }
 
+    /**
+     * Duration of the whole trip.
+     * Calculated as the sum of the distances of the stages of this trip.
+     */
     val distance: Int
         get() = stages.sumOf { it.distance }
 

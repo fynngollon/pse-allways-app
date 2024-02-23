@@ -32,6 +32,7 @@ import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -92,7 +93,12 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
     }
 
+    //TODO("Implementation")------------------------------------------------------------------------
     override suspend fun createTrip(stages: List<Stage>, purpose: Purpose) {
+        require(stages.isNotEmpty())
+    }
+
+    internal suspend fun createTripOfExistingStages(stages: List<Stage>, purpose: Purpose) {
         require(stages.isNotEmpty())
         // stages are in local db and aren't assigned to a trip
         stages.forEach {
@@ -101,6 +107,26 @@ class DefaultTripAndStageRepository @Inject constructor(
             }
             assert(stageLocalDataSource.get(it.id)?.tripId == null) {
                 "A stage is already assigned to another trip"
+            }
+            if(containsTimeInFuture(it)) {
+                assert(false) { "A stage is containing a time in the future" }
+            }
+        }
+        //stages are continuous in physical logic of time and space
+        val listOfStages = stages.toMutableList()
+        listOfStages.sortBy { it.startDateTime.toMillis() }
+        for(i in 0 until listOfStages.size - 1) {
+            val prevEndLocation =
+                listOfStages[i].gpsPoints.last().location
+            val nextStartLocation =
+                listOfStages[i+1].gpsPoints.first().location
+            if(!prevEndLocation.compareTo(nextStartLocation)) {
+                assert(false) { "Locations between trips to connect have to be same" }
+            }
+            val prevEndTime = prevEndLocation.time
+            val nextStartTime = nextStartLocation.time
+            if(prevEndTime > nextStartTime) {
+                assert(false) { "Times between trips do not allow time travel" }
             }
         }
 
@@ -121,6 +147,8 @@ class DefaultTripAndStageRepository @Inject constructor(
     /**
      * Creates a new [LocalStage] with the provided parameters and converts it to a [Stage].
      * Therefore creates a unique id for the new stage and saves it into the local stage database.
+     * The provided [LocalGpsPoint]s have to be in the database already with no stages assigned
+     * to them.
      *
      * @param localGpsPoints The list of [LocalGpsPoint]s which the new stage consists of.
      * @param mode The [Mode] of the new stage.
@@ -128,14 +156,21 @@ class DefaultTripAndStageRepository @Inject constructor(
      */
     // this seems to be for the tracking algorithm
     // creates trips that don't belong to any trip!
-    internal suspend fun createStage(localGpsPoints: List<LocalGpsPoint>, mode: Mode): Stage {
+    internal suspend fun createStageOfExistingGpsPoints(
+        localGpsPoints: List<LocalGpsPoint>,
+        mode: Mode
+    ): Stage {
         require(localGpsPoints.isNotEmpty())
         // gpsPoints are in local db and aren't assigned to a stage
         localGpsPoints.forEach {
-            assert(gpsPointLocalDataSource.get(it.id)?.stageId == 0L) {
-                "A GpsPoint is either missing in the database or already assigned to another stage"
+            if(gpsPointLocalDataSource.get(it.id) == null) {
+                assert(false) { "A gpsPoint is missing in the database" }
+            }
+            assert(gpsPointLocalDataSource.get(it.id)?.stageId == null) {
+                "A gpsPoint is already assigned to another stage"
             }
         }
+
         val localStageWithoutUpdatedIds = LocalStage(
             mode = mode
         )
@@ -443,7 +478,7 @@ class DefaultTripAndStageRepository @Inject constructor(
                 localTripsWithStages[i].orderedStages.last().orderedGpsPoints.last().location
             val nextStartLocation =
                 localTripsWithStages[i+1].orderedStages.first().orderedGpsPoints.first().location
-            if(prevEndLocation == nextStartLocation) {//TODO("not sure if comparable like that")
+            if(!prevEndLocation.compareTo(nextStartLocation)) {
                 throw TeleportationException("Locations between trips to connect have to be same")
             }
 
@@ -486,9 +521,6 @@ class DefaultTripAndStageRepository @Inject constructor(
         startTime: LocalDateTime,
         endTime: LocalDateTime
     ): List<Trip> {
-        val startTimeInLong = startTime.toMillis()
-        val endTimeInLong = endTime.toMillis()
-
         val allTrips = withContext(dispatcher) {
             observeAllTrips().first()
         }
@@ -513,18 +545,6 @@ class DefaultTripAndStageRepository @Inject constructor(
     }
 
 
-    private fun GeoPoint.toLocation(time: Long): Location {
-        val location = Location("osmdroid")
-        location.latitude = this.latitude
-        location.longitude = this.longitude
-        location.time = time
-        location.speed = 0f
-        return location
-    }
-
-    private fun LocalDateTime.toMillis(): Long {
-        return this.toInstant(ZoneOffset.UTC).toEpochMilli()
-    }
 
     private suspend fun isTimeConflict(startTime: Long, endTime: Long, excludedStageId: Long): Boolean {
         return stageLocalDataSource.getAllStagesWithGpsPoints().any { stage ->
@@ -542,8 +562,33 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
     }
 
+    private fun isTimeInFuture(localDateTime: LocalDateTime): Boolean {
+        val currentTime: LocalDateTime = LocalDateTime.now(ZoneId.systemDefault())
+        return localDateTime.isAfter(currentTime)
+    }
+    //check if times of stages (entered by the user) are in the future
+    private fun containsTimeInFuture(stage: Stage): Boolean {
+        return isTimeInFuture(stage.startDateTime) || isTimeInFuture(stage.endDateTime)
+    }
+
+    private fun GeoPoint.toLocation(time: Long): Location {
+        val location = Location("osmdroid")
+        location.latitude = this.latitude
+        location.longitude = this.longitude
+        location.time = time
+        location.speed = 0f
+        return location
+    }
+
+    private fun LocalDateTime.toMillis(): Long {
+        return this.toInstant(ZoneOffset.UTC).toEpochMilli()
+    }
+
     private fun GeoPoint.compareTo(location: Location): Boolean {
         return latitude == location.latitude && longitude == location.longitude
     }
 
+    private fun Location.compareTo(location: Location): Boolean {
+        return latitude == location.latitude && longitude == location.longitude
+    }
 }
