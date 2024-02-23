@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface QuestionDao {
+internal interface QuestionDao {
     @Query("SELECT * FROM questions WHERE id = :questionId")
     fun observe(questionId: String): Flow<LocalQuestion>
   

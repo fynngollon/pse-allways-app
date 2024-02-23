@@ -8,7 +8,7 @@ import org.threeten.bp.ZoneId
 
 
 
-val zoneIdOfApp: ZoneId = ZoneId.systemDefault()
+internal val zoneIdOfApp: ZoneId = ZoneId.systemDefault()
 
 
 

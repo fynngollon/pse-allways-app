@@ -10,7 +10,7 @@ import java.lang.reflect.Type
 import java.util.Locale
 import kotlin.jvm.Throws
 
-abstract class QuestionnaireNetworkDataSource: BaseNetworkDataSource() {
+internal abstract class QuestionnaireNetworkDataSource: BaseNetworkDataSource() {
     private val questionnaireFilePath = ""
 
     @Throws(ServerConnectionFailedException::class)

@@ -4,7 +4,10 @@ import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.coroutines.sync.Mutex
 
-class HouseholdQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkDataSource() {
+internal class HouseholdQuestionNetworkDataSource :
+    QuestionNetworkDataSource,
+    BaseNetworkDataSource()
+{
     private val accessMutex = Mutex()
 
     override suspend fun loadQuestions(pseudonym: String): List<NetworkQuestion> {
@@ -17,7 +20,7 @@ class HouseholdQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetwor
             connection.use {
                 // Prepare and execute SQL statement to retrieve all questions
                 val sqlLoadStatement = "SELECT * FROM `allways-app`.`%s`;"
-                val statement = connection.prepareStatement(sqlLoadStatement.format("tbl${pseudonym}householdquestions"))
+                val statement =connection.prepareStatement(sqlLoadStatement.format("tbl${pseudonym}householdquestions"))
                 val resultSet = statement.executeQuery()
 
                 // Extract data from the result set and convert to NetworkQuestion objects

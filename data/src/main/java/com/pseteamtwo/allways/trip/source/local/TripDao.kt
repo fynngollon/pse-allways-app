@@ -10,7 +10,7 @@ import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TripDao {
+internal interface TripDao {
     @Query("SELECT * FROM trips")
     fun observeAll(): Flow<List<LocalTrip>>
 

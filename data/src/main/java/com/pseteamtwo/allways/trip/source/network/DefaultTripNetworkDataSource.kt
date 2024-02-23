@@ -3,7 +3,7 @@ package com.pseteamtwo.allways.trip.source.network
 import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import kotlinx.coroutines.sync.Mutex
 
-class DefaultTripNetworkDataSource : TripNetworkDataSource, BaseNetworkDataSource() {
+internal class DefaultTripNetworkDataSource : TripNetworkDataSource, BaseNetworkDataSource() {
     private val accessMutex = Mutex()
 
     override suspend fun loadTrips(): List<NetworkTrip> {

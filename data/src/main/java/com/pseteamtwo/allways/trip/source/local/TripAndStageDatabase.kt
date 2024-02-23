@@ -11,7 +11,7 @@ import androidx.room.RoomDatabase
     version = 1,
     exportSchema = false
 )
-abstract class TripAndStageDatabase : RoomDatabase() {
+internal abstract class TripAndStageDatabase : RoomDatabase() {
 
     abstract fun tripDao(): TripDao
     abstract fun stageDao(): StageDao

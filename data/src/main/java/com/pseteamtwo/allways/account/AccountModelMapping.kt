@@ -25,7 +25,7 @@ import com.pseteamtwo.allways.account.source.network.NetworkAccount
  *
  * @receiver [LocalAccount]
  */
-fun LocalAccount.toExternal() = Account(
+internal fun LocalAccount.toExternal() = Account(
     email = email,
     pseudonym = pseudonym
 )
@@ -39,7 +39,7 @@ fun LocalAccount.toExternal() = Account(
  *
  * @receiver [NetworkAccount]
  */
-fun NetworkAccount.toLocal() = LocalAccount(
+internal fun NetworkAccount.toLocal() = LocalAccount(
     email = email,
     pseudonym = pseudonym,
     passwordHash = passwordHash,
@@ -54,7 +54,7 @@ fun NetworkAccount.toLocal() = LocalAccount(
  *
  * @receiver [LocalAccount]
  */
-fun LocalAccount.toNetwork() = NetworkAccount(
+internal fun LocalAccount.toNetwork() = NetworkAccount(
     email = email,
     pseudonym = pseudonym,
     passwordHash = passwordHash,

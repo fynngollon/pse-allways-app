@@ -31,7 +31,7 @@ import com.pseteamtwo.allways.question.source.network.NetworkQuestion
  *
  * @receiver [Question]
  */
-fun Question.toLocal() = LocalQuestion(
+internal fun Question.toLocal() = LocalQuestion(
     id = id,
     title = title,
     type = type,
@@ -48,7 +48,7 @@ fun Question.toLocal() = LocalQuestion(
  * @receiver [List]
  */
 @JvmName("externalToLocal")
-fun List<Question>.toLocal() = map(Question::toLocal)
+internal fun List<Question>.toLocal() = map(Question::toLocal)
 
 
 //local to external
@@ -60,7 +60,7 @@ fun List<Question>.toLocal() = map(Question::toLocal)
  *
  * @receiver [LocalQuestion]
  */
-fun LocalQuestion.toExternal() = Question(
+internal fun LocalQuestion.toExternal() = Question(
     id = id,
     title = title,
     type = type,
@@ -77,7 +77,7 @@ fun LocalQuestion.toExternal() = Question(
  * @receiver [List]
  */
 @JvmName("localToExternal")
-fun List<LocalQuestion>.toExternal() = map(LocalQuestion::toExternal)
+internal fun List<LocalQuestion>.toExternal() = map(LocalQuestion::toExternal)
 
 
 /**
@@ -88,7 +88,7 @@ fun List<LocalQuestion>.toExternal() = map(LocalQuestion::toExternal)
  *
  * @receiver [NetworkQuestion]
  */
-fun NetworkQuestion.toLocal(): LocalQuestion {
+internal fun NetworkQuestion.toLocal(): LocalQuestion {
     // Handle potential null values for options and answer
     val options = options ?: emptyList()
     return LocalQuestion(
@@ -109,7 +109,7 @@ fun NetworkQuestion.toLocal(): LocalQuestion {
  * @receiver [List]
  */
 @JvmName("networkToLocal")
-fun List<NetworkQuestion>.toLocal() = map(NetworkQuestion::toLocal)
+internal fun List<NetworkQuestion>.toLocal() = map(NetworkQuestion::toLocal)
 
 /**
  * Question: local to network
@@ -119,7 +119,7 @@ fun List<NetworkQuestion>.toLocal() = map(NetworkQuestion::toLocal)
  *
  * @receiver [LocalQuestion]
  */
-fun LocalQuestion.toNetwork(pseudonym: String): NetworkQuestion {
+internal fun LocalQuestion.toNetwork(pseudonym: String): NetworkQuestion {
     return NetworkQuestion(
         id = id,
         title = title,
@@ -139,4 +139,4 @@ fun LocalQuestion.toNetwork(pseudonym: String): NetworkQuestion {
  * @receiver [List]
  */
 @JvmName("localToNetwork")
-fun List<LocalQuestion>.toNetwork(pseudonym: String) = map { it.toNetwork(pseudonym)}
+internal fun List<LocalQuestion>.toNetwork(pseudonym: String) = map { it.toNetwork(pseudonym)}
