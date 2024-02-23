@@ -7,7 +7,7 @@ import com.pseteamtwo.allways.account.Account
 @Entity(
     tableName = "account"
 )
-internal data class LocalAccount(
+data class LocalAccount(
     @PrimaryKey val email: String,
     var pseudonym: String,
     var passwordHash: String,

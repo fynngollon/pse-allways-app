@@ -3,7 +3,7 @@ package com.pseteamtwo.allways.question.source.network
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlin.jvm.Throws
 
-internal interface QuestionNetworkDataSource {
+interface QuestionNetworkDataSource {
     @Throws(ServerConnectionFailedException::class)
     suspend fun loadQuestions(pseudonym: String): List<NetworkQuestion>
 

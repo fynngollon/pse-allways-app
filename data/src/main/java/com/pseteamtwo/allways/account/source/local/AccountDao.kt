@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-internal interface AccountDao {
+interface AccountDao {
     @Query("SELECT * FROM account")
     fun observe(): Flow<LocalAccount>
 

@@ -9,7 +9,7 @@ import com.pseteamtwo.allways.trip.Purpose
 @Entity(
     tableName = "trips"
 )
-internal data class LocalTrip(
+data class LocalTrip(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     var purpose: Purpose,
@@ -18,7 +18,7 @@ internal data class LocalTrip(
 
 
 
-internal data class LocalTripWithStages(
+data class LocalTripWithStages(
     @Embedded
     val trip: LocalTrip,
 

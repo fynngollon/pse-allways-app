@@ -19,6 +19,6 @@ internal fun fromStringToGeoPoint(geoPointAsString: String): GeoPoint {
     return GeoPoint(latitude, longitude)
 }
 
-fun fromStringToListOfStageIds(listOfStagesAsString: String): List<Long> {
+internal fun fromStringToListOfStageIds(listOfStagesAsString: String): List<Long> {
     return listOfStagesAsString.split(",").map { it.trim().toLong() }
 }

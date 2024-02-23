@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 @Dao
-internal interface GpsPointDao {
+interface GpsPointDao {
     // TODO actually needs to be StateFlow!
     @Query("SELECT * FROM gps_points")
     fun observeAll(): Flow<List<LocalGpsPoint>>

@@ -10,7 +10,7 @@ import com.pseteamtwo.allways.typeconverter.ListStringConverter
     tableName = "questions"
 )
 @TypeConverters(ListStringConverter::class)
-internal data class LocalQuestion(
+data class LocalQuestion(
     @PrimaryKey val id: String,
     var title: String,
     var type: QuestionType,

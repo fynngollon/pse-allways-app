@@ -2,7 +2,7 @@ package com.pseteamtwo.allways.question.source.network
 
 import kotlinx.coroutines.sync.Mutex
 
-internal class HouseholdQuestionnaireNetworkDataSource : QuestionnaireNetworkDataSource() {
+class HouseholdQuestionnaireNetworkDataSource : QuestionnaireNetworkDataSource() {
     private val accessMutex = Mutex()
 
     override suspend fun loadQuestionnaire(): List<NetworkQuestion> {

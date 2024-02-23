@@ -4,7 +4,7 @@ import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.coroutines.sync.Mutex
 
-internal class HouseholdQuestionNetworkDataSource :
+class HouseholdQuestionNetworkDataSource :
     QuestionNetworkDataSource,
     BaseNetworkDataSource()
 {

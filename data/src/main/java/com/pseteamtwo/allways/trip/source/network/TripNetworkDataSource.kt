@@ -3,7 +3,7 @@ package com.pseteamtwo.allways.trip.source.network
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlin.jvm.Throws
 
-internal interface TripNetworkDataSource {
+interface TripNetworkDataSource {
     @Throws(ServerConnectionFailedException::class)
     suspend fun loadTrips(pseudonym: String): List<NetworkTrip>
 

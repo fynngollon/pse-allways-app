@@ -4,7 +4,7 @@ import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import kotlinx.coroutines.sync.Mutex
 import java.sql.SQLException
 
-internal class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDataSource() {
+class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDataSource() {
     private val accessMutex = Mutex()
 
     override suspend fun loadAccount(email: String): NetworkAccount {

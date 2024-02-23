@@ -4,7 +4,7 @@ import com.pseteamtwo.allways.trip.Mode
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime
 
-internal data class NetworkStage (
+data class NetworkStage (
     val id: Long,
     val tripId: Long,
     val mode: Mode,

@@ -5,7 +5,7 @@ import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.trip.Mode
 import kotlinx.coroutines.sync.Mutex
 
-internal class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSource() {
+class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSource() {
     private val accessMutex = Mutex()
 
     override suspend fun loadStages(pseudonym: String): List<NetworkStage> {

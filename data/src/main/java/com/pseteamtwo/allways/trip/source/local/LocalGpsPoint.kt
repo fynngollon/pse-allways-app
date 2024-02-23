@@ -30,7 +30,7 @@ import kotlinx.serialization.Serializable
     indices = [Index(value = ["stageId"])]
 )
 @TypeConverters(LocationConverter::class)
-internal data class LocalGpsPoint(
+data class LocalGpsPoint(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     var stageId: Long? = null,

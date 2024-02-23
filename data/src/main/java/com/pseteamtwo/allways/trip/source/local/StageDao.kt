@@ -10,7 +10,7 @@ import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-internal interface StageDao {
+interface StageDao {
 
     //@Transaction
     //@Query("SELECT * FROM stages WHERE tripId = :tripId") //TODO does it give all trips?
