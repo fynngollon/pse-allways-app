@@ -1,6 +1,6 @@
 package com.pseteamtwo.allways.account.source.network
 
-data class NetworkAccount (
+internal data class NetworkAccount (
     val email: String,
     val pseudonym: String,
     val passwordHash: String,

@@ -383,7 +383,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
     }
 
-    internal suspend fun updateStage(
+    private suspend fun updateStage(
         stageId: Long,
         mode: Mode,
         startDateTime: LocalDateTime,

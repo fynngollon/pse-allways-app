@@ -30,62 +30,9 @@ import kotlinx.serialization.Serializable
     indices = [Index(value = ["stageId"])]
 )
 @TypeConverters(LocationConverter::class)
-data class LocalGpsPoint(
+internal data class LocalGpsPoint(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     var stageId: Long? = null,
     @Contextual var location: Location
 )
-
-/*
-@Serializable
-data class LocationWrapper(
-    val provider: String,
-    val latitude: Double,
-    val longitude: Double,
-    val time: Long,
-    val speed: Float
-) {
-    fun toLocation(): Location {
-        val location = Location(provider)
-        location.latitude = latitude
-        location.longitude = longitude
-        location.time = time
-        location.speed = speed
-        return location
-    }
-
-    companion object {
-        fun fromLocation(location: Location): LocationWrapper {
-            return LocationWrapper(
-                provider = location.provider.orEmpty(),
-                longitude = location.longitude,
-                latitude = location.latitude,
-                time = location.time,
-                speed = location.speed
-            )
-        }
-    }
-}
-
-class LocationWrapperConverter {
-    @TypeConverter
-    fun fromLocation(location: LocationWrapper): String {
-        return "${location.provider},${location.latitude},${location.longitude},${location.time},${location.speed}"
-    }
-
-    @TypeConverter
-    fun toLocation(locationString: String): LocationWrapper {
-        val parts = locationString.split(",")
-        return LocationWrapper(
-            provider = parts[0],
-            latitude = parts[1].toDouble(),
-            longitude = parts[2].toDouble(),
-            time = parts[3].toLong(),
-            speed = parts[4].toFloat()
-        )
-    }
-}
-
- */
-

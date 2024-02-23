@@ -19,7 +19,7 @@ import com.pseteamtwo.allways.trip.Mode
     ],
     indices = [Index(value = ["tripId"])]
 )
-data class LocalStage(
+internal data class LocalStage(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     var tripId: Long? = null,
@@ -28,7 +28,7 @@ data class LocalStage(
 
 
 
-data class LocalStageWithGpsPoints(
+internal data class LocalStageWithGpsPoints(
     @Embedded
     val stage: LocalStage,
 
