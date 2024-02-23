@@ -9,7 +9,7 @@ package com.pseteamtwo.allways.exception
  *
  * @param message The detail message.
  */
-class NoTimeContinuityException(message: String?) : Exception(message) {
+class NoTimeContinuityException(message: String?) : IllegalArgumentException(message) {
     /**
      * @constructor Constructs a [NoTimeContinuityException] with no detail message.
      */

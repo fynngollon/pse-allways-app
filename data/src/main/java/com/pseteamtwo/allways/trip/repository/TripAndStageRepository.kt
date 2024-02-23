@@ -5,7 +5,6 @@ import com.pseteamtwo.allways.exception.NoTimeContinuityException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.exception.TeleportationException
 import com.pseteamtwo.allways.exception.TimeTravelException
-import com.pseteamtwo.allways.exception.UserEnteredInvalidFormatException
 import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
@@ -51,13 +50,18 @@ interface TripAndStageRepository {
      *
      * @param stages The list of [Stage]s which the new trip consists of.
      * @param purpose The purpose of the new trip.
-     * @throws UserEnteredInvalidFormatException If the provided list of stages contains
-     * invalid informations (times in the future, times interfering with physical logic of time,
-     * a stage with mode [Mode.NONE]) or if the trip purpose is [Purpose.NONE].
-     *
-     * TODO("why isn't here a return: Trip as well as on [createGpsPoint]")
+     * @throws IllegalArgumentException If the provided arguments should not be entered by the
+     * user (e.g. [Purpose.NONE] as [purpose]).
+     * @throws NoTimeContinuityException If the given [stages] do not have time continuity.
+     * @throws TimeTravelException If any given time in the [stages] is in the future.
+     * @throws TeleportationException If locations between different [stages] are not matching.
      */
-    @Throws(UserEnteredInvalidFormatException::class)
+    @Throws(
+        IllegalArgumentException::class,
+        NoTimeContinuityException::class,
+        TimeTravelException::class,
+        TeleportationException::class
+    )
     suspend fun createTrip(stages: List<Stage>, purpose: Purpose)
 
     //suspend fun createStage(gpsPoints: List<GpsPoint>, mode: Mode): Stage
@@ -72,23 +76,32 @@ interface TripAndStageRepository {
     suspend fun updateTripPurpose(tripId: Long, purpose: Purpose)
 
     /**
-     * Updates every property of the specified [Stage] except [Stage.id] and [Stage.gpsPoints].
+     * Updates every property of the specified [Stage]s except [Stage.id]s.
      * Because the updated properties aren't computed out of [Stage.gpsPoints] anymore, this list
      * should be set to exactly 2 [GpsPoint]s each containing a [Location] composed out of
      * startTime and startLocation respectively endTime and endLocation.
      * This method also ensures that this updating does not interfere with physical logic of time.
      *
-     * @param stageId Identification number of the [Stage].
-     * @param mode The new [Mode].
-     * @param startDateTime The new start time.
-     * @param endDateTime The new end time.
-     * @param startLocation The new start location.
-     * @param endLocation The new end location.
-     * @throws NoTimeContinuityException If the provided parameters interfere with physical logic
-     * of time, e.g. if the new [startDateTime] would be during another [Stage] of the
-     * local stage database temporally.
+     * @param tripId Identification number of the [Trip] whose stages should be updated.
+     * @param stageIds Identification numbers of the [Stage]s to be updated.
+     * @param modes The new [Mode]s.
+     * @param startDateTimes The new start times.
+     * @param endDateTimes The new end times.
+     * @param startLocations The new start locations.
+     * @param endLocations The new end locations.
+     * @throws IllegalArgumentException If the provided arguments should not be entered by the
+     * user (e.g. [Mode.NONE] in [modes]).
+     * @throws NoTimeContinuityException If the given arguments do not have time continuity.
+     * @throws TimeTravelException If any given time in [startDateTimes] or [endDateTimes]
+     * is in the future.
+     * @throws TeleportationException If locations between different stages are not matching.
      */
-    @Throws(NoTimeContinuityException::class)
+    @Throws(
+        IllegalArgumentException::class,
+        NoTimeContinuityException::class,
+        TimeTravelException::class,
+        TeleportationException::class
+    )
     suspend fun updateStagesOfTrip(
         tripId: Long,
         stageIds: List<Long>,
@@ -101,7 +114,7 @@ interface TripAndStageRepository {
 
     /**
      * Adds a [Stage] given from the user (that means the user provides every property except
-     * [Stage.id], [Stage.gpsPoints] and [Stage.endLocation]) to the specified [Trip] temporally
+     * [Stage.id] and [Stage.endLocation]) to the specified [Trip] temporally
      * before the former first stage of this trip. Thus this method doesn't take
      * [Stage.endLocation] as a parameter as it should be set to the [Stage.startLocation] of the
      * former first stage.
@@ -129,7 +142,7 @@ interface TripAndStageRepository {
 
     /**
      * Adds a [Stage] given from the user (that means the user provides every property except
-     * [Stage.id], [Stage.gpsPoints] and [Stage.endLocation]) to the specified [Trip] temporally
+     * [Stage.id] and [Stage.endLocation]) to the specified [Trip] temporally
      * after the former last stage of this trip. Thus this method doesn't take
      * [Stage.startLocation] as a parameter as it should be set to the [Stage.endLocation] of the
      * former last stage.
@@ -186,13 +199,19 @@ interface TripAndStageRepository {
      * physical logic of time and space.
      *
      * @param tripIds Identification number of the [Trip]s to be connected together.
+     * @throws IllegalArgumentException If the provided List of [tripIds] describe less then two
+     * different trips so there is nothing to be connected together.
      * @throws TimeTravelException If the provided trips cannot be connected due to a problem
      * with the physical logic of time. E.g. the provided trips intersect each other temporally.
      * @throws TeleportationException If the provided trips cannot be connected due to a problem
      * with the physical logic of space. E.g. a provided trip ends at a location not matching the
      * start location of the following trip to connect.
      */
-    @Throws(TimeTravelException::class, TeleportationException::class)
+    @Throws(
+        IllegalArgumentException::class,
+        TimeTravelException::class,
+        TeleportationException::class
+    )
     suspend fun connectTrips(tripIds: List<Long>)
 
     /**
