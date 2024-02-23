@@ -108,9 +108,9 @@ class DefaultTripAndStageRepositoryTest {
         val gps4 = repository.createGpsPoint(location4)
 
         val createdStage1 =
-            repository.createStage(listOf(gps1, gps2).toLocal(null), Mode.WALK)
+            repository.createStageOfExistingGpsPoints(listOf(gps1, gps2).toLocal(null), Mode.WALK)
         val createdStage2 =
-            repository.createStage(listOf(gps3, gps4).toLocal(null), Mode.MOTORCYCLE)
+            repository.createStageOfExistingGpsPoints(listOf(gps3, gps4).toLocal(null), Mode.MOTORCYCLE)
 
         repository.createTrip(listOf(createdStage1, createdStage2), Purpose.WORK)
 
