@@ -1,12 +1,14 @@
 package com.pseteamtwo.allways.trip
 
 import android.location.Location
+import org.osmdroid.util.GeoPoint
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.days
 
 /**
  * Representation of a stage traveled by the user (to be also used outside this data module).
@@ -29,32 +31,21 @@ data class Stage(
     val gpsPoints: List<GpsPoint>
 ) {
 
-    val startDateTime: LocalDateTime by lazy {
-        val timeInMillis: Long = gpsPoints.first().location.time
-        LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(timeInMillis),
-            ZoneId.systemDefault()
-        )
-    }
+    val startDateTime: LocalDateTime
+        get() = gpsPoints.first().time
 
-    val endDateTime: LocalDateTime by lazy {
-        val timeInMillis: Long = gpsPoints.last().location.time
-        LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(timeInMillis),
-            ZoneId.systemDefault()
-        )
-    }
+    val endDateTime: LocalDateTime
+        get() = gpsPoints.last().time
 
-    val startLocation: Location
-        get() = gpsPoints.first().location
+    val startLocation: GeoPoint
+        get() = gpsPoints.first().geoPoint
 
-    val endLocation: Location
-        get() = gpsPoints.last().location
+    val endLocation: GeoPoint
+        get() = gpsPoints.last().geoPoint
 
     val duration by lazy {
-        val zoneId = ZoneId.of("Europe/Berlin")
-        val zonedStartDateTime = ZonedDateTime.of(startDateTime, zoneId)
-        val zonedEndDateTime = ZonedDateTime.of(endDateTime, zoneId)
+        val zonedStartDateTime = ZonedDateTime.of(startDateTime, zoneIdOfApp)
+        val zonedEndDateTime = ZonedDateTime.of(endDateTime, zoneIdOfApp)
         Duration.between(zonedStartDateTime, zonedEndDateTime).toMinutes()
     }
 
@@ -62,10 +53,10 @@ data class Stage(
         (0 until gpsPoints.size - 1).sumOf {
             val result = FloatArray(1)
             Location.distanceBetween(
-                gpsPoints[it].location.latitude,
-                gpsPoints[it].location.longitude,
-                gpsPoints[it + 1].location.latitude,
-                gpsPoints[it + 1].location.longitude,
+                gpsPoints[it].geoPoint.latitude,
+                gpsPoints[it].geoPoint.longitude,
+                gpsPoints[it + 1].geoPoint.latitude,
+                gpsPoints[it + 1].geoPoint.longitude,
                 result
             )
             result[0].roundToInt()

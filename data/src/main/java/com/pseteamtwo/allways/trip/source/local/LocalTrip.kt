@@ -4,9 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import androidx.room.TypeConverters
 import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.typeconverter.ListOfLocalStageConverter
 
 @Entity(
     tableName = "trips"
@@ -32,9 +30,9 @@ data class LocalTripWithStages(
     val stages: List<LocalStageWithGpsPoints>
 ) {
 
-    val orderedStages: List<LocalStageWithGpsPoints> by lazy {
+    val sortedStages: List<LocalStageWithGpsPoints> by lazy {
         val orderedStagesList = stages.toMutableList()
-        orderedStagesList.sortBy { it.orderedGpsPoints.first().location.time }
+        orderedStagesList.sortBy { it.sortedGpsPoints.first().location.time }
         orderedStagesList.toList()
     }
 }

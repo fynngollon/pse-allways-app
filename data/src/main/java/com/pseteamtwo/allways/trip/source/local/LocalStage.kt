@@ -6,14 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
 import com.pseteamtwo.allways.trip.Mode
-import com.pseteamtwo.allways.typeconverter.ListOfLocalGpsPointConverter
-import com.pseteamtwo.allways.typeconverter.LocationConverter
-import kotlinx.serialization.Contextual
-import org.osmdroid.util.GeoPoint
-import org.threeten.bp.LocalDateTime
 
 @Entity(tableName = "stages",
     foreignKeys = [
@@ -46,7 +39,7 @@ data class LocalStageWithGpsPoints(
     val gpsPoints: List<LocalGpsPoint>
 ) {
 
-    val orderedGpsPoints: List<LocalGpsPoint> by lazy {
+    val sortedGpsPoints: List<LocalGpsPoint> by lazy {
         val orderedGpsPointsList = gpsPoints.toMutableList()
         orderedGpsPointsList.sortBy { it.location.time }
         orderedGpsPointsList.toList()
