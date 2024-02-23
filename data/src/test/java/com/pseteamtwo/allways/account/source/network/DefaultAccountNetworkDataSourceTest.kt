@@ -54,4 +54,15 @@ class DefaultAccountNetworkDataSourceTest {
             }
         }
     }
+
+    @Test
+    fun testDeletingAccountFromNetwork() {
+        runBlocking {
+            try {
+                accountNetworkDataSource.deleteAccount(networkAccount)
+            } catch (e: SQLException) {
+                assert(false){ "SQL Exception" }
+            }
+        }
+    }
 }

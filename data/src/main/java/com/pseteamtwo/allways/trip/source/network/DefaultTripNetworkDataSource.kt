@@ -1,10 +1,16 @@
 package com.pseteamtwo.allways.trip.source.network
 
 import android.util.Log
+import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
 import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.trip.Purpose
 import kotlinx.coroutines.sync.Mutex
 
+/**
+ * This class implements the [TripNetworkDataSource]
+ *
+ * @constructor Creates an instance of the class.
+ */
 class DefaultTripNetworkDataSource : TripNetworkDataSource, BaseNetworkDataSource() {
     private val accessMutex = Mutex()
 
