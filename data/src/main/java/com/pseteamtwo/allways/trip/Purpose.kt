@@ -1,5 +1,7 @@
 package com.pseteamtwo.allways.trip
 
+import kotlinx.serialization.Serializable
+
 /**
  * Purpose
  *
@@ -10,6 +12,7 @@ package com.pseteamtwo.allways.trip
  * Especially used for [OTHER] to clarify which other purpose is meant.
  * Can be null and is initially set to null until detailed description is provided.
  */
+@Serializable
 enum class Purpose(var purposeDetail: String? = null) {
     /**
      * Represents that no Purpose has been set for [Trip] yet.

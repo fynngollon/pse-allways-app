@@ -1,11 +1,14 @@
 package com.pseteamtwo.allways.trip
 
+import kotlinx.serialization.Serializable
+
 /**
  * Mode
  *
  * This enum class describes different modes. Every [Stage] contains exactly 1 [Mode] object
  * meaning that that [Stage] got traveled in that [Mode].
  */
+@Serializable
 enum class Mode {
     /**
      * Represents that no Mode has been set for [Stage] yet.

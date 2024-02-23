@@ -2,10 +2,7 @@ package com.pseteamtwo.allways.trip
 
 import android.location.Location
 import org.osmdroid.util.GeoPoint
-import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 
 /**
  * Representation of a trip traveled by the user (to be also used outside this data module).
@@ -27,25 +24,49 @@ import org.threeten.bp.ZonedDateTime
  */
 data class Trip(
     val id: Long,
-    val stages: List<Stage>,
     val purpose: Purpose,
-    val isConfirmed: Boolean
+    val isConfirmed: Boolean,
+    val stages: List<Stage>
 ) {
+    /**
+     * Start time of the trip.
+     * Calculated as start time of the first stage of this trip.
+     */
     val startDateTime: LocalDateTime
         get() = stages.first().startDateTime
 
+    /**
+     * End time of the trip.
+     * Calculated as end time of the last stage of this trip.
+     */
     val endDateTime: LocalDateTime
         get() = stages.last().endDateTime
 
-    val startLocation: Location
+    /**
+     * Start location of the trip.
+     * Calculated as start location of the first stage of this trip.
+     */
+    val startLocation: GeoPoint
         get() = stages.first().startLocation
 
-    val endLocation: Location
+    /**
+     * End location of the trip.
+     * Calculated as end location of the last stage of this trip.
+     */
+    val endLocation: GeoPoint
         get() = stages.last().endLocation
 
+    /**
+     * Duration of the whole trip. (Should equal difference [endDateTime] - [startDateTime]).
+     * Calculated as the sum of the durations of the stages of this trip.
+     */
     val duration: Long
         get() = stages.sumOf { it.duration }
 
+    /**
+     * Duration of the whole trip.
+     * Calculated as the sum of the distances of the stages of this trip.
+     */
     val distance: Int
         get() = stages.sumOf { it.distance }
 

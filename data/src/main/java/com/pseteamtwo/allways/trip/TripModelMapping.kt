@@ -2,11 +2,17 @@ package com.pseteamtwo.allways.trip
 
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
-import com.pseteamtwo.allways.trip.source.local.LocalTrip
+import com.pseteamtwo.allways.trip.source.local.LocalStageWithGpsPoints
+import com.pseteamtwo.allways.trip.source.local.LocalTripWithStages
+import org.osmdroid.util.GeoPoint
 
-/**
+/** TODO("kdoc comments are outdated")
  * Data model mapping extension functions. There are three model types for trip, stage and gpsPoint:
  *
+ *
+ * - TripWithStages: Internal model used to extract dependencies of the database connections.
+ * Also used to get information about those database dependencies to the TripAndStageRepository.
+ * Also used to convert a LocalTrip into an external Trip.
  *
  * - Trip: External model exposed to other layers in the architecture.
  * Obtained using `toExternal`.
@@ -17,6 +23,10 @@ import com.pseteamtwo.allways.trip.source.local.LocalTrip
  * - LocalTrip: Internal model used to represent a trip stored locally in a database.
  * Obtained using `toLocal`.
  *
+ *
+ * - StageWithGpsPoints: Internal model used to extract dependencies of the database connections.
+ * Also used to get information about those database dependencies to the TripAndStageRepository.
+ * Also used to convert a LocalStage into an external Stage.
  *
  * - Stage: External model exposed to other layers in the architecture.
  * Obtained using `toExternal`.
@@ -40,74 +50,42 @@ import com.pseteamtwo.allways.trip.source.local.LocalTrip
  * signature on the JVM.
  */
 
-
-/* TODO("remove all unnecessary functions and comments")
 /**
  * Trip
  */
-//external to local
-fun Trip.toLocal() = LocalTrip(
-    id = id,
-    stageIds = stages.map { stage -> stage.id },
-    purpose = purpose,
-    isConfirmed = isConfirmed,
-)
-*/
 
-//local to external
 /**
  * Trip: local to external
  *
- * Converts a [LocalTrip] into an external [Trip] to expose it to other layers in the architecture.
+ * Converts a [LocalTripWithStages] into an external [Trip] to expose it to other layers in the architecture.
  *
- * @receiver [LocalTrip]
+ * @receiver [LocalTripWithStages]
  */
 @JvmName("localToExternal")
-fun LocalTrip.toExternal() = Trip(
-    id = id,
-    purpose = purpose,
-    isConfirmed = isConfirmed,
-    stages = stages.toExternal()
+internal fun LocalTripWithStages.toExternal() = Trip(
+    id = trip.id,
+    purpose = trip.purpose,
+    isConfirmed = trip.isConfirmed,
+    stages = sortedStages.toExternal(),
 )
 
 /**
  * Trip: local to external (List)
  *
- * Converts a list of [LocalTrip]s into a list of external [Trip]s to expose it
+ * Converts a list of [LocalTripWithStages]s into a list of external [Trip]s to expose it
  * to other layers in the architecture.
  *
  * @receiver [List]
  */
 @JvmName("localTripListToExternal")
-fun List<LocalTrip>.toExternal() = map(LocalTrip::toExternal)
+internal fun List<LocalTripWithStages>.toExternal() = map(LocalTripWithStages::toExternal)
 
-/*
-//network to local
-fun NetworkTrip.toLocal() = LocalTrip(
-    id = id,
-    stageIds = stageIds,
-    purpose = purpose,
-    isConfirmed = true
-)
 
-//local to network
-fun LocalTrip.toNetwork() = NetworkTrip(
-    id = id,
-    stageIds = stageIds,
-    purpose = purpose,
-    startDateTime = startDateTime,
-    endDateTime = endDateTime,
-    startLocation = startLocation,
-    endLocation = endLocation,
-    duration = duration,
-    distance = distance
-)
-*/
 
 /**
  * Stage
  */
-//external to local
+
 /**
  * Stage: external to local
  *
@@ -116,11 +94,10 @@ fun LocalTrip.toNetwork() = NetworkTrip(
  * @receiver [Stage]
  */
 @JvmName("externalStageToLocal")
-fun Stage.toLocal(tripId: Long) = LocalStage(
+internal fun Stage.toLocal(tripId: Long?) = LocalStage(
     id = id,
     tripId = tripId,
-    mode = mode,
-    gpsPoints = gpsPoints.toLocal(id)
+    mode = mode
 )
 
 /**
@@ -132,94 +109,40 @@ fun Stage.toLocal(tripId: Long) = LocalStage(
  * @receiver [List]
  */
 @JvmName("externalStageListToLocal")
-fun List<Stage>.toLocal(tripId: Long) = map { stage ->  stage.toLocal(tripId)}
+internal fun List<Stage>.toLocal(tripId: Long?) = map { stage ->  stage.toLocal(tripId)}
 
-//local to external
 /**
  * Stage: local to external
  *
- * Converts a [LocalStage] into an external [Stage] to expose it to
+ * Converts a [LocalStageWithGpsPoints] into an external [Stage] to expose it to
  * other layers in the architecture.
  *
- * @receiver [LocalStage]
+ * @receiver [LocalStageWithGpsPoints]
  */
 @JvmName("localStageToExternal")
-fun LocalStage.toExternal() = Stage(
-    id = id,
-    gpsPoints = gpsPoints.toExternal(),
-    mode = mode,
+internal fun LocalStageWithGpsPoints.toExternal() = Stage(
+    id = stage.id,
+    mode = stage.mode,
+    gpsPoints = sortedGpsPoints.toExternal()
 )
 
 /**
  * Stage: local to external (List)
  *
- * Converts a list of [LocalStage]s into a list of external [Stage]s to expose it
+ * Converts a list of [LocalStageWithGpsPoints]s into a list of external [Stage]s to expose it
  * to other layers in the architecture.
  *
  * @receiver [List]
  */
 @JvmName("localStageListToExternal")
-fun List<LocalStage>.toExternal() = map(LocalStage::toExternal)
+internal fun List<LocalStageWithGpsPoints>.toExternal() = map(LocalStageWithGpsPoints::toExternal)
 
-/*
-//network to local
-fun NetworkStage.toLocal() = LocalStage(
-    id = id,
-    tripId = tripId,
-    gpsPointIds = emptyList(),
-    mode = mode,
-    startDateTime = startDateTime,
-    endDateTime = endDateTime,
-    startLocation = startLocation,
-    endLocation = endLocation
-)
 
-//local to network
-fun LocalStage.toNetwork() = NetworkStage(
-    id = id,
-    tripId = tripId,
-    mode = mode,
-    startDateTime = startDateTime,
-    endDateTime = endDateTime,
-    startLocation = startLocation,
-    endLocation = endLocation,
-    duration = duration,
-    distance = distance
-)
-*/
 
 /**
  * GpsPoint
  */
-//external to local
 
-/**
- * GpsPoint: external to local
- *
- * Converts an external [GpsPoint] into a [LocalGpsPoint] to store it into the
- * local database afterwards.
- *
- * @receiver [GpsPoint]
- */
-@JvmName("externalGpsPointToLocal")
-fun GpsPoint.toLocal(stageId: Long) = LocalGpsPoint(
-    id = id,
-    stageId = stageId,
-    location = location
-)
-
-/**
- * GpsPoint: external to local (List)
- *
- * Converts a list of external [GpsPoint]s into a list of [LocalGpsPoint]s to store it into the
- * local database afterwards.
- *
- * @receiver [List]
- */
-@JvmName("externalGpsPointListToLocal")
-fun List<GpsPoint>.toLocal(stageId: Long) = map { it.toLocal(stageId) }
-
-//local to external
 /**
  * GpsPoint: local to external
  *
@@ -229,9 +152,10 @@ fun List<GpsPoint>.toLocal(stageId: Long) = map { it.toLocal(stageId) }
  * @receiver [LocalGpsPoint]
  */
 @JvmName("localGpsPointToExternal")
-fun LocalGpsPoint.toExternal() = GpsPoint(
+internal fun LocalGpsPoint.toExternal() = GpsPoint(
     id = id,
-    location = location
+    geoPoint = GeoPoint(location),
+    time = location.time.convertToLocalDateTime()
 )
 
 /**
@@ -243,4 +167,4 @@ fun LocalGpsPoint.toExternal() = GpsPoint(
  * @receiver [List]
  */
 @JvmName("localGpsPointListToExternal")
-fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)
+internal fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)
