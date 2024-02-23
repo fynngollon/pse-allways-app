@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,6 +51,9 @@ import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import java.util.stream.IntStream.range
 
+/**
+ * Composable function for displaying all the items int the statistics view
+ */
 @Composable
 fun StatisticsScreen(navController: NavController) {
     //val statisticsViewModel: StatisticsViewModel = hiltViewModel()
@@ -61,44 +66,44 @@ fun StatisticsScreen(navController: NavController) {
         val labels: List<String> = listOf("mon", "tue", "wnd", "thu", "fri")
         val values: List<Int> = listOf(2, 2, 3, 1, 2)
         LazyColumn() {
-            /*item {
-                Row {
-                    DetailedStatisticsCard(labels = labels, values = values, title = state, type = ChartType.PIE)
 
-                }
-            }
-            item {
-                Row(modifier = Modifier.padding(top = 40.dp)) {
-                    DetailedStatisticsCard(labels = labels, values = values, title = "Linie", type = ChartType.LINE)
-                }
-            }
-            item {
-                Row(modifier = Modifier.padding(top = 40.dp)) {
-                    DetailedStatisticsCard(labels = labels, values = values, title = "Balken", type = ChartType.COLUMN)
-                }
-            }
-            item {
-                Row(modifier = Modifier.padding(top = 40.dp)) {
-                    DetailedStatisticsCard(labels = labels, values = values, title = "Single value", type = ChartType.SINGLE_VALUE)
-                }
-            }*/
             for (chartUiState in chartUiStates) {
                 item {
-                    Row(modifier = Modifier.padding(top = 40.dp)) {
-                        DetailedStatisticsCard(
-                            labels = chartUiState.labels,
-                            values = chartUiState.values,
-                            title = chartUiState.title,
-                            unit = chartUiState.unit,
-                            type = chartUiState.type
-                        )
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White
+                        ),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 6.dp
+                        ),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp, top = 10.dp)
+                    ) {
+                        Row(modifier = Modifier.padding(top = 40.dp)) {
+                            DetailedStatisticsCard(
+                                labels = chartUiState.labels,
+                                values = chartUiState.values,
+                                title = chartUiState.title,
+                                unit = chartUiState.unit,
+                                type = chartUiState.type
+                            )
+                        }
                     }
+
                 }
             }
 
         }
     }
 
+
+/**
+ * Composable function for displaying a single chart with the given values.
+ * @param labels the list of labels for the chart
+ * @param values the list of values for the chart. Each value corresponds to one label
+ * @param title the title for the chart displayed above the chart
+ * @param unit the unit in which the information is given
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailedStatisticsCard(labels: List<String>, values: List<Long>, title: String, unit: String, type: ChartType) {
@@ -115,10 +120,10 @@ fun DetailedStatisticsCard(labels: List<String>, values: List<Long>, title: Stri
         Row(modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)) {
 
             Column {
-                Text(text = title, fontSize = 25.sp)
+                Text(text = title, fontSize = 20.sp)
             }
         }
-        Row {
+        Row(modifier = Modifier.padding(bottom = 50.dp)) {
             when (type) {
                 ChartType.COLUMN ->
                     BarChart(labels = labels, values = values, title = title)
@@ -140,7 +145,14 @@ fun DetailedStatisticsCard(labels: List<String>, values: List<Long>, title: Stri
 
     }
 
-
+/**
+ * Composable function for displaying a single chart with the given values.
+ * @param title the title for the chart displayed above the chart
+ * @param unit the unit in which the information is given
+ * @param label the label of the chart. Shows what information the corresponding value is referring to
+ * @param value the value for the chart
+ *
+ */
 @Composable
 fun SingleValue(title: String, unit: String, label: String, value: Long){
     Row(modifier = Modifier.padding(15.dp)) {
@@ -154,6 +166,13 @@ fun SingleValue(title: String, unit: String, label: String, value: Long){
 }
 
 
+/**
+ * Composable function for displaying a chart with points in a 2d coordinate system connected by a line
+ * @param labels the labels given on the x-axis of the coordinate system
+ * @param values the corresponding values given on the y-axis of the coordinate system
+ * @param title the title for the chart displayed above the chart
+ *
+ */
 @Composable
 fun LineChart(
     labels: List<String>, values: List<Long>, title: String
@@ -213,6 +232,13 @@ fun LineChart(
     }
 }
 
+/**
+ * Composable function for displaying a chart with bars in a 2d coordinate system
+ * @param labels the labels given on the x-axis of the coordinate system
+ * @param values the corresponding values given on the y-axis of the coordinate system
+ * @param title the title for the chart displayed above the chart
+ *
+ */
 
 @Composable
 fun BarChart(
@@ -258,6 +284,15 @@ fun BarChart(
     }
 }
 
+/**
+ * Composable function for displaying a chart as a circle with slices.
+ * @param labels the labels of the chart
+ * @param values the corresponding values. Each value corresponds to one slice. The size of the
+ * corresponding slice is proportional to the size of the value
+ * @param title the title for the chart displayed above the chart
+ *
+ */
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Pie(labels: List<String>, values: List<Long>, title: String) {
@@ -270,16 +305,15 @@ fun Pie(labels: List<String>, values: List<Long>, title: String) {
         Color(0xffFFF400),
         Color(0xffFFFB96),
         Color(0xff00FF15),
-      /*  Color(0xff01FFC4),
+        Color(0xff01FFC4),
         Color(0xff01CAFF),
         Color(0xff0160FF),
         Color(0xff95ADFF),
         Color(0xffCC00FF),
         Color(0xffFF7AD8),
-*/
-
 
     )
+
     for (i in range(0, labels.size)) {
         slices.add(PieChartData.Slice(values[i].toString() + " %", values[i].toFloat(), colors[i % colors.size]))
     }

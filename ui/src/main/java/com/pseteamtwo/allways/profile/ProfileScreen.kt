@@ -33,13 +33,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.pseteamtwo.allways.question.QuestionType
 
-
+/**
+ * Composable function for displaying all the items in the profile view
+ */
 @Composable
 fun ProfileScreen(
-    navController: NavController,
     ) {
 
     val profileViewModel: ProfileViewModel = hiltViewModel()
@@ -51,8 +51,6 @@ fun ProfileScreen(
     val profileQuestions = profile.profileQuestions
 
     val householdQuestions = profile.householdQuestions
-
-
 
 
     LazyColumn(
@@ -102,6 +100,14 @@ fun ProfileScreen(
     }
 }
 
+
+/**
+ * Composable function for displaying a set of related questions
+ * @param title the title of the set of questions
+ * @param modifier a [Modifier] containing styling information
+ * @param cardTitleSize the size of the [title] of the card
+ * @param questionTitleSize the size of the [title] of each [QuestionItem]
+ */
 @Composable
 fun QuestionsCard(title: String,
                   questions: List<QuestionUiState>,
@@ -113,7 +119,7 @@ fun QuestionsCard(title: String,
         Column {
 
             Row(modifier = modifier) {
-                Text(text = title, style = LocalTextStyle.current.copy(fontSize = 20.sp) )
+                Text(text = title, style = LocalTextStyle.current.copy(fontSize = cardTitleSize.sp) )
             }
             Row {
                 Column(
@@ -128,7 +134,6 @@ fun QuestionsCard(title: String,
                             ) {
                                 QuestionItem(question = question, modifier = modifier, cardTitleSize, questionTitleSize)
                             }
-
                     }
                 }
             }
@@ -136,6 +141,13 @@ fun QuestionsCard(title: String,
     }
 }
 
+/**
+ * Composable function for displaying a single question
+ * @param question The [QuestionUiState] of the question that is to be displayed
+ * @param modifier a [Modifier] containing styling information
+ * @param cardTitleSize the size of the [title] of the [QuestionsCard]
+ * @param questionTitleSize the size of the [title] of the question
+ */
 @Composable
 fun QuestionItem(question: QuestionUiState, modifier: Modifier, cardTitleSize: Int, questionTitleSize: Int) {
 
@@ -171,6 +183,13 @@ fun QuestionItem(question: QuestionUiState, modifier: Modifier, cardTitleSize: I
     }
 }
 
+/**
+ * Composable function for displaying a question with a text as the answer
+ * @param title the title of the set of questions
+ * @param answer the answer to the question given by the user as a text
+ * @param modifier a [Modifier] containing styling information
+ * @param questionTitleSize the size of the [title] of the question
+ */
 @Composable
 fun TextQuestion(title: String,
                  answer: String,
@@ -197,10 +216,6 @@ fun TextQuestion(title: String,
     }
 }
 
-@Composable
-fun RadioButtonQuestion(title: String, options: List<String>, answer: String) {
-
-}
 
 @Composable
 fun CheckBoxQuestion(
@@ -218,6 +233,7 @@ fun CheckBoxQuestion(
         }
     }
 }
+
 
 @Composable
 fun CheckBox(option: String) {
@@ -242,6 +258,15 @@ fun CheckBox(option: String) {
     }
 }
 
+/**
+ * Composable function for displaying a question with a dropdown-menu containing the possible answers
+ * @param title the title of the set of questions
+ * @param question the [QuestionUiState] for the question to be displayed
+ * @param options the possible answers one of which can be selected
+ * @param answer the answer to the question that was selected
+ * @param modifier a [Modifier] containing styling information
+ * @param questionTitleSize the size of the [title] of the question
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpinnerQuestion(

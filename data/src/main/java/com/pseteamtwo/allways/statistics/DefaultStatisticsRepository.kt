@@ -82,11 +82,24 @@ class DefaultStatisticsRepository @Inject constructor(
     val modesList: Array<Mode> = Mode.values()
     val modesSplit: EnumMap<Mode, Int> = EnumMap(Mode::class.java)
     override suspend fun getModalSplitOfAll(percentaged: Boolean): EnumMap<Mode, Int> {
-        /*val trips: List<Trip> = tripAndStageRepository.observeAllTrips().first()
-        return getModalSplitOfTrips(trips, percentaged)*/
-        modesSplit.put(Mode.WALK, 2)
+        val trips: List<Trip> = tripAndStageRepository.observeAllTrips().first()
+        return getModalSplitOfTrips(trips, percentaged)
+        /*modesSplit.put(Mode.WALK, 2)
         modesSplit.put(Mode.REGIONAL_TRAIN, 50)
         modesSplit.put(Mode.CAR_DRIVER, 20)
+        modesSplit.put(Mode.CAR_PASSENGER, 20)
+        modesSplit.put(Mode.LONG_DISTANCE_TRAIN, 20)
+        modesSplit.put(Mode.BICYCLE, 20)
+        modesSplit.put(Mode.E_BIKE, 20)
+        modesSplit.put(Mode.OTHER, 20)
+        modesSplit.put(Mode.REGIONAL_BUS, 20)
+
+*/
+
+
+
+
+
         return modesSplit
     }
 

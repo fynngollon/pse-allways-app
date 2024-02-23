@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pseteamtwo.allways.question.repository.HouseholdQuestionRepository
 import com.pseteamtwo.allways.question.repository.ProfileQuestionRepository
+import com.pseteamtwo.allways.statistics.StatisticsScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +13,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+/**
+ * Viewmodel to retrieve and update the profile related data for the [StatisticsScreen] and
+ * [HomeScreen]
+ */
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileQuestionRepository: ProfileQuestionRepository,
@@ -78,18 +84,34 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    /**
+     * function to update the answer to a profile related question locally
+     * @param id the unique identifier of the question
+     * @param answer the new answer to the question
+     */
     fun updateProfileAnswer(id: String, answer: String) {
         viewModelScope.launch {
             profileQuestionRepository.updateAnswer(id, answer)
         }
     }
 
+
+
+    /**
+     * function to update the answer to a household related question locally
+     * @param id the unique identifier of the question
+     * @param answer the new answer to the question
+     */
     fun updateHouseholdAnswer(id: String, answer: String) {
         viewModelScope.launch {
             householdQuestionRepository.updateAnswer(id, answer)
         }
     }
 
+    /**
+     * function to donate a list of profile related questions and send the answers to the server.
+     * @param profileQuestions the list of the questions to be send to the server.
+     */
     fun donateProfileQuestions(profileQuestions: List<QuestionUiState>) {
         val profileQuestionsToSend: MutableList<String> = mutableListOf()
         for(question in profileQuestions) {
@@ -102,6 +124,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    /**
+     * function to donate a list of household related questions and send the answers to the server.
+     * @param householdQuestions the list of the questions to be send to the server.
+     */
     fun donateHouseholdQuestions(householdQuestions: List<QuestionUiState>) {
         val householdQuestionsToSend: MutableList<String> = mutableListOf()
         for(question in householdQuestions) {

@@ -11,6 +11,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
+/**
+ * composable function for displaying the bottom bar for navigation between the different screens
+ * of the app.
+ * @param profileQuestions the list of the questions to be send to the server.
+ */
 @Composable
 fun BottomNavigation(navController: NavController, modifier: Modifier = Modifier) {
     val screens = listOf(

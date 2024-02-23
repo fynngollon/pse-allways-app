@@ -5,24 +5,24 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.pseteamtwo.allways.home.HomeScreen
+import com.pseteamtwo.allways.login.LoginScreen
 import com.pseteamtwo.allways.profile.ProfileScreen
+import com.pseteamtwo.allways.settings.SettingsScreen
 import com.pseteamtwo.allways.statistics.StatisticsScreen
 import com.pseteamtwo.allways.trips.TripsScreen
 
-
+/**
+ * Composable function providing functionality for navigating between the different views of the app
+ * @param navController the [NavHostController] for the navigation
+ */
 @Composable
 fun SetUpNavGraph(
     navController: NavHostController
 ) {
 
-
-    //var statisticsRepository: StatisticsRepository = DefaultStatisticsRepository()
-   // var statisticsViewModel: StatisticsViewModel = StatisticsViewModel(statisticsRepository)
-
-
     NavHost(
         navController = navController,
-        startDestination = Screen.Trips.route
+        startDestination = Screen.Home.route
     ) {
         composable(
             route = Screen.Trips.route,
@@ -42,8 +42,17 @@ fun SetUpNavGraph(
         composable(
             route = Screen.Profile.route
         ) {
-            ProfileScreen(navController = navController)
+            ProfileScreen()
         }
-
+        composable(
+            route = Screen.Login.route
+        ) {
+            LoginScreen()
+        }
+        composable(
+            route = Screen.Settings.route
+        ) {
+            SettingsScreen()
+        }
     }
 }

@@ -16,6 +16,9 @@ import com.pseteamtwo.allways.navigation.BottomNavigation
 import com.pseteamtwo.allways.navigation.SetUpNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * The acitivty that is launched when the application is started.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
