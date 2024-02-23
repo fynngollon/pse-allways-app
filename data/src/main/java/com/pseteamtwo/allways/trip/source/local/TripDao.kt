@@ -32,6 +32,10 @@ interface TripDao {
     @Query("SELECT * FROM trips WHERE id = :tripId")
     suspend fun getTripWithStages(tripId: Long): LocalTripWithStages?
 
+    @Transaction
+    @Query("SELECT * FROM trips")
+    suspend fun getAllTripsWithStages(): List<LocalTripWithStages>
+
     @Upsert
     suspend fun upsertAll(trips: List<LocalTrip>)
 

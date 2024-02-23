@@ -1,6 +1,7 @@
 package com.pseteamtwo.allways.trip
 
 import android.location.Location
+import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime
 
 /**
@@ -45,14 +46,14 @@ data class Trip(
      * Start location of the trip.
      * Calculated as start location of the first stage of this trip.
      */
-    val startLocation: Location
+    val startLocation: GeoPoint
         get() = stages.first().startLocation
 
     /**
      * End location of the trip.
      * Calculated as end location of the last stage of this trip.
      */
-    val endLocation: Location
+    val endLocation: GeoPoint
         get() = stages.last().endLocation
 
     /**

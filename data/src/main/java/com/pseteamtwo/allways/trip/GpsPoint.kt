@@ -1,8 +1,9 @@
 package com.pseteamtwo.allways.trip
 
-import android.location.Location
+import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDateTime
 
-/**
+/**TODO("change comment")
  * Representation of a gpsPoint (to be also used outside this data module).
  *
  * A gpsPoint is a wrapper of [Location] which adds an [id] to it.
@@ -17,6 +18,7 @@ import android.location.Location
  * @constructor Creates a gpsPoint with the specified properties.
  */
 data class GpsPoint(
-    var id: Long,
-    var location: Location
+    val id: Long,
+    val geoPoint: GeoPoint,
+    val time: LocalDateTime
 )

@@ -5,6 +5,7 @@ import com.pseteamtwo.allways.exception.NoTimeContinuityException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.exception.TeleportationException
 import com.pseteamtwo.allways.exception.TimeTravelException
+import com.pseteamtwo.allways.exception.UserEnteredInvalidFormatException
 import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
@@ -44,25 +45,22 @@ interface TripAndStageRepository {
     /**
      * Creates a new [Trip] with the provided parameters.
      * Therefore creates a unique id for the new trip and saves it into the local trip database.
+     * As it is completely created by the user from scratch, the stages and according gpsPoints
+     * are also created and saved to the local database and the trip will already set to be
+     * confirmed.
      *
      * @param stages The list of [Stage]s which the new trip consists of.
      * @param purpose The purpose of the new trip.
+     * @throws UserEnteredInvalidFormatException If the provided list of stages contains
+     * invalid informations (times in the future, times interfering with physical logic of time,
+     * a stage with mode [Mode.NONE]) or if the trip purpose is [Purpose.NONE].
      *
      * TODO("why isn't here a return: Trip as well as on [createGpsPoint]")
      */
+    @Throws(UserEnteredInvalidFormatException::class)
     suspend fun createTrip(stages: List<Stage>, purpose: Purpose)
 
     //suspend fun createStage(gpsPoints: List<GpsPoint>, mode: Mode): Stage
-
-    /**
-     * Creates a new [GpsPoint] with the provided [Location].
-     * Therefore creates a unique id for the new gpsPoint and saves it
-     * into the local gpsPoint database.
-     *
-     * @param location The [Location] which the new gpsPoint consists of.
-     * @return The created gpsPoint.
-     */
-    suspend fun createGpsPoint(location: Location): GpsPoint
 
 
     /**
@@ -91,13 +89,14 @@ interface TripAndStageRepository {
      * local stage database temporally.
      */
     @Throws(NoTimeContinuityException::class)
-    suspend fun updateStage(
-        stageId: Long,
-        mode: Mode,
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime,
-        startLocation: GeoPoint,
-        endLocation: GeoPoint
+    suspend fun updateStagesOfTrip(
+        tripId: Long,
+        stageIds: List<Long>,
+        modes: List<Mode>,
+        startDateTimes: List<LocalDateTime>,
+        endDateTimes: List<LocalDateTime>,
+        startLocations: List<GeoPoint>,
+        endLocations: List<GeoPoint>
     )
 
     /**
