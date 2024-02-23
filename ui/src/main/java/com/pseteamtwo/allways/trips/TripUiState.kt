@@ -8,6 +8,7 @@ import org.threeten.bp.LocalDateTime
 
 data class TripUiState(
     val id: Long,
+    val tripId: Long,
     val stageUiStates: List<StageUiState>,
     val purpose: Purpose,
     val mode: Mode,
@@ -20,6 +21,7 @@ data class TripUiState(
     val endLocationName: String,
     val duration: Long,
     val distance: Int,
+    val deleteTrip: () -> Unit,
     val createStageUiStates: () -> Unit,
     val addStageUiStateBefore: () -> Unit,
     val addStageUiStateAfter: () -> Unit,

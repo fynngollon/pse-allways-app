@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -84,10 +85,26 @@ fun EditTripDialog(
                 userScrollEnabled = true
             ) {
 
-                item { Text(
-                    text = if(tripUiState.isConfirmed) " Weg bearbeiten" else " Weg bestätigen",
-                    style = MaterialTheme.typography.titleLarge
-                    )
+                item {
+                    Row(
+                        modifier = modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = if (tripUiState.tripId == 0L) "  Neuer Weg" else if(tripUiState.isConfirmed) "  Weg bearbeiten" else "  Weg bestätigen",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        IconButton(
+                            onClick = {
+                                tripUiState.deleteTrip()
+                                onDismissRequest()
+                            },
+                            modifier.scale(1.25f)
+                        ) {
+                            Icon(imageVector = Icons.Rounded.Delete, contentDescription = "Weg löschen")
+                        }
+                    }
                 }
 
                 item {
@@ -101,7 +118,6 @@ fun EditTripDialog(
                                 tripUiState.addStageUiStateBefore()
                             },
                             modifier = modifier
-                            ,
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Add, contentDescription = "Bestätigen",
@@ -220,9 +236,11 @@ fun EditTripDialogPreview() {
     EditTripDialog(
         tripUiState = TripUiState(
             1,
+            0,
             listOf(
                 StageUiState(
                     id = 1,
+                    stageId = 0,
                     mode = Mode.NONE,
                     startDateTime = LocalDateTime.of(2024, 1, 20, 1, 30),
                     endDateTime = LocalDateTime.of(2024, 1, 20, 2, 30),
@@ -232,6 +250,8 @@ fun EditTripDialogPreview() {
                     endLocation = GeoPoint(49.001061, 8.413361),
                     startLocationName = "Test",
                     endLocationName = "Test",
+                    getPreviousStageUiState = {null},
+                    getNextStageUiState = {null},
                     setMode = {mode: Mode -> },
                     setStartDate = {},
                     setEndDate = {},
@@ -245,6 +265,7 @@ fun EditTripDialogPreview() {
                 ),
                 StageUiState(
                     id = 1,
+                    stageId = 0,
                     mode = Mode.NONE,
                     isFirstStageOfTrip = false,
                     isLastStageOfTrip = true,
@@ -254,6 +275,8 @@ fun EditTripDialogPreview() {
                     endLocation = GeoPoint(49.001061, 8.413361),
                     startLocationName = "Test",
                     endLocationName = "Test",
+                    getPreviousStageUiState = {null},
+                    getNextStageUiState = {null},
                     setMode = {mode: Mode -> },
                     setStartDate = {},
                     setEndDate = {},
@@ -277,6 +300,7 @@ fun EditTripDialogPreview() {
             "KIT",
             599,
             4256,
+            deleteTrip = {},
             createStageUiStates = {},
             updateTrip = {},
             addStageUiStateBefore = {},

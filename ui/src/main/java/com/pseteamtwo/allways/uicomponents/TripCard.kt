@@ -252,7 +252,6 @@ fun TripCard(
         }
     }
     if(showEditTripDialog) {
-        //tripUiState.createStageUiStates()
         EditTripDialog(
             modifier = modifier,
             tripUiState = tripUiState,
@@ -285,7 +284,8 @@ fun TripCardPreview() {
     TripCard(
         tripUiState = TripUiState(
             1,
-            emptyList(),
+            0,
+            stageUiStates = emptyList(),
             Purpose.NONE,
             Mode.NONE,
             false,
@@ -297,6 +297,7 @@ fun TripCardPreview() {
             "KIT",
             599,
             4256,
+            deleteTrip = {},
             createStageUiStates = {},
             addStageUiStateBefore = {},
             addStageUiStateAfter = {},

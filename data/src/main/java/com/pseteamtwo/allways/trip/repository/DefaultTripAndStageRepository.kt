@@ -81,7 +81,7 @@ class DefaultTripAndStageRepository @Inject constructor(
 
     override suspend fun observeAllTrips(): Flow<List<Trip>> {
         return tripLocalDataSource.observeAllTripsWithStages().map { trip ->
-            trip.toExternal().sortedBy { it.startDateTime }
+            trip.toExternal().sortedByDescending { it.startDateTime }
         }
     }
 

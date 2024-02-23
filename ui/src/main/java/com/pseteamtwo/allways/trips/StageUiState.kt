@@ -6,7 +6,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 data class StageUiState(
-    val id: Long,
+    val id: Int,
+    val stageId: Long,
     val mode: Mode,
     val isFirstStageOfTrip: Boolean,
     val isLastStageOfTrip: Boolean,
@@ -16,6 +17,8 @@ data class StageUiState(
     val endLocation: GeoPoint,
     val startLocationName: String,
     val endLocationName: String,
+    val getPreviousStageUiState: () -> StageUiState?,
+    val getNextStageUiState: () -> StageUiState?,
     val setMode: (Mode) -> Unit,
     val setStartDate: (LocalDate) -> Unit,
     val setEndDate: (LocalDate) -> Unit,
@@ -27,6 +30,25 @@ data class StageUiState(
     val setEndLocationName: (String) -> Unit,
     val updateStage: () -> Unit
 ): Comparable<StageUiState> {
+
+    val startDate: LocalDate
+        get() = startDateTime.toLocalDate()
+
+    val endDate: LocalDate
+        get() = endDateTime.toLocalDate()
+
+    val startHour: Int
+        get() = startDateTime.hour
+
+    val startMinute: Int
+        get() = startDateTime.minute
+
+    val endHour: Int
+        get() = endDateTime.hour
+
+    val endMinute: Int
+        get() = endDateTime.minute
+
     override fun compareTo(other: StageUiState): Int {
         return -startDateTime.compareTo(other.startDateTime)
     }
