@@ -5,13 +5,13 @@ import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime
 
 data class NetworkStage (
-    val id: String,
-    val tripId: String,
+    val id: Long,
+    val tripId: Long,
     val mode: Mode,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
     val startLocation: GeoPoint,
     val endLocation: GeoPoint,
-    val duration: Int, //TODO("or java.time.Duration")
+    val duration: Int,
     val distance: Int
 )

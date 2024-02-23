@@ -5,5 +5,5 @@ data class Question(
     var title: String,
     var type: QuestionType,
     var options: List<String>,
-    var answer: String //TODO
+    var answer: String
 )

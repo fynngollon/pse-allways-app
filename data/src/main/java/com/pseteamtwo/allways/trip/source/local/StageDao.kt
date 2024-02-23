@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface StageDao {
 
-    @Transaction
-    @Query("SELECT * FROM stages WHERE tripId = :tripId") //TODO does it give all trips?
-    fun getStagesForTrip(tripId: Long): Flow<List<LocalStage>>
+    //@Transaction
+    //@Query("SELECT * FROM stages WHERE tripId = :tripId") //TODO does it give all trips?
+    //fun getStagesForTrip(tripId: Long): Flow<List<LocalStage>>
 
     @Query("SELECT * FROM stages WHERE id = :stageId")
     suspend fun get(stageId: Long): LocalStage?
