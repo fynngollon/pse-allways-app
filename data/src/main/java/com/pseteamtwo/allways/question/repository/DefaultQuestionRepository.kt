@@ -6,6 +6,7 @@ import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.exception.QuestionIdNotFoundException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.question.Question
+import com.pseteamtwo.allways.question.QuestionType
 import com.pseteamtwo.allways.question.source.local.LocalQuestion
 import com.pseteamtwo.allways.question.source.local.QuestionDao
 import com.pseteamtwo.allways.question.source.network.QuestionNetworkDataSource
@@ -34,6 +35,7 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
 
     override fun observeAll(): Flow<List<Question>>  {
         return questionDao.observeAll().map { it.toExternal() }
+        //return flowOf(questions())
     }
 
     @Throws(ServerConnectionFailedException::class)
@@ -49,6 +51,17 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         question.answer = answer
         questionDao.upsert(question)
         //questions[id.toInt()].answer = answer
+    }
+
+    suspend fun createQuestion() {
+        var question: LocalQuestion = LocalQuestion(
+            id = "1",
+            title = "Anzahl Haustiere",
+            type = QuestionType.SPINNER,
+            options = listOf("option1", "option2"),
+            answer = "test"
+        )
+        questionDao.upsert(question)
     }
 
     @Throws(QuestionIdNotFoundException::class)
@@ -88,22 +101,22 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
     }
 }
 
-/*fun questions(): List<Question> {
-    var question1: Question = Question(
+fun questions(): List<LocalQuestion> {
+    var question1: LocalQuestion = LocalQuestion(
         id = "1",
         title = "Anzahl Haustiere",
         type = QuestionType.SPINNER,
         options = listOf("option1", "option2"),
         answer = "test"
     )
-    var question2: Question = Question(
+    var question2: LocalQuestion = LocalQuestion(
         id = "2",
         title = "Lieblings Eissorte",
         type = QuestionType.TEXT,
         options = listOf("option1", "option2"),
         answer = "test"
     )
-    var question3: Question = Question(
+    var question3: LocalQuestion = LocalQuestion(
         id = "3",
         title = "question3",
         type = QuestionType.CHECKBOX,
@@ -112,7 +125,7 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
     )
 
     return listOf(question1, question2, question3)
-}*/
+}
 
 
 
