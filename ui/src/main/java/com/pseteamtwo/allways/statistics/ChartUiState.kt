@@ -4,5 +4,6 @@ data class ChartUiState(
     var type: ChartType,
     var title: String,
     var labels: List<String>,
-    var values: List<Long>
+    var values: List<Long>,
+    var unit: String
 )

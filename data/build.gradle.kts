@@ -1,7 +1,7 @@
 plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.android")
-    id("com.android.application")
+    id("com.android.library")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
@@ -11,11 +11,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.pseteamtwo.allways"
+        //applicationId = "com.pseteamtwo.allways"
         minSdk = 23
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        //versionCode = 1
+        //versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables {

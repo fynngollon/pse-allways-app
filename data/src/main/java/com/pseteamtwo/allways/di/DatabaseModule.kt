@@ -25,8 +25,8 @@ import com.pseteamtwo.allways.trip.repository.DefaultTripAndStageRepository
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.StageDao
-import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase
+import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.DefaultTripNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
@@ -103,6 +103,19 @@ object ProfileQuestionDatabaseModule {
     {
         return HouseholdQuestionnaireNetworkDataSource()
     }
+
+    @Singleton
+    @Provides
+    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource {
+        return DefaultTripNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDefaultStageNetworkDataSource() : DefaultStageNetworkDataSource {
+        return DefaultStageNetworkDataSource()
+    }
+
 
     @Singleton
     @Provides
@@ -212,11 +225,11 @@ object TripDatabaseModule {
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class StageRepositoryModule {
-
+/*
     @Singleton
     @Binds
     abstract fun bindStageRepository(repository: DefaultTripAndStageRepository): DefaultTripAndStageRepository
-
+*/
 
 }
 
@@ -313,4 +326,5 @@ object AccountDatabaseModule {
 
     @Provides
     fun provideAccountDao(database: AccountDatabase): AccountDao = database.accountDao()
+}
 }

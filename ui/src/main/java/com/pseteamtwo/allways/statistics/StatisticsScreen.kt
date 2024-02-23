@@ -4,6 +4,8 @@ package com.pseteamtwo.allways.statistics
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -88,6 +89,7 @@ fun StatisticsScreen(navController: NavController) {
                             labels = chartUiState.labels,
                             values = chartUiState.values,
                             title = chartUiState.title,
+                            unit = chartUiState.unit,
                             type = chartUiState.type
                         )
                     }
@@ -99,7 +101,7 @@ fun StatisticsScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailedStatisticsCard(labels: List<String>, values: List<Long>, title: String, type: ChartType) {
+fun DetailedStatisticsCard(labels: List<String>, values: List<Long>, title: String, unit: String, type: ChartType) {
     /*Card(
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
@@ -115,82 +117,6 @@ fun DetailedStatisticsCard(labels: List<String>, values: List<Long>, title: Stri
             Column {
                 Text(text = title, fontSize = 25.sp)
             }
-            ////////////////////////////////////////
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 50.dp),
-                horizontalAlignment = Alignment.End) {
-
-                var isExpanded: Boolean by remember {
-                    mutableStateOf(false)
-                }
-
-                var textFieldValue: String by remember {
-                    mutableStateOf("7 Tage")
-                }
-
-
-               /* ExposedDropdownMenuBox(
-                    modifier = Modifier
-                        .padding()
-                        .width(150.dp),
-                    expanded = isExpanded,
-                    onExpandedChange = {
-                        isExpanded = it
-                    }) {
-
-                    OutlinedTextField(
-                        value = textFieldValue,
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-                        },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                        textStyle = TextStyle.Default.copy(fontSize = 13.sp),
-                        modifier = Modifier
-                            .menuAnchor()
-                            .height(50.dp)
-                    )
-
-                    ExposedDropdownMenu(expanded = isExpanded,
-                        onDismissRequest = { isExpanded = false }
-                    ) {
-
-                        DropdownMenuItem(
-                            text = {
-                                Text("1 Tag")
-                            },
-                            onClick = {
-                                isExpanded = false
-                                textFieldValue = "1 Tag"
-                            })
-
-                        DropdownMenuItem(
-                            text = {
-                                Text("7 Tage")
-                            },
-                            onClick = {
-                                isExpanded = false
-                                textFieldValue = "7 Tage"
-                            })
-
-                        DropdownMenuItem(
-                            text = {
-                                Text("ganze Zeit")
-                            },
-                            onClick = {
-                                isExpanded = false
-                                textFieldValue = "ganze Zeit"
-                            })
-                    }*/
-                }
-            }
-
-
-            ///////////////////////////////////////
         }
         Row {
             when (type) {
@@ -203,22 +129,26 @@ fun DetailedStatisticsCard(labels: List<String>, values: List<Long>, title: Stri
                 ChartType.PIE ->
                     Pie(labels = labels, values = values, title = title)
                 ChartType.SINGLE_VALUE ->
-                    SingleValue(title = title, label = labels[0], value = values[0].toLong())
+                    SingleValue(title = title, unit = unit, label = labels[0], value = values[0].toLong())
 
                 else -> {}
             }
         }
+
+
+        }
+
     }
 
 
 @Composable
-fun SingleValue(title: String, label: String, value: Long){
+fun SingleValue(title: String, unit: String, label: String, value: Long){
     Row(modifier = Modifier.padding(15.dp)) {
         Column {
             Text(text = label)
         }
         Column {
-            Text(text = ": $value")
+            Text(text = ": $value $unit")
         }
     }
 }
@@ -328,16 +258,26 @@ fun BarChart(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Pie(labels: List<String>, values: List<Long>, title: String) {
     var slices: MutableList<PieChartData.Slice> = mutableListOf()
     val colors: List<Color> = mutableListOf(
-        Color(0xFF0A3E11),
-        Color(0xFF03DAC6),
-        Color(0xFF95B8D1),
-        Color(0xFFF53844),
-        Color(0xffBD5FB5),
-        Color(0xff000000)
+        Color(0xFFFE1401),
+        Color(0xFFFF8D8D),
+        Color(0xFFFF7A05),
+        Color(0xFFFFAB62),
+        Color(0xffFFF400),
+        Color(0xffFFFB96),
+        Color(0xff00FF15),
+      /*  Color(0xff01FFC4),
+        Color(0xff01CAFF),
+        Color(0xff0160FF),
+        Color(0xff95ADFF),
+        Color(0xffCC00FF),
+        Color(0xffFF7AD8),
+*/
+
 
     )
     for (i in range(0, labels.size)) {
@@ -356,23 +296,24 @@ fun Pie(labels: List<String>, values: List<Long>, title: String) {
         animationDuration = 600,
     )
     Column {
-              Row(verticalAlignment = Alignment.CenterVertically) {
+        FlowRow() {
             for(i in range(0, labels.size)) {
 
-                Column() {
+                Row(modifier = Modifier.padding(top = 5.dp)) {
                     Box(modifier = Modifier
-                        .padding(start = 20.dp)
+                        .padding(start = 13.dp)
                         .size(10.dp, 10.dp)
                         .background(colors[i % colors.size])
                     )
+
+
+                    Text(text = labels[i], fontSize = 12.sp)
                 }
-                Column {
-                    Text(text = labels[i])
-                }
-                
+
+
             }
         }
-        Row(modifier = Modifier.padding(start = 40.dp, top = 30.dp)) {
+        Row(modifier = Modifier.padding(start = 40.dp, top = 1.dp)) {
             PieChart(modifier = Modifier
                 .width(200.dp)
                 .height(200.dp),
