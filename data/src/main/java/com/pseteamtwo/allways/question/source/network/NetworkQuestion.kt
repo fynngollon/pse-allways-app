@@ -5,7 +5,7 @@ import com.pseteamtwo.allways.question.source.local.LocalQuestion
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NetworkQuestion (
+internal data class NetworkQuestion (
     val id: String,
     val title: String,
     val type: QuestionType,
