@@ -47,7 +47,19 @@ android {
     }
     packaging {
         resources {
+            jniLibs.pickFirsts.add("lib/armeabi-v7a/libassmidi.so")
+            jniLibs.pickFirsts.add("lib/x86/libassmidi.so")
+            resources.excludes.apply {
+                add("META-INF/AL2.0")
+                add("META-INF/LGPL2.1")
+                add("META-INF/INDEX.LIST")
+                add("META-INF/LICENSE.md")
+                add("META-INF/LICENSE-notice.md")
+                add("META-INF/DEPENDENCIES")
+                add("META-INF/*.properties")
+            }
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/kotlinx_coroutines_core.version"
         }
     }
 }
@@ -60,6 +72,17 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.50")
     annotationProcessor("com.google.dagger:hilt-compiler:2.50")
+
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
+
+    // Room - for local databases
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    ksp("androidx.room:room-compiler:2.6.1")
+
+    implementation("mysql:mysql-connector-java:8.0.33") //Implementierung Treiber für SQL
+    implementation(kotlin("stdlib-jdk8")) //Implementierung Bibliothek
+
 
     implementation("org.osmdroid:osmdroid-android:6.1.14")
     implementation("org.osmdroid:osmdroid-wms:6.1.14")

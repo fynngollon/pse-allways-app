@@ -81,7 +81,6 @@ class ProfileViewModel @Inject constructor(
     fun updateProfileAnswer(id: String, answer: String) {
         viewModelScope.launch {
             profileQuestionRepository.updateAnswer(id, answer)
-
         }
     }
 
@@ -108,6 +107,7 @@ class ProfileViewModel @Inject constructor(
         for(question in householdQuestions) {
             if(question.sendToServer) {
                 householdQuestionsToSend.add(question.id)
+
             }
         }
         viewModelScope.launch {

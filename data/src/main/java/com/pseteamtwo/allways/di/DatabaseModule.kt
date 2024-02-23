@@ -20,6 +20,7 @@ import com.pseteamtwo.allways.question.source.network.HouseholdQuestionnaireNetw
 import com.pseteamtwo.allways.question.source.network.ProfileQuestionNetworkDataSource
 import com.pseteamtwo.allways.question.source.network.ProfileQuestionnaireNetworkDataSource
 import com.pseteamtwo.allways.question.source.network.QuestionNetworkDataSource
+import com.pseteamtwo.allways.statistics.DefaultStatisticsRepository
 import com.pseteamtwo.allways.trip.repository.DefaultTripAndStageRepository
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
@@ -51,7 +52,11 @@ object DatabaseModule {
 
 */
 
-
+@Singleton
+@Provides
+fun provideDefaultStatisticsRepository(tripAndStageRepository: TripAndStageRepository): DefaultStatisticsRepository {
+    return DefaultStatisticsRepository(tripAndStageRepository)
+}
 
 
 /** Profile Question */
@@ -213,18 +218,23 @@ object TripDatabaseModule {
 @InstallIn(SingletonComponent::class)
 abstract class StageRepositoryModule {
 
+    /*
     @Singleton
     @Binds
-    abstract fun bindStageRepository(repository: DefaultTripAndStageRepository): TripAndStageRepository
+    abstract fun bindStageRepository(repository: DefaultTripAndStageRepository): DefaultTripAndStageRepository
+    */
+
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class StageDataSourceModule {
-
+/*
     @Singleton
     @Binds
     abstract fun bindStageDataSource(dataSource: DefaultStageNetworkDataSource): StageNetworkDataSource
+    */
+
 }
 
 @Module
@@ -241,6 +251,12 @@ object StageDatabaseModule {
         ).build()
     }
 
+    @Singleton
+    @Provides
+    fun provideStageNetworkDataSource(@ApplicationContext context: Context): StageNetworkDataSource {
+        return DefaultStageNetworkDataSource()
+    }
+
     @Provides
     fun provideStageDao(database: StageDatabase): StageDao = database.stageDao()
 }
@@ -249,10 +265,12 @@ object StageDatabaseModule {
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class GpsPointRepositoryModule {
-
+/*
     @Singleton
     @Binds
     abstract fun bindGpsPointRepository(repository: DefaultTripAndStageRepository): TripAndStageRepository
+    */
+
 }
 
 @Module

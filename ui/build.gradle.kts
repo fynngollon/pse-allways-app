@@ -47,7 +47,19 @@ android {
     }
     packaging {
         resources {
+            jniLibs.pickFirsts.add("lib/armeabi-v7a/libassmidi.so")
+            jniLibs.pickFirsts.add("lib/x86/libassmidi.so")
+            resources.excludes.apply {
+                add("META-INF/AL2.0")
+                add("META-INF/LGPL2.1")
+                add("META-INF/INDEX.LIST")
+                add("META-INF/LICENSE.md")
+                add("META-INF/LICENSE-notice.md")
+                add("META-INF/DEPENDENCIES")
+                add("META-INF/*.properties")
+            }
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/kotlinx_coroutines_core.version"
         }
     }
 }
