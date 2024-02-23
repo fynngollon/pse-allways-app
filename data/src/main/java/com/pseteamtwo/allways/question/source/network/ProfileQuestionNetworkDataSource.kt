@@ -4,7 +4,7 @@ import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.coroutines.sync.Mutex
 
-class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkDataSource() {
+class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkDataSource(){
     private val accessMutex = Mutex()
 
     override suspend fun loadQuestions(pseudonym: String): List<NetworkQuestion> {
@@ -14,7 +14,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
             // Connect to the MySQL database
             val connection = createDataConnection()
 
-            try {
+            connection.use {
                 // Prepare and execute SQL statement to retrieve all questions
                 val sqlLoadStatement = "SELECT * FROM `allways-app`.`%s`;"
                 val statement = connection.prepareStatement(sqlLoadStatement.format("tbl${pseudonym}profilequestions"))
@@ -41,9 +41,6 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
                 statement.close()
 
                 return questions
-            } finally {
-                // Close the connection
-                connection.close()
             }
 
         } catch (e: Exception) {
@@ -61,7 +58,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
             // Connect to the MySQL database
             val connection = createDataConnection()
 
-            try {
+            connection.use {
                 // Prepare and execute SQL statement for each question
                 for (question in questions) {
                     // Build the SQL statement with parameters
@@ -78,10 +75,6 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
                     statement.executeUpdate()
                     statement.close() // Close statement after each execution
                 }
-
-            } finally {
-                // Close the connection
-                connection.close()
             }
 
         } catch (e: Exception) {
@@ -99,16 +92,13 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
             // Connect to the MySQL database
             val connection = createDataConnection()
 
-            try {
+            connection.use {
                 // Prepare and execute SQL statement to delete the question
                 val sqlDeleteStatement = "DELETE FROM `allways-app`.`%s` WHERE (`id` = ?);"
                 val statement = connection.prepareStatement(sqlDeleteStatement.format("tbl${pseudonym}profilequestions"))
                 statement.setString(1, id)
                 statement.executeUpdate()
                 statement.close()
-            } finally {
-                // Close the connection
-                connection.close()
             }
 
         } catch (e: Exception) {

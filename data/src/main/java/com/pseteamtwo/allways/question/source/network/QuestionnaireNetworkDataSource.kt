@@ -2,6 +2,7 @@ package com.pseteamtwo.allways.question.source.network
 
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.exception.IncorrectJsonFileException
+import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -9,7 +10,7 @@ import java.lang.reflect.Type
 import java.util.Locale
 import kotlin.jvm.Throws
 
-abstract class QuestionnaireNetworkDataSource {
+abstract class QuestionnaireNetworkDataSource: BaseNetworkDataSource() {
     private val questionnaireFilePath = ""
 
     @Throws(ServerConnectionFailedException::class)
@@ -39,7 +40,6 @@ abstract class QuestionnaireNetworkDataSource {
     @Throws(IncorrectJsonFileException::class)
     protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
 
-        //TODO Json String validation might be required.
         val format = Json {
             ignoreUnknownKeys = true // Add this line to ignore unknown keys if needed
         }

@@ -11,5 +11,5 @@ interface TripNetworkDataSource {
     suspend fun saveTrips(trips: List<NetworkTrip>)
 
     @Throws(ServerConnectionFailedException::class)
-    suspend fun deleteTrip(id: String): Int
+    suspend fun deleteTrip(pseudonym: String, id: String): Int
 }

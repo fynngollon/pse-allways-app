@@ -14,7 +14,7 @@ class HouseholdQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetwor
             // Connect to the MySQL database
             val connection = createDataConnection()
 
-            try {
+            connection.use {
                 // Prepare and execute SQL statement to retrieve all questions
                 val sqlLoadStatement = "SELECT * FROM `allways-app`.`%s`;"
                 val statement = connection.prepareStatement(sqlLoadStatement.format("tbl${pseudonym}householdquestions"))
@@ -41,9 +41,6 @@ class HouseholdQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetwor
                 statement.close()
 
                 return questions
-            } finally {
-                // Close the connection
-                connection.close()
             }
 
         } catch (e: Exception) {
@@ -61,7 +58,7 @@ class HouseholdQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetwor
             // Connect to the MySQL database
             val connection = createDataConnection()
 
-            try {
+            connection.use {
                 // Prepare and execute SQL statement for each question
                 for (question in questions) {
                     // Build the SQL statement with parameters
@@ -78,10 +75,6 @@ class HouseholdQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetwor
                     statement.executeUpdate()
                     statement.close() // Close statement after each execution
                 }
-
-            } finally {
-                // Close the connection
-                connection.close()
             }
 
         } catch (e: Exception) {
@@ -99,16 +92,13 @@ class HouseholdQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetwor
             // Connect to the MySQL database
             val connection = createDataConnection()
 
-            try {
+            connection.use {
                 // Prepare and execute SQL statement to delete the question
                 val sqlDeleteStatement = "DELETE FROM `allways-app`.`%s` WHERE (`id` = ?);"
                 val statement = connection.prepareStatement(sqlDeleteStatement.format("tbl${pseudonym}householdquestions"))
                 statement.setString(1, id)
                 statement.executeUpdate()
                 statement.close()
-            } finally {
-                // Close the connection
-                connection.close()
             }
 
         } catch (e: Exception) {
