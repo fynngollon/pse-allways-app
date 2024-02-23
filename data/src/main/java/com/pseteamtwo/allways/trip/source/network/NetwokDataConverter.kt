@@ -18,3 +18,7 @@ internal fun fromStringToGeoPoint(geoPointAsString: String): GeoPoint {
     val longitude = parts[1].toDouble()
     return GeoPoint(latitude, longitude)
 }
+
+fun fromStringToListOfStageIds(listOfStagesAsString: String): List<Long> {
+    return listOfStagesAsString.split(",").map { it.trim().toLong() }
+}
