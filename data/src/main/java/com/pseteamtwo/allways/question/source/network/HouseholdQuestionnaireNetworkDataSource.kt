@@ -2,6 +2,12 @@ package com.pseteamtwo.allways.question.source.network
 
 import kotlinx.coroutines.sync.Mutex
 
+/**
+ * This class implements the [QuestionnaireNetworkDataSource] and loads a HouseholdQuestionnaire
+ * from the database.
+ *
+ * @constructor Creates an instance of the class
+ */
 class HouseholdQuestionnaireNetworkDataSource : QuestionnaireNetworkDataSource() {
     private val accessMutex = Mutex()
 

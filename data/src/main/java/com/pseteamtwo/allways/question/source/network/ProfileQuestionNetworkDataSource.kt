@@ -4,6 +4,11 @@ import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.coroutines.sync.Mutex
 
+/**
+ * This class implements the [QuestionNetworkDataSource]
+ *
+ * @constructor Creates an instance of the class
+ */
 class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkDataSource(){
     private val accessMutex = Mutex()
 
