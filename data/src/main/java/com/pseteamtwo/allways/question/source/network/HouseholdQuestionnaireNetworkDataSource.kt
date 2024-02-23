@@ -10,7 +10,7 @@ class HouseholdQuestionnaireNetworkDataSource : QuestionnaireNetworkDataSource()
         // Connect to the MySQL database
         val connection = createAccountConnection()
 
-        try {
+        connection.use {
             // Prepare and execute SQL statement to retrieve the question string
             val statement = connection.prepareStatement("SELECT * FROM `allways-app-accounts`.`tblhouseholdquestionnaire`;")
             val resultSet = statement.executeQuery()
@@ -23,10 +23,6 @@ class HouseholdQuestionnaireNetworkDataSource : QuestionnaireNetworkDataSource()
             } else {
                 throw Exception("No Json-String found")
             }
-
-        } finally {
-            // Close resources
-            connection.close()
         }
         return convertJsonToQuestions(jsonQuestionnaire)
     }

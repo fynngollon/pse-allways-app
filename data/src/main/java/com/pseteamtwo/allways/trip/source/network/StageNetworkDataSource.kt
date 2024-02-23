@@ -11,5 +11,5 @@ interface StageNetworkDataSource {
     suspend fun saveStages(stages: List<NetworkStage>)
 
     @Throws(ServerConnectionFailedException::class)
-    suspend fun deleteStage(id: String): Int
+    suspend fun deleteStage(pseudonym: String, id: String): Int
 }

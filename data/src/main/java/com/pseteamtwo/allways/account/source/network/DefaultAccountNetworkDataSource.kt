@@ -15,7 +15,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // Connect to the MySQL database
             val connection = createAccountConnection()
 
-            try {
+            connection.use {
                 // Prepare and execute SQL statement
                 val statement = connection.prepareStatement("SELECT * FROM tblaccounts WHERE email = ?")
                 statement.setString(1, email)
@@ -39,10 +39,6 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                     // Handle case where no account is found (return null or throw exception)
                     throw Exception("Account not found")
                 }
-
-            } finally {
-                // Close the connection
-                connection.close()
             }
 
         } catch (e: Exception) {
@@ -61,7 +57,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // 1. Connect to the MySQL database
             val connection = createAccountConnection() // Replace with your MySQL connection logic
 
-            try {
+            connection.use {
                 // 2. Prepare and execute SQL statement
                 val statement = connection.prepareStatement(
                     "INSERT INTO `allways-app-accounts`.`tblaccounts` (`email`, `pseudonym`, `passwordHash`, `passwordSalt`) VALUES (?, ?, ?, ?);")
@@ -138,11 +134,6 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 val createProfileQuestionStatement = connection.prepareStatement(sqlProfileQuestionStatement.format(profileQuestionTableString))
                 createProfileQuestionStatement.executeUpdate()
                 createProfileQuestionStatement.close()
-
-            } finally {
-
-                // 4. Close the prepared connection
-                connection.close()
             }
 
         } catch (sqlExc: SQLException) {
@@ -162,7 +153,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // 1. Connect to the MySQL database
             val connection = createAccountConnection() // Replace with your MySQL connection logic
 
-            try {
+            connection.use {
                 // 2. Prepare and execute SQL statement
                 val statement = connection.prepareStatement(
                     "CREATE TABLE `allways-app`.`?` (\n" +
@@ -181,9 +172,6 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 statement.executeUpdate()
                 //3. Close the prepared statement
                 statement.close()
-            } finally {
-                // 4. Close the prepared connection
-                connection.close()
             }
             connection.close()
         } catch (e: Exception) {
@@ -201,7 +189,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // 1. Connect to the MySQL database
             val connection = createAccountConnection() // Replace with your MySQL connection logic
 
-            try {
+            connection.use {
                 // 2. Prepare and execute SQL statement
                 val statement = connection.prepareStatement("SELECT 1 FROM tblaccounts WHERE email = ?")
                 statement.setString(1, email)
@@ -217,10 +205,6 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 statement.close()
 
                 return doesExist
-
-            } finally {
-                // 6. Close the connection (after statement)
-                connection.close()
             }
 
         } catch (e: Exception) {
@@ -238,7 +222,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // 1. Connect to the MySQL database
             val connection = createAccountConnection() // Replace with your MySQL connection logic
 
-            try {
+            connection.use {
                 // 2. Prepare and execute SQL statement
                 val statement = connection.prepareStatement("SELECT 1 FROM tblaccounts WHERE pseudonym = ?")
                 statement.setString(1, pseudonym)
@@ -254,10 +238,6 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 statement.close()
 
                 return doesExist
-
-            } finally {
-                // 6. Close the connection (after statement)
-                connection.close()
             }
 
         } catch (e: Exception) {
