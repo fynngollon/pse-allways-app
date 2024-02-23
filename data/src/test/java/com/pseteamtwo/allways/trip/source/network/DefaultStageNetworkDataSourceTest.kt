@@ -74,7 +74,7 @@ class DefaultStageNetworkDataSourceTest {
     fun deleteStage() {
         runBlocking {
             try {
-                defaultStageNetworkDataSource.deleteStage("kdb", "lol")
+                defaultStageNetworkDataSource.deleteStage("kdb", "123")
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }

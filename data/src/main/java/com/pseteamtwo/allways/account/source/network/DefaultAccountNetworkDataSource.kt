@@ -80,8 +80,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                         "  `id` VARCHAR(100) NOT NULL,\n" +
                         "  `stageIds` VARCHAR(200) NULL,\n" +
                         "  `purpose` VARCHAR(100) NULL,\n" +
-                        "  `startDateTime` DATETIME NULL,\n" +
-                        "  `endDateTime` DATETIME NULL,\n" +
+                        "  `startDateTime` VARCHAR(100) NULL,\n" +
+                        "  `endDateTime` VARCHAR(100) NULL,\n" +
                         "  `duration` INT NULL,\n" +
                         "  `distance` INT NULL,\n" +
                         "  `startLocation` VARCHAR(100) NULL,\n" +
@@ -98,8 +98,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                         "  `id` VARCHAR(100) NOT NULL,\n" +
                         "  `tripId` VARCHAR(100) NULL,\n" +
                         "  `mode` VARCHAR(100) NULL,\n" +
-                        "  `startDateTime` DATETIME NULL,\n" +
-                        "  `endDateTime` DATETIME NULL,\n" +
+                        "  `startDateTime` VARCHAR(100) NULL,\n" +
+                        "  `endDateTime` VARCHAR(100) NULL,\n" +
                         "  `duration` INT NULL,\n" +
                         "  `distance` INT NULL,\n" +
                         "  `startLocation` VARCHAR(100) NULL,\n" +
