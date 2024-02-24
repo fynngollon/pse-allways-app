@@ -3,7 +3,6 @@ package com.pseteamtwo.allways.trip.repository
 import android.location.Location
 import com.pseteamtwo.allways.account.repository.AccountRepository
 import com.pseteamtwo.allways.di.DefaultDispatcher
-import com.pseteamtwo.allways.exception.NoTimeContinuityException
 import com.pseteamtwo.allways.exception.TeleportationException
 import com.pseteamtwo.allways.exception.TimeTravelException
 import com.pseteamtwo.allways.exception.UserEnteredInvalidFormatException
@@ -12,6 +11,7 @@ import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
 import com.pseteamtwo.allways.trip.Trip
+import com.pseteamtwo.allways.trip.convertToMillis
 import com.pseteamtwo.allways.trip.isTimeInFuture
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
@@ -24,7 +24,6 @@ import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.TripNetworkDataSource
 import com.pseteamtwo.allways.trip.toExternal
-import com.pseteamtwo.allways.trip.convertToMillis
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -143,18 +142,18 @@ class DefaultTripAndStageRepository @Inject constructor(
                     "already existent in the local database.")
         }
         //At this point, consistency checks should be done and the trip to create can be created
-
         val tripWithoutId = LocalTrip(purpose = purpose, isConfirmed = true)
         val createdTripId = tripLocalDataSource.insert(tripWithoutId)
 
         stages.forEach { stage ->
             val stageWithoutId = LocalStage(tripId = createdTripId, mode = stage.mode)
             val createdStageId = stageLocalDataSource.insert(stageWithoutId)
-
             stage.gpsPoints.forEach { gpsPoint ->
                 val location = gpsPoint.geoPoint.toLocation(gpsPoint.time.convertToMillis())
                 val gpsPointWithoutId = LocalGpsPoint(stageId = createdStageId, location = location)
+
                 gpsPointLocalDataSource.insert(gpsPointWithoutId)
+
             }
         }
     }
