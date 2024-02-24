@@ -57,7 +57,6 @@ abstract class QuestionnaireNetworkDataSource: BaseNetworkDataSource() {
     @Throws(IncorrectJsonFileException::class)
     protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
 
-        //TODO Json String validation might be required.
         val format = Json {
             ignoreUnknownKeys = true // Add this line to ignore unknown keys if needed
         }

@@ -52,7 +52,8 @@ object DatabaseModule {
 
 @Singleton
 @Provides
-fun provideDefaultStatisticsRepository(tripAndStageRepository: TripAndStageRepository): DefaultStatisticsRepository {
+fun provideDefaultStatisticsRepository(
+    tripAndStageRepository: TripAndStageRepository): DefaultStatisticsRepository {
     return DefaultStatisticsRepository(tripAndStageRepository)
 }
 
@@ -64,7 +65,8 @@ abstract class ProfileQuestionRepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindProfileQuestionRepository(repository: ProfileQuestionRepository): QuestionRepository // TODO potential the interface as return value
+    abstract fun bindProfileQuestionRepository(
+        repository: ProfileQuestionRepository): QuestionRepository // TODO potential the interface as return value
 }
 
 @Module
@@ -73,7 +75,8 @@ abstract class ProfileQuestionDataSourceModule {
 
     @Singleton
     @Binds
-    abstract fun bindProfileQuestionDataSource(dataSource: ProfileQuestionNetworkDataSource): QuestionNetworkDataSource // TODO potential the interface as return value
+    abstract fun bindProfileQuestionDataSource(
+        dataSource: ProfileQuestionNetworkDataSource): QuestionNetworkDataSource // TODO potential the interface as return value
 }
 
 @Module
@@ -82,7 +85,8 @@ object ProfileQuestionDatabaseModule {
 
     @Singleton
     @Provides
-    fun provideProfileQuestionDatabase(@ApplicationContext context: Context): ProfileQuestionDatabase {
+    fun provideProfileQuestionDatabase(
+        @ApplicationContext context: Context): ProfileQuestionDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             ProfileQuestionDatabase::class.java,
@@ -138,7 +142,8 @@ object ProfileQuestionDatabaseModule {
     }
 */
     @Provides
-    fun provideProfileQuestionDao(database: ProfileQuestionDatabase): ProfileQuestionDao = database.profileQuestionDao()
+    fun provideProfileQuestionDao(
+    database: ProfileQuestionDatabase): ProfileQuestionDao = database.profileQuestionDao()
 }
 
 
@@ -149,7 +154,8 @@ abstract class HouseholdQuestionRepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindHouseholdQuestionRepository(repository: HouseholdQuestionRepository): QuestionRepository // TODO potentially not the interface as return value
+    abstract fun bindHouseholdQuestionRepository(
+        repository: HouseholdQuestionRepository): QuestionRepository // TODO potentially not the interface as return value
 }
 
 @Module
@@ -158,7 +164,8 @@ abstract class HouseholdQuestionDataSourceModule {
 
     @Singleton
     @Binds
-    abstract fun bindHouseholdQuestionDataSource(dataSource: HouseholdQuestionNetworkDataSource): QuestionNetworkDataSource // TODO potentially not the interface as return value
+    abstract fun bindHouseholdQuestionDataSource(
+        dataSource: HouseholdQuestionNetworkDataSource): QuestionNetworkDataSource // TODO potentially not the interface as return value
 }
 
 @Module
@@ -167,7 +174,8 @@ object HouseholdQuestionDatabaseModule {
 
     @Singleton
     @Provides
-    fun provideHouseholdQuestionDatabase(@ApplicationContext context: Context): HouseholdQuestionDatabase {
+    fun provideHouseholdQuestionDatabase(
+        @ApplicationContext context: Context): HouseholdQuestionDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             HouseholdQuestionDatabase::class.java,
@@ -176,7 +184,8 @@ object HouseholdQuestionDatabaseModule {
     }
 
     @Provides
-    fun provideHouseholdQuestionDao(database: HouseholdQuestionDatabase): HouseholdQuestionDao = database.householdQuestionDao()
+    fun provideHouseholdQuestionDao(database: HouseholdQuestionDatabase):
+            HouseholdQuestionDao = database.householdQuestionDao()
 }
 
 /** Trip */
@@ -186,7 +195,8 @@ abstract class TripRepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindTripRepository(repository: DefaultTripAndStageRepository): TripAndStageRepository
+    abstract fun bindTripRepository(repository: DefaultTripAndStageRepository):
+            TripAndStageRepository
 }
 
 
@@ -196,7 +206,8 @@ abstract class TripDataSourceModule {
 
     @Singleton
     @Binds
-    abstract fun bindTripDataSource(dataSource: DefaultTripNetworkDataSource): TripNetworkDataSource
+    abstract fun bindTripDataSource(dataSource: DefaultTripNetworkDataSource):
+            TripNetworkDataSource
 }
 
 @Module
@@ -205,7 +216,8 @@ object TripDatabaseModule {
 
     @Singleton
     @Provides
-    fun provideTripDatabase(@ApplicationContext context: Context): TripAndStageDatabase {
+    fun provideTripDatabase(@ApplicationContext context: Context):
+            TripAndStageDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             TripAndStageDatabase::class.java,
@@ -246,7 +258,8 @@ abstract class StageDataSourceModule {
 
     @Singleton
     @Binds
-    abstract fun bindStageDataSource(dataSource: DefaultStageNetworkDataSource): StageNetworkDataSource
+    abstract fun bindStageDataSource(dataSource: DefaultStageNetworkDataSource):
+            StageNetworkDataSource
 }
 
 /*
@@ -320,7 +333,8 @@ abstract class AccountDataSourceModule {
 
     @Singleton
     @Binds
-    abstract fun bindAccountDataSource(dataSource: DefaultAccountNetworkDataSource): AccountNetworkDataSource
+    abstract fun bindAccountDataSource(dataSource: DefaultAccountNetworkDataSource):
+            AccountNetworkDataSource
 }
 
 @Module

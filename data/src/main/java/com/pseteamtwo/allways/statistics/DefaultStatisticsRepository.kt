@@ -75,7 +75,7 @@ class DefaultStatisticsRepository @Inject constructor(
         return ( trips.sumOf { it.duration } / trips.size.toDouble() ).roundToLong()
     }
 
-    override suspend fun getAverageTripSpeed(): Long {//TODO("get this into meters per second if it isn't already")
+    override suspend fun getAverageTripSpeed(): Long {
         return ( getAverageTripDistance() / getAverageTripDuration().toDouble() ).roundToLong()
     }
 
