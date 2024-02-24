@@ -11,7 +11,6 @@ import dagger.hilt.android.HiltAndroidApp
 //@HiltAndroidApp
 class TrackingNotification : Application() {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
 
