@@ -1,10 +1,12 @@
 package com.pseteamtwo.allways.trip.source.local
 
 import android.location.Location
+import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pseteamtwo.allways.trip.Mode
+import com.pseteamtwo.allways.trip.toLocation
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.test.runTest
@@ -59,28 +61,24 @@ class StageDaoTest {
     @Test
     fun insertStageAndGetBack() = runTest {
         // GIVEN - insert a stage
-        val id = database.stageDao().insert(stage1)
+        val stageId = database.stageDao().insert(stage1)
+        //insert gpsPoints for that stage
+        val gpsPoint1Id = database.gpsPointDao().insert(location1.copy(stageId = stageId))
+        val gpsPoint2Id = database.gpsPointDao().insert(location2.copy(stageId = stageId))
 
         val allLoaded = database.stageDao().getAll()
         assertEquals(1, allLoaded.size)
 
         // WHEN - Get the stage by id from the database
-        val loaded = database.stageDao().get(id)
+        val loadedStageWithGpsPoints = database.stageDao().getStageWithGpsPoints(stageId)
 
         // THEN - The loaded data contains the expected values
-        assertNotNull(loaded as LocalStage)
-        assertEquals(id, loaded.id)
-        assertEquals(stage1.tripId, loaded.tripId)
-        assertEquals(stage1.mode, loaded.mode)
-    }
+        assertNotNull(loadedStageWithGpsPoints as LocalStageWithGpsPoints)
 
+        val gpsPoints = loadedStageWithGpsPoints.gpsPoints
+        assertNotNull(gpsPoints)
+        assertEquals(2, gpsPoints.size)
 
-    private fun GeoPoint.toLocation(time: Long): Location {
-        val location = Location("osmdroid")
-        location.latitude = this.latitude
-        location.longitude = this.longitude
-        location.time = time
-        location.speed = 0f
-        return location
+        Log.d("LogTest", loadedStageWithGpsPoints.toString())
     }
 }

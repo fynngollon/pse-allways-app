@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
  * [TripAndStageDatabase].
  *
  * A gpsPoint is saved with an unique [id] which will be overwritten on the insertion to the
- * database due to being auto-generated.
+ * database due to it being auto-generated.
  *
  * A gpsPoint is saved with a [stageId] to associate it to a [LocalStage] in the database.
  * This property is nullable to allow [LocalGpsPoint] to exist without such association.

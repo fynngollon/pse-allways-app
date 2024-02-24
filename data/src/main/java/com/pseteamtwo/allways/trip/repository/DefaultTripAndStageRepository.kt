@@ -71,10 +71,6 @@ class DefaultTripAndStageRepository @Inject constructor(
     //@ApplicationScope private val scope: CoroutineScope,
 ) : TripAndStageRepository {
 
-
-
-
-
     override suspend fun observeAllTrips(): Flow<List<Trip>> {
         return tripLocalDataSource.observeAllTripsWithStages().map { trip ->
             trip.toExternal().sortedByDescending { it.startDateTime }
@@ -696,9 +692,13 @@ class DefaultTripAndStageRepository @Inject constructor(
         tripIds.forEach { tripLocalDataSource.delete(it) }
     }
 
+
+
     override suspend fun getTripsOfDate(date: LocalDate): List<Trip> {
         return getTripsOfTimespan(date.atStartOfDay(), date.plusDays(1).atStartOfDay())
     }
+
+
 
     override suspend fun getTripsOfTimespan(
         startTime: LocalDateTime,
@@ -713,15 +713,13 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
     }
 
-    /*
-    override suspend fun connectTripsAndStages() {
-        TODO("Not yet implemented")
-    }
-     */
+
 
     override suspend fun loadTripsAndStagesFromNetwork() {
         TODO("Not yet implemented")
     }
+
+
 
     override suspend fun saveTripsAndStagesToNetwork(tripIds: List<String>) {
         TODO("Not yet implemented")
@@ -729,6 +727,16 @@ class DefaultTripAndStageRepository @Inject constructor(
 
 
 
+    /**
+     * Checks if the provided times (representing start and end time of a trip) interfere
+     * with existing trips in the database.
+     *
+     * @param startTime Start time to check.
+     * @param endTime End time to check.
+     * @param excludedTripId Trip to not check for interference due to it being the trip the
+     * times should be checked of. If null, no trip is excluded in the check.
+     * @return True, if there is such a time conflict; false if no conflicts occur.
+     */
     private suspend fun isTimeConflictInTrips(
         startTime: LocalDateTime,
         endTime: LocalDateTime,
@@ -754,6 +762,14 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
     }
 
+    /**
+     * Checks if between the connected trips, there is any other trip not to be connected.
+     *
+     * @param allTrips All trips to be compared to.
+     * @param connectedTrips Trips to be connected, which should be checked if there is a trip
+     * between any of those which is not part of [connectedTrips].
+     * @return True, if there is no problem with such trips in between; else false.
+     */
     private fun isSubsequentWithoutInterruptions(
         allTrips: List<Trip>,
         connectedTrips: List<Trip>

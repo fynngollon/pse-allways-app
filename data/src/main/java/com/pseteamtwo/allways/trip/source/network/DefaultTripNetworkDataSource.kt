@@ -7,7 +7,7 @@ import com.pseteamtwo.allways.trip.Purpose
 import kotlinx.coroutines.sync.Mutex
 
 /**
- * This class implements the [TripNetworkDataSource]
+ * This class implements the [TripNetworkDataSource].
  *
  * @constructor Creates an instance of the class.
  */
