@@ -1,6 +1,7 @@
 package com.pseteamtwo.allways.trip
 
 import android.location.Location
+import com.pseteamtwo.allways.trip.tracking.calculateDistance
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
@@ -56,17 +57,6 @@ data class Stage(
         Duration.between(zonedStartDateTime, zonedEndDateTime).toMinutes()
     }
 
-    val distance: Int by lazy {
-        (0 until gpsPoints.size - 1).sumOf {
-            val result = FloatArray(1)
-            Location.distanceBetween(
-                gpsPoints[it].location.latitude,
-                gpsPoints[it].location.longitude,
-                gpsPoints[it + 1].location.latitude,
-                gpsPoints[it + 1].location.longitude,
-                result
-            )
-            result[0].roundToInt()
-        }
-    }
+    val distance: Int
+        get() = calculateDistance(gpsPoints.map { it.location })
 }
