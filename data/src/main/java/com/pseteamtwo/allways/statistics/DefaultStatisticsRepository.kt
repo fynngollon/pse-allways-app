@@ -27,10 +27,8 @@ class DefaultStatisticsRepository @Inject constructor(
 ): StatisticsRepository {
 
     override suspend fun getTripDistanceOfAll(): Int {
-        /*
         val trips: List<Trip> = tripAndStageRepository.observeAllTrips().first()
-        return trips.sumOf { it.distance }*/
-        return 2
+        return trips.sumOf { it.distance }
     }
 
     override suspend fun getTripDurationOfAll(): Long {
