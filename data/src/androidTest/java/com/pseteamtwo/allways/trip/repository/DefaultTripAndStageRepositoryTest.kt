@@ -122,7 +122,8 @@ class DefaultTripAndStageRepositoryTest {
             DefaultStageNetworkDataSource(),
             gpsPointDao,
             accountRepository,
-            testDispatcher
+            testDispatcher,
+            testScope
         )
 
     }
