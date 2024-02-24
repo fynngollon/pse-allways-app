@@ -2,14 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <!-- Required for 29+. -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <application
+        android:name=".trip.tracking.TrackingNotification"
         android:allowBackup="true"
-        tools:replace="android:allowBackup"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -17,8 +21,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AllWays"
-        tools:targetApi="31">
-    </application>
+        tools:replace="android:allowBackup"
+        tools:targetApi="s">
+        <service
+            android:name=".trip.tracking.location.LocationService"
+            android:foregroundServiceType="location"
+            tools:ignore="ForegroundServicePermission" />
+        <service
+            android:name=".trip.tracking.activityrecognition.ActivityTransitionService"
+            android:foregroundServiceType="location"
+            tools:ignore="ForegroundServicePermission" />
 
+        <receiver
+            android:name=".trip.tracking.activityrecognition.DefaultActivityTransitionClient"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="TRANSITION_RECEIVER" />
+            </intent-filter>
+        </receiver>
+    </application>
 
 </manifest>
