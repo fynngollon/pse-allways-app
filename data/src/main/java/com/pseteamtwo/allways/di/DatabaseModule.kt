@@ -16,8 +16,11 @@ import com.pseteamtwo.allways.question.source.local.HouseholdQuestionDatabase
 import com.pseteamtwo.allways.question.source.local.ProfileQuestionDao
 import com.pseteamtwo.allways.question.source.local.ProfileQuestionDatabase
 import com.pseteamtwo.allways.question.source.network.HouseholdQuestionNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.HouseholdQuestionnaireNetworkDataSource
 import com.pseteamtwo.allways.question.source.network.ProfileQuestionNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.ProfileQuestionnaireNetworkDataSource
 import com.pseteamtwo.allways.question.source.network.QuestionNetworkDataSource
+import com.pseteamtwo.allways.statistics.DefaultStatisticsRepository
 import com.pseteamtwo.allways.trip.repository.DefaultTripAndStageRepository
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
@@ -35,6 +38,24 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object DatabaseModule {
+    /*@Provides
+    @Singleton
+    fun provideProfileQuestionRepository(): ProfileQuestionRepository {
+        return ProfileQuestionRepository()
+    }
+
+*/
+
+@Singleton
+@Provides
+fun provideDefaultStatisticsRepository(tripAndStageRepository: TripAndStageRepository): DefaultStatisticsRepository {
+    return DefaultStatisticsRepository(tripAndStageRepository)
+}
+
 
 /** Profile Question */
 @Module
@@ -69,6 +90,53 @@ object ProfileQuestionDatabaseModule {
         ).build()
     }
 
+    @Singleton
+    @Provides
+    fun provideProfileQuestionNetworkDataSource() : ProfileQuestionNetworkDataSource
+    {
+        return ProfileQuestionNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideHouseholdQuestionnaireNetworkDataSource() : HouseholdQuestionnaireNetworkDataSource
+    {
+        return HouseholdQuestionnaireNetworkDataSource()
+    }
+/*
+    @Singleton
+    @Provides
+    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource {
+        return DefaultTripNetworkDataSource()
+    }
+*/
+    /*
+    @Singleton
+    @Provides
+    fun provideDefaultStageNetworkDataSource() : DefaultStageNetworkDataSource {
+        return DefaultStageNetworkDataSource()
+    }
+*/
+
+    @Singleton
+    @Provides
+    fun provideHouseholdQuestionNetworkDataSource() : HouseholdQuestionNetworkDataSource
+    {
+        return HouseholdQuestionNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileQuestionnaireNetworkDataSource(): ProfileQuestionnaireNetworkDataSource {
+        return ProfileQuestionnaireNetworkDataSource()
+    }
+/*
+    @Singleton
+    @Provides
+    fun provideDefaultAccountNetworkDataSource(): DefaultAccountNetworkDataSource {
+        return DefaultAccountNetworkDataSource()
+    }
+*/
     @Provides
     fun provideProfileQuestionDao(database: ProfileQuestionDatabase): ProfileQuestionDao = database.profileQuestionDao()
 }
@@ -121,6 +189,7 @@ abstract class TripRepositoryModule {
     abstract fun bindTripRepository(repository: DefaultTripAndStageRepository): TripAndStageRepository
 }
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class TripDataSourceModule {
@@ -142,6 +211,12 @@ object TripDatabaseModule {
             TripAndStageDatabase::class.java,
             "Trip.db"
         ).build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource {
+        return DefaultTripNetworkDataSource()
     }
 
     @Provides
@@ -190,9 +265,16 @@ object StageDatabaseModule {
     }
 
     @Provides
-    fun provideStageDao(database: StageDatabase): StageDao = database.stageDao()
+    fun provideStageDao(database: StageDatabase): StageDao = database.stageDao()*/
+
+    @Singleton
+    @Provides
+    fun provideDefaultStageNetworkDataSource() : DefaultStageNetworkDataSource  {
+        return DefaultStageNetworkDataSource()
+    }
 }
 
+/*
 /** GPS Point */
 @Module
 @InstallIn(SingletonComponent::class)
@@ -258,4 +340,10 @@ object AccountDatabaseModule {
 
     @Provides
     fun provideAccountDao(database: AccountDatabase): AccountDao = database.accountDao()
+
+    @Singleton
+    @Provides
+    fun provideDefaultAccountNetworkDataSource() : DefaultAccountNetworkDataSource  {
+        return DefaultAccountNetworkDataSource()
+    }
 }

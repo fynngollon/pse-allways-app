@@ -1,7 +1,7 @@
 plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.android")
-    id("com.android.application")
+    id("com.android.library")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
@@ -14,11 +14,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.pseteamtwo.allways"
-        minSdk = 23
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        //applicationId = "com.pseteamtwo.allways"
+        minSdk = 26
+        //targetSdk = 34
+        //versionCode = 1
+        //versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables {
@@ -50,6 +50,17 @@ android {
     }
     packaging {
         resources {
+            jniLibs.pickFirsts.add("lib/armeabi-v7a/libassmidi.so")
+            jniLibs.pickFirsts.add("lib/x86/libassmidi.so")
+            resources.excludes.apply {
+                add("META-INF/AL2.0")
+                add("META-INF/LGPL2.1")
+                add("META-INF/INDEX.LIST")
+                add("META-INF/LICENSE.md")
+                add("META-INF/LICENSE-notice.md")
+                add("META-INF/DEPENDENCIES")
+                add("META-INF/*.properties")
+            }
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
@@ -57,8 +68,24 @@ android {
 }
 
 dependencies {
+
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
     // KSP
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.16")
+    // added dependencies
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+
+    implementation("com.google.dagger:hilt-android:2.50")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.50")
+
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
 
     // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
@@ -85,6 +112,11 @@ dependencies {
     // TODO either update to android 8 or use this for duration calculation
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.core:core-ktx:1.12.0")
     // AndroidX Location - for tracking
     //implementation("androidx.location:location-services:2.6.0") TODO not found
     //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found
@@ -110,6 +142,14 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
