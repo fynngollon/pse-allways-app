@@ -9,10 +9,9 @@ import org.threeten.bp.LocalDateTime
 data class TripUiState(
     val id: Long,
     val tripId: Long,
-    val stageUiStates: List<StageUiState>,
     val purpose: Purpose,
-    val mode: Mode,
     val isConfirmed: Boolean,
+    val stageUiStates: List<StageUiState>,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime,
     val startLocation: GeoPoint,

@@ -8,9 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.pseteamtwo.allways.map.addressToString
+import com.pseteamtwo.allways.trip.GpsPoint
 
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
+import com.pseteamtwo.allways.trip.Stage
 
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +32,8 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneOffset
 import java.io.IOException
+import java.time.Instant
+import java.time.ZoneId
 import java.util.Locale
 import javax.inject.Inject
 
@@ -56,7 +60,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         tripId = trip.id,
                         stageUiStates = emptyList(),
                         purpose =  trip.purpose,
-                        mode = Mode.NONE, // TODO: Methode in Trip, die aus Stages das meistgenutze Verkerhsmittel für einen Trip bestimmt?
                         isConfirmed = trip.isConfirmed,
                         startDateTime = trip.startDateTime,
                         endDateTime = trip.endDateTime,
@@ -67,9 +70,9 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         duration = trip.duration,
                         distance = trip.distance,
                         deleteTrip = {deleteTrip(trip.id)},
-                        createStageUiStates = {createStageUiStates(trip.id)},
-                        addStageUiStateBefore = {addStageUiStateBefore(trip.id)},
-                        addStageUiStateAfter = {addStageUiStateAfter(trip.id)},
+                        createStageUiStates = {createStageUiStates(tripUiStateId)},
+                        addStageUiStateBefore = {addStageUiStateBefore(tripUiStateId)},
+                        addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
                         updateTrip = {updateTrip(trip.id)}
                     )
                     nextId++
@@ -121,7 +124,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
 
         val dateTime = LocalDateTime.now()
 
-        val location = GeoPoint(0.0,0.0) //TODO: aktuelle Poition?
+        val location = GeoPoint(49.009592,8.41512) //TODO: aktuelle Poition?
         val locationName = "-"
 
         val tripUiState = TripUiState(
@@ -130,14 +133,16 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             stageUiStates = listOf(
                 StageUiState(
                     id = stageUiStateId,
-                    stageId = 0,
-                    mode = Mode.NONE,
+                    stageId = 0L,
+                    mode = Mode.WALK,
+                    isInDatabase = true,
+                    isToBeAddedBefore = false,
                     isFirstStageOfTrip = true,
                     isLastStageOfTrip = true,
-                    startDateTime = dateTime,
+                    startDateTime = dateTime.minusMinutes(1),
                     endDateTime = dateTime,
-                    startLocation = location,
-                    endLocation = location,
+                    startLocation = GeoPoint(49.009592,8.41512),
+                    endLocation = GeoPoint(49.009592,8.41513),
                     startLocationName = locationName,
                     endLocationName = locationName,
                     getPreviousStageUiState = {return@StageUiState null},
@@ -215,11 +220,9 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                             endLocationName = endLocationName
                         )
                     },
-                    updateStage = {}
                 ),
             ),
-            purpose = Purpose.NONE,
-            mode = Mode.NONE,
+            purpose = Purpose.BUSINESS_TRIP,
             isConfirmed = false,
             startDateTime = dateTime,
             endDateTime = dateTime,
@@ -236,9 +239,30 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             updateTrip = {
                 val tripUiState = getTripUiState(tripUiStateId)
                 viewModelScope.launch {
+                    val stages: MutableList<Stage> = mutableListOf()
+                    for(stageUiState in getStageUiStates(tripUiStateId)) {
+                        stages.add(
+                            Stage(
+                                id = 0L,
+                                mode = stageUiState.mode,
+                                gpsPoints = listOf(
+                                    GpsPoint(
+                                        id = 0L,
+                                        geoPoint = stageUiState.startLocation,
+                                        time = stageUiState.startDateTime
+                                    ),
+                                    GpsPoint(
+                                        id = 0L,
+                                        geoPoint = stageUiState.endLocation,
+                                        time = stageUiState.endDateTime
+                                    )
+                                )
+                            )
+                        )
+                    }
                     tripAndStageRepository.createTrip(
-                        purpose =  tripUiState.purpose,
-                        stages = emptyList()
+                        stages = stages,
+                        purpose =  tripUiState.purpose
                     )
                 }
             }
@@ -276,9 +300,9 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         viewModelScope.launch {
             tripAndStageRepository.observeStagesOfTrip(tripUiStateId).collect {
                 stages ->
-                val tripUiStates = getTripUiStates()
-                val tripUiStateIndex = getTripUiStateIndex(tripUiStateId)
-                val tripUiState = tripUiStates[tripUiStateIndex]
+               /* val tripUiStates = getTripUiStates()
+                val tripUiStateIndex = getTripUiStateIndex(tripUiStateId)*/
+                val tripUiState = getTripUiState(tripUiStateId)
                 val stageUiStates: MutableList<StageUiState> = mutableListOf()
                 for (i in stages.indices) {
                     val stage = stages[i]
@@ -289,6 +313,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         id = i,
                         stageId = stage.id,
                         mode = stage.mode,
+                        isInDatabase = true,
+                        isToBeAddedBefore = false,
                         isFirstStageOfTrip = isFirstStageOfTrip,
                         isLastStageOfTrip = isLastStageOfTrip,
                         startDateTime = stage.startDateTime,
@@ -390,9 +416,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                                 )
                             }
                         },
-                        updateStage = {
-                            updateStage(tripUiStateId = tripUiStateId, stageUiStateId = i)
-                        }
                     )
 
                     stageUiStates.add(stageUiState)
@@ -627,26 +650,58 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun updateStage(
-        tripUiStateId: Long,
-        stageUiStateId: Int
-    ) {
-        val stageUiState = getStageUiState(tripUiStateId, stageUiStateId)
+    private fun updateStages(tripUiState: TripUiState) {
+
+        val stageIds: MutableList<Long> = mutableListOf()
+        val modes: MutableList<Mode> = mutableListOf()
+        val startDateTimes: MutableList<LocalDateTime> = mutableListOf()
+        val endDateTimes: MutableList<LocalDateTime> = mutableListOf()
+        val startLocations: MutableList<GeoPoint> = mutableListOf()
+        val endLocations: MutableList<GeoPoint> = mutableListOf()
+
+        tripUiState.stageUiStates.filter{ it.isInDatabase }.forEach {
+            if(it.isInDatabase) {
+                stageIds.add(it.stageId)
+                modes.add(it.mode)
+                startDateTimes.add(it.endDateTime)
+                endDateTimes.add(it.endDateTime)
+                startLocations.add(it.startLocation)
+                endLocations.add(it.endLocation)
+            }
+        }
+
         viewModelScope.launch {
-            tripAndStageRepository.updateStage(
-                stageId = stageUiState.stageId,
-                mode = stageUiState.mode,
-                startDateTime = stageUiState.startDateTime,
-                endDateTime = stageUiState.endDateTime,
-                startLocation = stageUiState.startLocation,
-                endLocation = stageUiState.endLocation
+            tripAndStageRepository.updateStagesOfTrip(
+                tripId = tripUiState.tripId,
+                stageIds = stageIds,
+                modes = modes,
+                startDateTimes = startDateTimes,
+                endDateTimes = endDateTimes,
+                startLocations = startLocations,
+                endLocations = endLocations,
             )
         }
-    }
 
-    private fun updateStages(tripUiState: TripUiState) {
-        for (stageUiState in tripUiState.stageUiStates) {
-            updateStage(tripUiState.id, stageUiState.id)
+        tripUiState.stageUiStates.filter{ !it.isInDatabase }.forEach{
+            viewModelScope.launch {
+                if(it.isToBeAddedBefore) {
+                    tripAndStageRepository.addUserStageBeforeTripStart(
+                        tripId = tripUiState.id,
+                        mode = it.mode,
+                        startDateTime = it.startDateTime,
+                        endDateTime = it.endDateTime,
+                        startLocation = it.startLocation.toLocation(it.startDateTime.toInstant(org.threeten.bp.ZoneId.systemDefault().rules.getOffset(org.threeten.bp.Instant.now())).toEpochMilli()),
+                    )
+                } else {
+                    tripAndStageRepository.addUserStageAfterTripEnd(
+                        tripId = tripUiState.id,
+                        mode = it.mode,
+                        startDateTime = it.startDateTime,
+                        endDateTime = it.endDateTime,
+                        endLocation = it.endLocation.toLocation(it.endDateTime.toInstant(org.threeten.bp.ZoneId.systemDefault().rules.getOffset(org.threeten.bp.Instant.now())).toEpochMilli()),
+                    )
+                }
+            }
         }
     }
 
@@ -669,6 +724,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         id = stageUiStateId,
                         stageId = 0,
                         mode = Mode.NONE,
+                        isInDatabase = false,
+                        isToBeAddedBefore = true,
                         isFirstStageOfTrip = true,
                         isLastStageOfTrip = false,
                         startDateTime = dateTime,
@@ -762,18 +819,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                                 startLocationName = locationName
                             )
                         },
-                        updateStage = {
-                            val stageUiState = getStageUiState(tripUiStateId, stageUiStateId)
-                            viewModelScope.launch {
-                                tripAndStageRepository.addUserStageAfterTripEnd(
-                                    tripId = tripUiStateId,
-                                    mode = stageUiState.mode,
-                                    startDateTime = stageUiState.startDateTime,
-                                    endDateTime = stageUiState.endDateTime,
-                                    endLocation = stageUiState.endLocation.toLocation(stageUiState.endDateTime.toInstant(ZoneOffset.UTC).toEpochMilli()),
-                                )
-                            }
-                        }
                     )
                     + firstStageUiState.copy(
                         isFirstStageOfTrip = false,
@@ -833,6 +878,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         id = stageUiStateId,
                         stageId = 0,
                         mode = Mode.NONE,
+                        isInDatabase = false,
+                        isToBeAddedBefore = false,
                         isFirstStageOfTrip = false,
                         isLastStageOfTrip = true,
                         startDateTime = dateTime,
@@ -916,18 +963,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                                 endLocationName = locationName
                             )
                         },
-                        updateStage = {
-                            val stageUiState = getStageUiState(tripUiStateId, stageUiStateId)
-                            viewModelScope.launch {
-                                tripAndStageRepository.addUserStageAfterTripEnd(
-                                    tripId = tripUiStateId,
-                                    mode = stageUiState.mode,
-                                    startDateTime = stageUiState.startDateTime,
-                                    endDateTime = stageUiState.endDateTime,
-                                    endLocation = stageUiState.endLocation.toLocation(stageUiState.endDateTime.toInstant(ZoneOffset.UTC).toEpochMilli()),
-                                )
-                            }
-                        }
                     )
             )
         )

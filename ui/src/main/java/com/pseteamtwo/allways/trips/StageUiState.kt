@@ -9,6 +9,8 @@ data class StageUiState(
     val id: Int,
     val stageId: Long,
     val mode: Mode,
+    val isInDatabase: Boolean,
+    val isToBeAddedBefore: Boolean,
     val isFirstStageOfTrip: Boolean,
     val isLastStageOfTrip: Boolean,
     val startDateTime: LocalDateTime,
@@ -28,7 +30,6 @@ data class StageUiState(
     val setEndLocation: (GeoPoint) -> Unit,
     val setStartLocationName: (String) -> Unit,
     val setEndLocationName: (String) -> Unit,
-    val updateStage: () -> Unit
 ): Comparable<StageUiState> {
 
     val startDate: LocalDate

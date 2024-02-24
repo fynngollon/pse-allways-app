@@ -118,13 +118,13 @@ fun TripCard(
                                 verticalArrangement = Arrangement.Bottom,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                //TODO: Icon abhängig von mode machen
-                                Icon(
+
+                                /*Icon(
                                     painter = painterResource(id = R.drawable.directions_walk_fill0_wght400_grad0_opsz24),
                                     contentDescription = "",
                                     modifier = modifier.size(28.dp),
                                     tint = Color.Black
-                                )
+                                )*/
                             }
 
                             Text(
@@ -255,6 +255,7 @@ fun TripCard(
         EditTripDialog(
             modifier = modifier,
             tripUiState = tripUiState,
+            onConfirm = {showEditTripDialog = false},
             onDismissRequest = {showEditTripDialog = false}
         )
     }
@@ -285,10 +286,9 @@ fun TripCardPreview() {
         tripUiState = TripUiState(
             1,
             0,
-            stageUiStates = emptyList(),
             Purpose.NONE,
-            Mode.NONE,
             false,
+            emptyList(),
             LocalDateTime.MAX,
             LocalDateTime.MAX,
             GeoPoint(49.001061, 8.413361),

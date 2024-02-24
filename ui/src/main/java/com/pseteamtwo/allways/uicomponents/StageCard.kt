@@ -540,7 +540,7 @@ fun TimeField(
                         )
                     } else {
                         val minute = minuteTextFieldValue.text.toInt()
-                        if ( minMinute <= minute && minute <= maxMinute) {
+                        if ( minMinute < minute && minute < maxMinute) {
                             onTimeChange(
                                 hourTextFieldValue.text.toInt(),
                                 minuteTextFieldValue.text.toInt()
@@ -610,6 +610,8 @@ fun StageCardPreview() {
             id = 1,
             stageId = 0,
             mode = Mode.NONE,
+            isInDatabase = true,
+            isToBeAddedBefore = false,
             isFirstStageOfTrip = false,
             isLastStageOfTrip = true,
             startDateTime = LocalDateTime.MAX,
@@ -629,7 +631,6 @@ fun StageCardPreview() {
             setEndLocation = {geoPoint: GeoPoint ->  },
             setStartLocationName = {locationName: String -> },
             setEndLocationName = {locationName: String -> },
-            updateStage = {}
         )
     )
 }

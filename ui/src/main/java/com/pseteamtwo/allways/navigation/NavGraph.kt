@@ -7,9 +7,7 @@ import androidx.navigation.compose.composable
 import com.pseteamtwo.allways.home.HomeScreen
 import com.pseteamtwo.allways.profile.ProfileScreen
 import com.pseteamtwo.allways.statistics.StatisticsScreen
-import com.pseteamtwo.allways.trip.repository.TestTripAndStageRepository
 import com.pseteamtwo.allways.trips.TripsScreen
-import com.pseteamtwo.allways.trips.TripsViewModel
 
 
 @Composable

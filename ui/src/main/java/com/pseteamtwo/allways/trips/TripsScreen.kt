@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,7 +50,7 @@ fun TripsScreen(
     val tripUiStates = tripsUiState.tripUiStates
 
     var showAddTripDialog by rememberSaveable { mutableStateOf(false) }
-    var addedTripUiState: TripUiState? by rememberSaveable {
+    var addedTripUiState: TripUiState? by remember {
         mutableStateOf(null)
     }
 
@@ -141,6 +142,9 @@ fun TripsScreen(
             EditTripDialog(
                 modifier = modifier,
                 tripUiState = addedTripUiState!!,
+                onConfirm = {
+                    showAddTripDialog = false
+                },
                 onDismissRequest = {
                     addedTripUiState!!.deleteTrip()
                     showAddTripDialog = false

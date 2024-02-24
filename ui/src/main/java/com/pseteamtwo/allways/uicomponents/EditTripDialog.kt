@@ -63,6 +63,7 @@ import org.threeten.bp.LocalDateTime
 @Composable
 fun EditTripDialog(
     modifier: Modifier = Modifier,
+    onConfirm: () -> Unit,
     onDismissRequest: () -> Unit,
     tripUiState: TripUiState,
 ) {
@@ -107,24 +108,27 @@ fun EditTripDialog(
                     }
                 }
 
-                item {
-                    Row(
-                        modifier = modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        IconButton(
-                            onClick = {
-                                tripUiState.addStageUiStateBefore()
-                            },
+                if (tripUiState.tripId != 0L) {
+                    item {
+                        Row(
                             modifier = modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Add, contentDescription = "Bestätigen",
-                            )
+                            IconButton(
+                                onClick = {
+                                    tripUiState.addStageUiStateBefore()
+                                },
+                                modifier = modifier
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Add, contentDescription = "Weg hinzufügen",
+                                )
+                            }
                         }
                     }
                 }
+
 
                 var date: LocalDate? = null
                 items(stageUiStates) {
@@ -181,26 +185,29 @@ fun EditTripDialog(
                     }
                 }
 
-                item {
-                    Spacer(modifier = modifier.height(16.dp))
-                    Row(
-                        modifier = modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        IconButton(
-                            onClick = {
-                                tripUiState.addStageUiStateAfter()
-                            },
+                if (tripUiState.tripId != 0L) {
+                    item {
+                        Spacer(modifier = modifier.height(16.dp))
+                        Row(
                             modifier = modifier
-                            ,
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Add, contentDescription = "Bestätigen",
-                            )
+                            IconButton(
+                                onClick = {
+                                    tripUiState.addStageUiStateAfter()
+                                },
+                                modifier = modifier
+                                ,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Add, contentDescription = "Weg hinzufügen",
+                                )
+                            }
                         }
                     }
                 }
+
                 item {
                     Row(
                         modifier = modifier.fillMaxWidth(),
@@ -208,9 +215,8 @@ fun EditTripDialog(
                     ) {
                         Button(
                             onClick = {
-                                onDismissRequest()
-                                tripUiState.updateTrip
-                                //TODO: confirmTrip()
+                                onConfirm()
+                                tripUiState.updateTrip()
                             },
                             modifier = modifier,
                             shape = RoundedCornerShape(8.dp),
@@ -235,8 +241,10 @@ fun EditTripDialog(
 fun EditTripDialogPreview() {
     EditTripDialog(
         tripUiState = TripUiState(
-            1,
-            0,
+            id = 0,
+            tripId = 1,
+            Purpose.NONE,
+            false,
             listOf(
                 StageUiState(
                     id = 1,
@@ -244,6 +252,8 @@ fun EditTripDialogPreview() {
                     mode = Mode.NONE,
                     startDateTime = LocalDateTime.of(2024, 1, 20, 1, 30),
                     endDateTime = LocalDateTime.of(2024, 1, 20, 2, 30),
+                    isInDatabase = true,
+                    isToBeAddedBefore = false,
                     isFirstStageOfTrip = true,
                     isLastStageOfTrip = false,
                     startLocation = GeoPoint(49.001061, 8.413361),
@@ -261,12 +271,13 @@ fun EditTripDialogPreview() {
                     setEndLocation = {geoPoint: GeoPoint ->  },
                     setStartLocationName = {locationName: String -> },
                     setEndLocationName = {locationName: String -> },
-                    updateStage = {}
                 ),
                 StageUiState(
                     id = 1,
                     stageId = 0,
                     mode = Mode.NONE,
+                    isInDatabase = true,
+                    isToBeAddedBefore = false,
                     isFirstStageOfTrip = false,
                     isLastStageOfTrip = true,
                     startDateTime = LocalDateTime.of(2024, 1, 21, 1, 30),
@@ -286,12 +297,8 @@ fun EditTripDialogPreview() {
                     setEndLocation = {geoPoint: GeoPoint ->  },
                     setStartLocationName = {locationName: String -> },
                     setEndLocationName = {locationName: String -> },
-                    updateStage = {}
                 ),
             ),
-            Purpose.NONE,
-            Mode.NONE,
-            false,
             LocalDateTime.MAX,
             LocalDateTime.MAX,
             GeoPoint(49.001061, 8.413361),
@@ -306,6 +313,7 @@ fun EditTripDialogPreview() {
             addStageUiStateBefore = {},
             addStageUiStateAfter = {}
         ),
+        onConfirm = {},
         onDismissRequest = {}
     )
 }
