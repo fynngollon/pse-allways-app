@@ -42,51 +42,139 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-    /*@Provides
+
     @Singleton
-    fun provideProfileQuestionRepository(): ProfileQuestionRepository {
-        return ProfileQuestionRepository()
+    @Provides
+    fun provideDefaultAccountNetworkDataSource(): DefaultAccountNetworkDataSource {
+        return DefaultAccountNetworkDataSource()
+
     }
 
-*/
+    @Singleton
+    @Provides
+    fun provideDefaultTripNetworkDataSource(): DefaultTripNetworkDataSource {
+        return DefaultTripNetworkDataSource()
+    }
 
-@Singleton
-@Provides
-fun provideDefaultStatisticsRepository(
-    tripAndStageRepository: TripAndStageRepository): DefaultStatisticsRepository {
-    return DefaultStatisticsRepository(tripAndStageRepository)
+    @Singleton
+    @Provides
+    fun provideDefaultStageNetworkDataSource(): DefaultStageNetworkDataSource {
+        return DefaultStageNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDefaultStatisticsRepository(
+        tripAndStageRepository: TripAndStageRepository
+    ): DefaultStatisticsRepository {
+        return DefaultStatisticsRepository(tripAndStageRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileQuestionNetworkDataSource(): ProfileQuestionNetworkDataSource {
+        return ProfileQuestionNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideHouseholdQuestionNetworkDataSource(): HouseholdQuestionNetworkDataSource {
+        return HouseholdQuestionNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideHouseholdQuestionnaireNetworkDataSource(): HouseholdQuestionnaireNetworkDataSource {
+        return HouseholdQuestionnaireNetworkDataSource()
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileQuestionnaireNetworkDataSource(): ProfileQuestionnaireNetworkDataSource {
+        return ProfileQuestionnaireNetworkDataSource()
+    }
+
+    @Provides
+    fun provideAccountDao(database: AccountDatabase): AccountDao = database.accountDao()
+
+
+    @Provides
+    fun provideProfileQuestionDao(
+        database: ProfileQuestionDatabase
+    ): ProfileQuestionDao = database.profileQuestionDao()
+
+    @Provides
+    fun provideHouseholdQuestionDao(database: HouseholdQuestionDatabase):
+            HouseholdQuestionDao = database.householdQuestionDao()
+
+    @Provides
+    fun provideTripDao(database: TripAndStageDatabase): TripDao = database.tripDao()
+
+    @Provides
+    fun provideStageDao(database: TripAndStageDatabase): StageDao = database.stageDao()
+
+
+    @Provides
+    fun provideGpsPointDao(database: TripAndStageDatabase): GpsPointDao = database.gpsPointDao()
+
 }
 
-
-/** Profile Question */
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class ProfileQuestionRepositoryModule {
+abstract class RepositoryModule {
+
+    @Singleton
+    @Binds
+    abstract fun bindAccountRepository(repository: DefaultAccountRepository): AccountRepository
+
 
     @Singleton
     @Binds
     abstract fun bindProfileQuestionRepository(
-        repository: ProfileQuestionRepository): QuestionRepository // TODO potential the interface as return value
+        repository: ProfileQuestionRepository): QuestionRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindHouseholdQuestionRepository(
+        repository: HouseholdQuestionRepository): QuestionRepository
+
+
+    @Singleton
+    @Binds
+    abstract fun bindTripRepository(repository: DefaultTripAndStageRepository):
+            TripAndStageRepository
+
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class ProfileQuestionDataSourceModule {
+abstract class DataSourceModule {
+    @Singleton
+    @Binds
+    abstract fun bindAccountDataSource(dataSource: DefaultAccountNetworkDataSource):
+            AccountNetworkDataSource
+
+    @Singleton
+    @Provides
+    fun provideAccountDatabase(@ApplicationContext context: Context): AccountDatabase {
+        return Room.databaseBuilder(
+            context.applicationContext,
+            AccountDatabase::class.java,
+            "Account.db"
+        ).build()
+    }
 
     @Singleton
     @Binds
     abstract fun bindProfileQuestionDataSource(
-        dataSource: ProfileQuestionNetworkDataSource): QuestionNetworkDataSource // TODO potential the interface as return value
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object ProfileQuestionDatabaseModule {
+        dataSource: ProfileQuestionNetworkDataSource
+    ): QuestionNetworkDataSource
 
     @Singleton
     @Provides
     fun provideProfileQuestionDatabase(
-        @ApplicationContext context: Context): ProfileQuestionDatabase {
+        @ApplicationContext context: Context
+    ): ProfileQuestionDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             ProfileQuestionDatabase::class.java,
@@ -95,87 +183,16 @@ object ProfileQuestionDatabaseModule {
     }
 
     @Singleton
-    @Provides
-    fun provideProfileQuestionNetworkDataSource() : ProfileQuestionNetworkDataSource
-    {
-        return ProfileQuestionNetworkDataSource()
-    }
-
-    @Singleton
-    @Provides
-    fun provideHouseholdQuestionnaireNetworkDataSource() : HouseholdQuestionnaireNetworkDataSource
-    {
-        return HouseholdQuestionnaireNetworkDataSource()
-    }
-/*
-    @Singleton
-    @Provides
-    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource {
-        return DefaultTripNetworkDataSource()
-    }
-*/
-    /*
-    @Singleton
-    @Provides
-    fun provideDefaultStageNetworkDataSource() : DefaultStageNetworkDataSource {
-        return DefaultStageNetworkDataSource()
-    }
-*/
-
-    @Singleton
-    @Provides
-    fun provideHouseholdQuestionNetworkDataSource() : HouseholdQuestionNetworkDataSource
-    {
-        return HouseholdQuestionNetworkDataSource()
-    }
-
-    @Singleton
-    @Provides
-    fun provideProfileQuestionnaireNetworkDataSource(): ProfileQuestionnaireNetworkDataSource {
-        return ProfileQuestionnaireNetworkDataSource()
-    }
-/*
-    @Singleton
-    @Provides
-    fun provideDefaultAccountNetworkDataSource(): DefaultAccountNetworkDataSource {
-        return DefaultAccountNetworkDataSource()
-    }
-*/
-    @Provides
-    fun provideProfileQuestionDao(
-    database: ProfileQuestionDatabase): ProfileQuestionDao = database.profileQuestionDao()
-}
-
-
-/** Profile Question */
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class HouseholdQuestionRepositoryModule {
-
-    @Singleton
-    @Binds
-    abstract fun bindHouseholdQuestionRepository(
-        repository: HouseholdQuestionRepository): QuestionRepository // TODO potentially not the interface as return value
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class HouseholdQuestionDataSourceModule {
-
-    @Singleton
     @Binds
     abstract fun bindHouseholdQuestionDataSource(
-        dataSource: HouseholdQuestionNetworkDataSource): QuestionNetworkDataSource // TODO potentially not the interface as return value
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object HouseholdQuestionDatabaseModule {
+        dataSource: HouseholdQuestionNetworkDataSource
+    ): QuestionNetworkDataSource
 
     @Singleton
     @Provides
     fun provideHouseholdQuestionDatabase(
-        @ApplicationContext context: Context): HouseholdQuestionDatabase {
+        @ApplicationContext context: Context
+    ): HouseholdQuestionDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             HouseholdQuestionDatabase::class.java,
@@ -183,36 +200,10 @@ object HouseholdQuestionDatabaseModule {
         ).build()
     }
 
-    @Provides
-    fun provideHouseholdQuestionDao(database: HouseholdQuestionDatabase):
-            HouseholdQuestionDao = database.householdQuestionDao()
-}
-
-/** Trip */
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class TripRepositoryModule {
-
-    @Singleton
-    @Binds
-    abstract fun bindTripRepository(repository: DefaultTripAndStageRepository):
-            TripAndStageRepository
-}
-
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class TripDataSourceModule {
-
     @Singleton
     @Binds
     abstract fun bindTripDataSource(dataSource: DefaultTripNetworkDataSource):
             TripNetworkDataSource
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object TripDatabaseModule {
 
     @Singleton
     @Provides
@@ -226,109 +217,8 @@ object TripDatabaseModule {
     }
 
     @Singleton
-    @Provides
-    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource {
-        return DefaultTripNetworkDataSource()
-    }
-
-    @Provides
-    fun provideTripDao(database: TripAndStageDatabase): TripDao = database.tripDao()
-
-    @Provides
-    fun provideStageDao(database: TripAndStageDatabase): StageDao = database.stageDao()
-
-    @Provides
-    fun provideGpsPointDao(database: TripAndStageDatabase): GpsPointDao = database.gpsPointDao()
-}
-
-/** Stage */
-/*
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class StageRepositoryModule {
-
-    @Singleton
-    @Binds
-    abstract fun bindStageRepository(repository: DefaultTripAndStageRepository): TripAndStageRepository
-}
-*/
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class StageDataSourceModule {
-
-    @Singleton
     @Binds
     abstract fun bindStageDataSource(dataSource: DefaultStageNetworkDataSource):
             StageNetworkDataSource
-}
 
-/*
-@Module
-@InstallIn(SingletonComponent::class)
-object StageDatabaseModule {
-
-    @Singleton
-    @Provides
-    fun provideStageDatabase(@ApplicationContext context: Context): StageDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            StageDatabase::class.java,
-            "Stage.db"
-        ).build()
-    }
-
-    @Provides
-    fun provideStageDao(database: StageDatabase): StageDao = database.stageDao()*/
-
-    @Singleton
-    @Provides
-    fun provideDefaultStageNetworkDataSource() : DefaultStageNetworkDataSource  {
-        return DefaultStageNetworkDataSource()
-    }
-}
-
-
-/** Account */
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class AccountRepositoryModule {
-
-    @Singleton
-    @Binds
-    abstract fun bindAccountRepository(repository: DefaultAccountRepository): AccountRepository
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class AccountDataSourceModule {
-
-    @Singleton
-    @Binds
-    abstract fun bindAccountDataSource(dataSource: DefaultAccountNetworkDataSource):
-            AccountNetworkDataSource
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object AccountDatabaseModule {
-
-
-    @Singleton
-    @Provides
-    fun provideAccountDatabase(@ApplicationContext context: Context): AccountDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            AccountDatabase::class.java,
-            "Account.db"
-        ).build()
-    }
-
-    @Provides
-    fun provideAccountDao(database: AccountDatabase): AccountDao = database.accountDao()
-
-    @Singleton
-    @Provides
-    fun provideDefaultAccountNetworkDataSource() : DefaultAccountNetworkDataSource  {
-        return DefaultAccountNetworkDataSource()
-    }
 }
