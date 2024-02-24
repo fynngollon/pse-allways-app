@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class DefaultTrackingAlgorithm @Inject constructor(
     private val tripAndStageRepository: DefaultTripAndStageRepository,
     private val gpsPointDao: GpsPointDao,
@@ -53,25 +52,24 @@ class DefaultTrackingAlgorithm @Inject constructor(
             }
             if (indexOfFirstTripMember == -1) gpsPoints.addAll(gpsPointsInDatabase)
             else gpsPoints.addAll(gpsPointsInDatabase.subList(0, indexOfFirstTripMember))
-        }
 
-        // Predict trips
-        val trips = predictTrips(gpsPoints)
 
-        // Delete GPS points that are no longer needed
-        if (trips.isEmpty()) return
+            // Predict trips
+            val trips = predictTrips(gpsPoints)
 
-        scope.launch(dispatcher) {
-            val oldestGpsPointOfTrip =
-                tripDao.getTripWithStages(trips.first().id) as LocalTripWithStages
+            // Delete GPS points that are no longer needed
+            if (trips.isNotEmpty()) {
+                val oldestGpsPointOfTrip =
+                    tripDao.getTripWithStages(trips.first().id) as LocalTripWithStages
 
-            val gpsPointsToDelete = gpsPoints.subList(
-                gpsPoints.indexOf(oldestGpsPointOfTrip.stages.first().gpsPoints.first()),
-                gpsPoints.size
-            )
+                val gpsPointsToDelete = gpsPoints.subList(
+                    gpsPoints.indexOf(oldestGpsPointOfTrip.stages.first().gpsPoints.first()),
+                    gpsPoints.size
+                )
 
-            gpsPointsToDelete.forEach {
-                gpsPointDao.delete(it.id)
+                gpsPointsToDelete.forEach {
+                    gpsPointDao.delete(it.id)
+                }
             }
         }
     }
@@ -84,39 +82,37 @@ class DefaultTrackingAlgorithm @Inject constructor(
      * 2. Takes the WHICH GPS point as start.
      * 3. Trip ends when the user was still for more than 15 [MAX_MOTIONLESS_IN_TRIP] minutes
      */
-    private fun predictTrips(gpsPoints: List<LocalGpsPoint>): List<LocalTrip> {
+    private suspend fun predictTrips(gpsPoints: List<LocalGpsPoint>): List<LocalTrip> {
         val potentialTrips = mutableListOf<MutableList<LocalGpsPoint>>()
         val trips = mutableListOf<LocalTrip>()
 
-        scope.launch(dispatcher) {
-            // Creates potential trips
-            for (i in gpsPoints.size - 1 downTo 0) {
-                // Skip GPS points that are already in a potential trip
-                if (potentialTrips.isNotEmpty() &&
-                    gpsPoints[i].location.time <= potentialTrips.last().last().location.time) {
-                    continue
-                }
+        // Creates potential trips
+        for (i in gpsPoints.size - 1 downTo 0) {
+            // Skip GPS points that are already in a potential trip
+            if (potentialTrips.isNotEmpty() &&
+                gpsPoints[i].location.time <= potentialTrips.last().last().location.time) {
+                continue
+            }
 
-                if (gpsPoints[i].location.speed > STILL_MOTION_THRESHOLD) {
-                    // Start potential trip
-                    val potentialTrip = mutableListOf(gpsPoints[i])
-                    var lastMotionAsTimestamp = gpsPoints[i].location.time
-                    var j = -1
+            if (gpsPoints[i].location.speed > STILL_MOTION_THRESHOLD) {
+                // Start potential trip
+                val potentialTrip = mutableListOf(gpsPoints[i])
+                var lastMotionAsTimestamp = gpsPoints[i].location.time
+                var j = -1
 
-                    while (i + j >= 0 &&
-                        gpsPoints[i + j].location.time < lastMotionAsTimestamp + MAX_MOTIONLESS_IN_TRIP) {
-                        potentialTrip.add(gpsPoints[i + j])
+                while (i + j >= 0 &&
+                    gpsPoints[i + j].location.time < lastMotionAsTimestamp + MAX_MOTIONLESS_IN_TRIP) {
+                    potentialTrip.add(gpsPoints[i + j])
 
-                        // Resets timer until trip is finished if motion was detected
-                        if (gpsPoints[i + j].location.speed > STILL_MOTION_THRESHOLD) {
-                            lastMotionAsTimestamp = gpsPoints[i + j].location.time
-                        }
-
-                        j--
+                    // Resets timer until trip is finished if motion was detected
+                    if (gpsPoints[i + j].location.speed > STILL_MOTION_THRESHOLD) {
+                        lastMotionAsTimestamp = gpsPoints[i + j].location.time
                     }
 
-                    potentialTrips.add(potentialTrip)
+                    j--
                 }
+
+                potentialTrips.add(potentialTrip)
             }
 
             val unsavedTrips = mutableListOf<List<LocalGpsPoint>>()
@@ -159,44 +155,40 @@ class DefaultTrackingAlgorithm @Inject constructor(
      * A stage has to be at least 3 minutes long. A new stage happens when someone is inactive for
      * at least 5 minutes or the speed changes significantly.
      */
-    private fun predictStages(gpsPoints: List<LocalGpsPoint>): List<LocalStage> {
+    private suspend fun predictStages(gpsPoints: List<LocalGpsPoint>): List<LocalStage> {
         val stages = mutableListOf<LocalStage>()
         val potentialStagesAfterGeofencing = mutableListOf<List<LocalGpsPoint>>()
         val unsavedStages = mutableListOf<List<LocalGpsPoint>>()
 
-        scope.launch(dispatcher) {
-            potentialStagesAfterGeofencing.addAll(predictStagesByGeofencing(gpsPoints))
+        potentialStagesAfterGeofencing.addAll(predictStagesByGeofencing(gpsPoints))
 
-            potentialStagesAfterGeofencing.forEach {
-                unsavedStages.addAll(predictStagesBySpeedChange(it))
-            }
+        potentialStagesAfterGeofencing.forEach {
+            unsavedStages.addAll(predictStagesBySpeedChange(it))
+        }
 
-            unsavedStages.forEach {
-                stages.add(tripAndStageRepository.createStageOfExistingGpsPoints(it, predictMode(it)))
-            }
+        unsavedStages.forEach {
+            stages.add(tripAndStageRepository.createStageOfExistingGpsPoints(it, predictMode(it)))
         }
 
         return stages
     }
 
-    private fun predictStagesByGeofencing(gpsPoints: List<LocalGpsPoint>): List<List<LocalGpsPoint>> {
+    private suspend fun predictStagesByGeofencing(gpsPoints: List<LocalGpsPoint>): List<List<LocalGpsPoint>> {
         val currentStage = mutableListOf<LocalGpsPoint>()
         val potentialStages = mutableListOf<List<LocalGpsPoint>>()
 
-        scope.launch(dispatcher) {
-            for (i in gpsPoints.indices) {
-                currentStage.add(gpsPoints[i])
+        for (i in gpsPoints.indices) {
+            currentStage.add(gpsPoints[i])
 
-                if (hasNotMovedOutOfRadius(
-                        gpsPoints.subList(i, gpsPoints.size).map { it.location })
-                ) {
-                    // This should be a stay
-                    val startGpsPointOfNewStage =
-                        tripAndStageRepository.createGpsPoint(currentStage.last().location)
-                    potentialStages.add(currentStage)
-                    currentStage.clear()
-                    currentStage.add(startGpsPointOfNewStage)
-                }
+            if (hasNotMovedOutOfRadius(
+                    gpsPoints.subList(i, gpsPoints.size).map { it.location })
+            ) {
+                // This should be a stay
+                val startGpsPointOfNewStage =
+                    tripAndStageRepository.createGpsPoint(currentStage.last().location)
+                potentialStages.add(currentStage)
+                currentStage.clear()
+                currentStage.add(startGpsPointOfNewStage)
             }
         }
 
@@ -224,7 +216,7 @@ class DefaultTrackingAlgorithm @Inject constructor(
     }
 
 
-    private fun predictStagesBySpeedChange(gpsPoints: List<LocalGpsPoint>): List<List<LocalGpsPoint>> {
+    private suspend fun predictStagesBySpeedChange(gpsPoints: List<LocalGpsPoint>): List<List<LocalGpsPoint>> {
         val stages = mutableListOf<List<LocalGpsPoint>>()
         val currentStage = mutableListOf<LocalGpsPoint>()
         val currentSegment = mutableListOf<LocalGpsPoint>()

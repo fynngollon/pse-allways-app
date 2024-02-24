@@ -24,6 +24,7 @@ import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.TripNetworkDataSource
 import com.pseteamtwo.allways.trip.toExternal
+import com.pseteamtwo.allways.trip.toLocation
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -772,14 +773,6 @@ class DefaultTripAndStageRepository @Inject constructor(
         return connectedTripsIndex == connectedTrips.size
     }
 
-    private fun GeoPoint.toLocation(time: Long): Location {
-        val location = Location("osmdroid")
-        location.latitude = this.latitude
-        location.longitude = this.longitude
-        location.time = time
-        location.speed = 0f
-        return location
-    }
 
     private fun GeoPoint.compareTo(location: Location): Boolean {
         return latitude == location.latitude && longitude == location.longitude

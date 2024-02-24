@@ -1,15 +1,10 @@
 package com.pseteamtwo.allways.trip
 
-import android.location.Location
 import com.pseteamtwo.allways.trip.tracking.calculateDistance
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.Duration
-import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
-import kotlin.math.roundToInt
-import kotlin.time.Duration.Companion.days
 
 /**
  * Representation of a stage traveled by the user (to be also used outside this data module).
@@ -75,5 +70,5 @@ data class Stage(
      * Calculated as the sum of the distances of the gpsPoints of this stage.
      */
     val distance: Int
-        get() = calculateDistance(gpsPoints.map { it.location })
+        get() = calculateDistance(gpsPoints.map { it.geoPoint.toLocation(it.time.convertToMillis()) })
 }
