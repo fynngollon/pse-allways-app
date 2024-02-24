@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pseteamtwo.allways.account.repository.DefaultAccountRepository
@@ -72,7 +71,7 @@ class LoginViewModel @Inject constructor(private val accountRepository: DefaultA
     fun validateLogin(email: String, password: String) {
         viewModelScope.launch {
             try {
-                //accountRepository.validateLogin(email, password)
+                accountRepository.validateLogin(email, password)
                 setLoggedIn(true)
             } catch (e: ServerConnectionFailedException) {
                 setServerConnectionFailed(true)
@@ -83,11 +82,16 @@ class LoginViewModel @Inject constructor(private val accountRepository: DefaultA
         }
     }
 
+    /**
+     * function to crate an account .
+     * @param email the email address of the account
+     * @param password the password of the account
+     */
+
     fun createAccount(email: String, password: String) {
         viewModelScope.launch {
             try {
-                Log.d("Tage", email + password)
-                //accountRepository.createAccount(email, password)
+                accountRepository.createAccount(email, password)
                 setLoginFailed(true)
             } catch (e: ServerConnectionFailedException) {
                 setServerConnectionFailed(true)

@@ -3,12 +3,9 @@ package com.pseteamtwo.allways.trip
 import android.location.Location
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.Duration
-import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import kotlin.math.roundToInt
-import kotlin.time.Duration.Companion.days
 
 /**
  * Representation of a stage traveled by the user (to be also used outside this data module).
@@ -35,7 +32,7 @@ data class Stage(
      * Calculated as time of the first gpsPoint of this stage.
      */
     val startDateTime: LocalDateTime
-        get() = gpsPoints.first().time
+       get() = gpsPoints.first().time
 
     /**
      * End time of the stage.

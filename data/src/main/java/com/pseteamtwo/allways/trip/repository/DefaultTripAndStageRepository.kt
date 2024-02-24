@@ -151,8 +151,7 @@ class DefaultTripAndStageRepository @Inject constructor(
             stage.gpsPoints.forEach { gpsPoint ->
                 val location = gpsPoint.geoPoint.toLocation(gpsPoint.time.convertToMillis())
                 val gpsPointWithoutId = LocalGpsPoint(stageId = createdStageId, location = location)
-
-                gpsPointLocalDataSource.insert(gpsPointWithoutId)
+                //gpsPointLocalDataSource.insert(gpsPointWithoutId)
 
             }
         }
