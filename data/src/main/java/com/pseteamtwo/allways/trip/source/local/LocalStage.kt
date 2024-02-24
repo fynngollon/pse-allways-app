@@ -7,7 +7,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.pseteamtwo.allways.trip.Mode
-import com.pseteamtwo.allways.trip.Purpose
 
 /**
  * Representation of a stage for saving as an element of the [androidx.room.Database]

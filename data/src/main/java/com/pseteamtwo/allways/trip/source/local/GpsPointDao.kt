@@ -5,7 +5,6 @@ import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 /**
  * This data access object provides functionality to access the [TripAndStageDatabase] in terms

@@ -1,7 +1,6 @@
 package com.pseteamtwo.allways.trip.source.network
 
 import android.util.Log
-import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
 import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.trip.Purpose
 import kotlinx.coroutines.sync.Mutex

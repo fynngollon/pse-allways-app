@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.trip.source.network
 
-import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime

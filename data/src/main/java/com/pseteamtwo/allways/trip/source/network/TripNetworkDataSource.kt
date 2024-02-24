@@ -1,7 +1,6 @@
 package com.pseteamtwo.allways.trip.source.network
 
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
-import kotlin.jvm.Throws
 
 /**
  * This class handles all interactions with the trips network database.
