@@ -11,7 +11,6 @@ import com.pseteamtwo.allways.trip.tracking.LOCATION_TRACKING_NOTIFICATION_ID
 import com.pseteamtwo.allways.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TEXT
 import com.pseteamtwo.allways.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TITLE
 import com.pseteamtwo.allways.trip.tracking.TrackingService
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

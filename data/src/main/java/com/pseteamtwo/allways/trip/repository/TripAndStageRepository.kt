@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
-import kotlin.jvm.Throws
 
 /**
  * Repository to handle all [Trip]s, [Stage]s and [GpsPoint]s and

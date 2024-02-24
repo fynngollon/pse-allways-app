@@ -2,7 +2,6 @@ package com.pseteamtwo.allways.account.source.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.pseteamtwo.allways.account.Account
 
 @Entity(
     tableName = "account"

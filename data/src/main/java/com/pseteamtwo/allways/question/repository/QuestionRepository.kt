@@ -3,9 +3,7 @@ package com.pseteamtwo.allways.question.repository
 import com.pseteamtwo.allways.exception.QuestionIdNotFoundException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.question.Question
-import com.pseteamtwo.allways.trip.Trip
 import kotlinx.coroutines.flow.Flow
-import kotlin.jvm.Throws
 
 /**
  * Repository to handle all [Question]s and to provide according functionality for the ui-layer.
