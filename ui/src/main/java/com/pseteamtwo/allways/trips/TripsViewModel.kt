@@ -6,11 +6,14 @@ import android.location.Address
 import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import com.pseteamtwo.allways.map.addressToString
 import com.pseteamtwo.allways.trip.GpsPoint
+
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
+
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -36,9 +39,6 @@ import javax.inject.Inject
 class TripsViewModel @Inject constructor(private val tripAndStageRepository: TripAndStageRepository) : ViewModel() {
     private var _tripsUiState: MutableStateFlow<TripsUiState> = MutableStateFlow(TripsUiState(loading = true))
     val tripsUiState: StateFlow<TripsUiState> = _tripsUiState.asStateFlow()
-
-    private var _todaysTripsUiState: MutableStateFlow<TripsUiState> = MutableStateFlow(TripsUiState(loading = true))
-    val todaysTripsUiState: StateFlow<TripsUiState> = _todaysTripsUiState.asStateFlow()
 
     private var nextId: Long = 0
 
@@ -70,6 +70,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         createStageUiStates = {createStageUiStates(tripUiStateId)},
                         addStageUiStateBefore = {addStageUiStateBefore(tripUiStateId)},
                         addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
+                        setPurpose = {purpose: Purpose ->  setTripUiStatePurpose(tripUiStateId, purpose)},
                         updateTrip = {updateTrip(trip.id)},
                         sendToServer = false
                     )
@@ -111,7 +112,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     )
                 }
             }
-
         }
     }
 
@@ -133,7 +133,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                 StageUiState(
                     id = stageUiStateId,
                     stageId = 0L,
-                    mode = Mode.WALK,
+                    mode = Mode.NONE,
                     isInDatabase = true,
                     isToBeAddedBefore = false,
                     isFirstStageOfTrip = true,
@@ -221,7 +221,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     },
                 ),
             ),
-            purpose = Purpose.BUSINESS_TRIP,
+            purpose = Purpose.NONE,
             isConfirmed = false,
             startDateTime = dateTime,
             endDateTime = dateTime,
@@ -235,6 +235,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             createStageUiStates = {},
             addStageUiStateBefore = {addStageUiStateBefore(tripUiStateId)},
             addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
+            setPurpose = {purpose: Purpose -> setTripUiStatePurpose(tripUiStateId, purpose)},
             updateTrip = {
                 val tripUiState = getTripUiState(tripUiStateId)
                 viewModelScope.launch {
@@ -507,6 +508,16 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     + newStageUiState
                     + stageUiStates.slice(stageUiStateIndex + 1 until stageUiStates.size)
             )
+        )
+    }
+
+    private fun setTripUiStatePurpose(
+        tripUiStateId: Long,
+        purpose: Purpose
+    ) {
+        updateTripUiState(
+            tripUiStateId = tripUiStateId,
+            newTripUiState = getTripUiState(tripUiStateId).copy(purpose = purpose)
         )
     }
 

@@ -15,8 +15,8 @@ import com.pseteamtwo.allways.trip.Stage
 import com.pseteamtwo.allways.trip.convertToLocalDateTime
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.StageDao
-import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase
+import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.DefaultTripNetworkDataSource
 import com.pseteamtwo.allways.trip.toLocation

@@ -1,8 +1,6 @@
 package com.pseteamtwo.allways.typeconverter
 
-import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

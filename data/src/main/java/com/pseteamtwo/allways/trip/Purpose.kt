@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.trip
 
+import com.pseteamtwo.allways.trip.Purpose.OTHER
 import kotlinx.serialization.Serializable
 
 /**

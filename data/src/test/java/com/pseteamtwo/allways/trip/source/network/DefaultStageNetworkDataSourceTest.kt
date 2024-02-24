@@ -1,13 +1,8 @@
 package com.pseteamtwo.allways.trip.source.network
 
-import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
-import com.pseteamtwo.allways.account.source.network.DefaultAccountNetworkDataSource
-import com.pseteamtwo.allways.account.source.network.NetworkAccount
 import com.pseteamtwo.allways.trip.Mode
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
 import org.junit.Before
-
 import org.junit.Test
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime

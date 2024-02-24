@@ -2,9 +2,7 @@ package com.pseteamtwo.allways.trip.source.network
 
 import com.pseteamtwo.allways.trip.Purpose
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
 import org.junit.Before
-
 import org.junit.Test
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime
