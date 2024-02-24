@@ -122,7 +122,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             for(mode in com.pseteamtwo.allways.trip.Mode.values()) {
                 if(completeModalSplit.containsKey(mode)) {
                     completeModalSplitLabels.add(mode.modeType)
-                    completeModalSplit[mode]?.let { completeModalSplitValues.add(it.toLong()) }
+                    completeModalSplit[mode]?.let { completeModalSplitValues.add(it.toLong()/10) }
                 }
             }
 
