@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -109,6 +110,17 @@ interface TripDao {
      */
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(trip: LocalTrip)
+
+    /**
+     * Updates or inserts a trip in the database.
+     * This will replace the old trip with the new provided trip while this old trip is
+     * specified through the id key of the given trip. If the there is no trip present with the
+     * trip id, the trip is simply inserted.
+     *
+     * @param trip The trip to be inserted or updated.
+     */
+    @Upsert
+    suspend fun upsert(trip: LocalTrip)
 
     /**
      * Updates [LocalTrip.isConfirmed] for the trip in the database specified by [tripId] to

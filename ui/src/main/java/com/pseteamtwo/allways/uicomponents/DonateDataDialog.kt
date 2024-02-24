@@ -29,6 +29,7 @@ import androidx.compose.ui.window.Dialog
 import com.pseteamtwo.allways.profile.ProfileViewModel
 import com.pseteamtwo.allways.profile.QuestionUiState
 import com.pseteamtwo.allways.trips.TripUiState
+import com.pseteamtwo.allways.trips.TripsViewModel
 
 
 /**
@@ -46,6 +47,7 @@ fun DonateDataDialog(
     profileViewModel: ProfileViewModel,
     profileQuestions: MutableList<QuestionUiState>,
     householdQuestions: MutableList<QuestionUiState>,
+    tripsViewModel: TripsViewModel,
     trips: List<TripUiState>
 ) {
 
@@ -62,6 +64,21 @@ fun DonateDataDialog(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Row {
+
+                    Button(
+                        onClick ={
+                            onDismiss()
+                            profileViewModel.donateProfileQuestions(profileQuestions)
+                            profileViewModel.donateHouseholdQuestions(householdQuestions)
+                            tripsViewModel.donateTrips(trips)
+                        }
+
+
+                    ) {
+                        Text(text = "Bestätigen")
+                    }
+                }
+                Row {
                     QuestionList("Persönliche Fragen", questions = profileQuestions)
                 }
                 Row {
@@ -70,26 +87,6 @@ fun DonateDataDialog(
 
                 Row {
                     TripList(title = "Wege", trips = trips)
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(start = 90.dp, bottom = 40.dp),
-                    verticalAlignment =  Alignment.Bottom
-                ) {
-                    Button(
-                        onClick ={
-                            onDismiss()
-                            profileViewModel.donateProfileQuestions(profileQuestions)
-                            profileViewModel.donateHouseholdQuestions(householdQuestions)
-
-                        }
-
-
-                    ) {
-                        Text(text = "Bestätigen")
-                    }
                 }
             }
         }

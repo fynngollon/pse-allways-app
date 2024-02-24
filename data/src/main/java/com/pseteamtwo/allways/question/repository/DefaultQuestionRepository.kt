@@ -50,7 +50,6 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
 
     override fun observeAll(): Flow<List<Question>>  {
         return questionDao.observeAll().map { it.toExternal() }
-        //return flowOf(questions())
     }
 
     @Throws(ServerConnectionFailedException::class)

@@ -15,6 +15,7 @@ import com.pseteamtwo.allways.trips.TripsScreen
  * Composable function providing functionality for navigating between the different views of the app
  * @param navController the [NavHostController] for the navigation
  */
+
 @Composable
 fun SetUpNavGraph(
     navController: NavHostController
@@ -56,3 +57,24 @@ fun SetUpNavGraph(
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
