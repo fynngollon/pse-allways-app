@@ -992,7 +992,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         return location
     }
 
-    private fun donateTrips(trips: List<TripUiState>) {
+     fun donateTrips(trips: List<TripUiState>) {
         viewModelScope.launch {
             val tripsToSend: MutableList<String> = mutableListOf()
             for (trip in trips) {

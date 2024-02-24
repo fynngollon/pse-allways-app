@@ -78,7 +78,6 @@ class LoginViewModel @Inject constructor(private val accountRepository: DefaultA
             } catch (e: AccountNotFoundException) {
                 setLoginFailed(true)
             }
-
         }
     }
 
