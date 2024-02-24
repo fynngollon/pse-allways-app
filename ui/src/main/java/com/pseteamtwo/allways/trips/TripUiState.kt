@@ -24,6 +24,7 @@ data class TripUiState(
     val createStageUiStates: () -> Unit,
     val addStageUiStateBefore: () -> Unit,
     val addStageUiStateAfter: () -> Unit,
+    val setPurpose: (Purpose) -> Unit,
     val updateTrip: () -> Unit
 ): Comparable<TripUiState> {
     override fun compareTo(other: TripUiState): Int {

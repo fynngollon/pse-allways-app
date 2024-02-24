@@ -301,6 +301,7 @@ fun TripCardPreview() {
             createStageUiStates = {},
             addStageUiStateBefore = {},
             addStageUiStateAfter = {},
+            setPurpose = {},
             updateTrip = {}
         )
     )

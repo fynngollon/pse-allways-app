@@ -235,7 +235,7 @@ fun StageCard(
                                     },
                                     shape = RoundedCornerShape(4.dp),
                                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                                    textStyle = TextStyle.Default.copy(fontSize = 13.sp),
+                                    textStyle = TextStyle.Default.copy(fontSize = 12.sp),
                                     modifier = Modifier
                                         .menuAnchor()
                                         .height(50.dp)
@@ -581,15 +581,15 @@ fun TimeField(
         ) {
             Icon(imageVector = Icons.Rounded.CalendarMonth, contentDescription = "Datum auswählen")
         }
-        if (showDatePicker) {
+        /*if (showDatePicker) {
             DatePickerDialog(
-                onDismissRequest = { showDatePicker =false },
+                onDismissRequest = { showDatePicker = false },
                 confirmButton = {
                     val selectedDate = Instant
                         .ofEpochMilli(datePickerState.selectedDateMillis!!)
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate()
-                    if (minDateTime.toLocalDate() <= selectedDate && selectedDate <= maxDateTime.toLocalDate()) {
+                    if (minDateTime.toLocalDate() < selectedDate && selectedDate < maxDateTime.toLocalDate()) {
                         onDateChange(selectedDate)
                         showDatePicker = false
                     }
@@ -597,8 +597,7 @@ fun TimeField(
             ) {
                 DatePicker(state = datePickerState)
             }
-        }
-
+        }*/
     }
 }
 

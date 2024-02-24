@@ -73,6 +73,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         createStageUiStates = {createStageUiStates(tripUiStateId)},
                         addStageUiStateBefore = {addStageUiStateBefore(tripUiStateId)},
                         addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
+                        setPurpose = {purpose: Purpose ->  setTripUiStatePurpose(tripUiStateId, purpose)},
                         updateTrip = {updateTrip(trip.id)}
                     )
                     nextId++
@@ -134,7 +135,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                 StageUiState(
                     id = stageUiStateId,
                     stageId = 0L,
-                    mode = Mode.WALK,
+                    mode = Mode.NONE,
                     isInDatabase = true,
                     isToBeAddedBefore = false,
                     isFirstStageOfTrip = true,
@@ -222,7 +223,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     },
                 ),
             ),
-            purpose = Purpose.BUSINESS_TRIP,
+            purpose = Purpose.NONE,
             isConfirmed = false,
             startDateTime = dateTime,
             endDateTime = dateTime,
@@ -236,6 +237,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             createStageUiStates = {},
             addStageUiStateBefore = {addStageUiStateBefore(tripUiStateId)},
             addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
+            setPurpose = {purpose: Purpose -> setTripUiStatePurpose(tripUiStateId, purpose)},
             updateTrip = {
                 val tripUiState = getTripUiState(tripUiStateId)
                 viewModelScope.launch {
@@ -506,6 +508,16 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     + newStageUiState
                     + stageUiStates.slice(stageUiStateIndex + 1 until stageUiStates.size)
             )
+        )
+    }
+
+    private fun setTripUiStatePurpose(
+        tripUiStateId: Long,
+        purpose: Purpose
+    ) {
+        updateTripUiState(
+            tripUiStateId = tripUiStateId,
+            newTripUiState = getTripUiState(tripUiStateId).copy(purpose = purpose)
         )
     }
 
