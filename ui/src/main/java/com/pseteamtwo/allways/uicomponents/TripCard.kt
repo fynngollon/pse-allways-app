@@ -32,9 +32,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pseteamtwo.allways.trips.TripUiState
+
 import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trips.TripUiState
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime
 import java.util.Locale
@@ -296,6 +297,7 @@ fun TripCardPreview() {
             createStageUiStates = {},
             addStageUiStateBefore = {},
             addStageUiStateAfter = {},
+            setPurpose = {},
             updateTrip = {},
             sendToServer = false
         )
