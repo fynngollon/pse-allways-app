@@ -1,6 +1,7 @@
 package com.pseteamtwo.allways.question.source.network
 
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
+import kotlin.jvm.Throws
 
 /**
  * This class handles all interactions with the database for the questions of a user.

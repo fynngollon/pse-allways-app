@@ -5,6 +5,7 @@ import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.exception.AccountNotFoundException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlinx.coroutines.flow.Flow
+import kotlin.jvm.Throws
 
 /**
  * Repository to handle the user [Account] and to provide according functionality for

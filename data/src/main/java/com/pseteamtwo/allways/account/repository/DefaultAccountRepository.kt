@@ -46,7 +46,6 @@ class DefaultAccountRepository @Inject constructor(
         return accountLocalDataSource.observe().map { it.toExternal() }
     }
 
-    @Throws(ServerConnectionFailedException::class, AccountAlreadyExistsException::class)
     override suspend fun createAccount(email: String, password: String) {
         // checks if the user is already logged in to an account
         assert (accountLocalDataSource.observe().count() == 0) {
@@ -91,7 +90,6 @@ class DefaultAccountRepository @Inject constructor(
         accountLocalDataSource.upsert(localAccount)
     }
 
-    @Throws(ServerConnectionFailedException::class, AccountNotFoundException::class)
     override suspend fun deleteAccount() {
         if (!authenticateAccount()) {
             throw AccountNotFoundException()
@@ -101,7 +99,7 @@ class DefaultAccountRepository @Inject constructor(
         accountLocalDataSource.deleteAccount()
     }
 
-    @Throws(ServerConnectionFailedException::class)
+
     override suspend fun validateLogin(email: String, password: String): Boolean {
         // checks if an account exists with the email
         if (!accountNetworkDataSource.doesEmailExist(email)) {
@@ -119,7 +117,6 @@ class DefaultAccountRepository @Inject constructor(
 
     // doesn't compare email rn
     // TODO needs review
-    @Throws(ServerConnectionFailedException::class)
     override suspend fun authenticateAccount(): Boolean {
         // loads the local account
         val localAccount = accountLocalDataSource.observe().first()
