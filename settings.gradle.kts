@@ -16,5 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "AllWays"
 include(":data")
-include(":build-logic")
 include(":ui")

@@ -57,9 +57,6 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
-    implementation("androidx.work:work-runtime:2.9.0")
-
     // KSP
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.16")
 

@@ -1,5 +1,5 @@
 package com.pseteamtwo.allways
-
+/*
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import com.pseteamtwo.allways.settings.AppPreferences
@@ -63,3 +63,4 @@ fun MainActivity.TrackingPermissionCheck() {
             0)
     }
 }
+ */
