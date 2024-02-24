@@ -50,6 +50,12 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
         }
     }
 
+     fun updateStatistics() {
+         viewModelScope.launch {
+             assembleStatisticsScreenUiState()
+             assembleHomeScreenUiState()
+         }
+    }
     /**
      * calls all the necessary functions to assemble the [statisticsUiState] used for the [StatisticsScreen].
      *
@@ -204,6 +210,8 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             "Minuten"
             ))
     }
+
+
 }
 
 

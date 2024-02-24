@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.pseteamtwo.allways.BottomBarScreen
 import com.pseteamtwo.allways.home.HomeScreen
 import com.pseteamtwo.allways.login.LoginScreen
 import com.pseteamtwo.allways.profile.ProfileScreen
@@ -22,7 +23,7 @@ fun SetUpNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Login.route
     ) {
         composable(
             route = Screen.Trips.route,
@@ -47,12 +48,17 @@ fun SetUpNavGraph(
         composable(
             route = Screen.Login.route
         ) {
-            LoginScreen()
+            LoginScreen(navController)
         }
         composable(
             route = Screen.Settings.route
         ) {
             SettingsScreen()
+        }
+        composable(
+            route = Screen.BottomBar.route
+        ) {
+            BottomBarScreen(navController = navController)
         }
     }
 }

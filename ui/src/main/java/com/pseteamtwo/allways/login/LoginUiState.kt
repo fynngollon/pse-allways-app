@@ -1,6 +1,8 @@
 package com.pseteamtwo.allways.login
 
 data class LoginUiState(
-    var loginSuccessful: Boolean
-    // TODO
+    var loggedIn: Boolean,
+    var loginFailed: Boolean,
+    var serverConnectionFailed: Boolean,
+    var accountAlreadyExists: Boolean
 )

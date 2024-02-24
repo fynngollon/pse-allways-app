@@ -53,16 +53,6 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         //questions[id.toInt()].answer = answer
     }
 
-    suspend fun createQuestion() {
-        var question: LocalQuestion = LocalQuestion(
-            id = "1",
-            title = "Anzahl Haustiere",
-            type = QuestionType.SPINNER,
-            options = listOf("option1", "option2"),
-            answer = "test"
-        )
-        questionDao.upsert(question)
-    }
 
     @Throws(QuestionIdNotFoundException::class)
     override suspend fun deleteQuestion(id: String) {

@@ -34,8 +34,8 @@ fun HomeScreen(
 ) {
     var showDonateDataDialog by remember{ mutableStateOf(false) }
     val profileViewModel: ProfileViewModel = hiltViewModel()
-
     val statisticsViewModel: StatisticsViewModel = hiltViewModel()
+    //val tripsViewModel: TripsViewModel = hiltViewModel()
     val statisticsUiState by statisticsViewModel.homeStatisticsUiState.collectAsState()
     val chartUiStates = statisticsUiState.charts
 
@@ -53,7 +53,7 @@ fun HomeScreen(
         Row {
             Column {
                 Button(
-                    modifier = Modifier.padding(top = 50.dp),
+                    modifier = Modifier.padding(start = 20.dp, top = 50.dp),
                     onClick = {
                         showDonateDataDialog = true
                     }
@@ -86,7 +86,9 @@ fun HomeScreen(
                             elevation = CardDefaults.cardElevation(
                                 defaultElevation = 6.dp
                             ),
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp, top = 10.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp, top = 10.dp)
                         ) {
                             Row(modifier = Modifier.padding(top = 40.dp)) {
                                 DetailedStatisticsCard(

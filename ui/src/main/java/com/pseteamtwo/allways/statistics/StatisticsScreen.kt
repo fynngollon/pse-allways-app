@@ -60,6 +60,7 @@ fun StatisticsScreen(navController: NavController) {
     val statisticsViewModel: StatisticsViewModel = hiltViewModel()
     val statistics by statisticsViewModel.statisticsUiState.collectAsState()
     val chartUiStates = statistics.charts
+    statisticsViewModel.updateStatistics()
 
     var state: String by remember { mutableStateOf("test") }
 

@@ -9,8 +9,13 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.pseteamtwo.allways.navigation.BottomNavigation
 import com.pseteamtwo.allways.navigation.SetUpNavGraph
@@ -28,7 +33,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             navController = rememberNavController()
-            //StageCard()
+            var showBottomBar by rememberSaveable { mutableStateOf(true) }
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+            showBottomBar = when (navBackStackEntry?.destination?.route) {
+                "login_screen" -> false // on this screen bottom bar should be hidden
+                 else -> true
+            }
 
             Scaffold(
                 bottomBar = {
@@ -36,7 +47,10 @@ class MainActivity : ComponentActivity() {
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.primary,
                     ) {
-                        BottomNavigation(navController = navController)
+                        if(showBottomBar)
+                        {
+                            BottomNavigation(navController = navController)
+                        }
                     }
                 },
 
