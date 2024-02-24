@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.trip
 
+import android.location.Location
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
 import com.pseteamtwo.allways.trip.source.local.LocalStageWithGpsPoints
@@ -168,3 +169,17 @@ fun LocalGpsPoint.toExternal() = GpsPoint(
  */
 @JvmName("localGpsPointListToExternal")
 fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)
+
+/**
+ * Converts [GeoPoint] into a [Location].
+ *
+ * @receiver [GeoPoint]
+ */
+internal fun GeoPoint.toLocation(time: Long): Location {
+    val location = Location("osmdroid")
+    location.latitude = this.latitude
+    location.longitude = this.longitude
+    location.time = time
+    location.speed = 0f
+    return location
+}

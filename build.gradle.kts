@@ -22,4 +22,3 @@ buildscript {
 }
 
 apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
-

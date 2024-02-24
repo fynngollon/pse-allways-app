@@ -71,7 +71,7 @@ dependencies {
     //implementation("org.postgresql:postgresql:42.3.1")
     implementation("mysql:mysql-connector-java:8.0.33") //Implementierung Treiber für SQL
     implementation(kotlin("stdlib-jdk8")) //Implementierung Bibliothek
-    
+
     // Hilt - data injection
     implementation("com.google.dagger:hilt-android:2.50")
     ksp("com.google.dagger:hilt-compiler:2.50")
