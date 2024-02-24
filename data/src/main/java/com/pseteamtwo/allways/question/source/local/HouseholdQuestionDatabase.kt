@@ -9,5 +9,11 @@ import androidx.room.RoomDatabase
 @Database(entities = [LocalQuestion::class], version = 1, exportSchema = false)
 abstract class HouseholdQuestionDatabase : RoomDatabase() {
 
+    /**
+     * Provides the [HouseholdQuestionDao] for this database to modify
+     * the HouseholdQuestions table.
+     *
+     * @return The [HouseholdQuestionDao] for this database.
+     */
     abstract fun householdQuestionDao(): HouseholdQuestionDao
 }
