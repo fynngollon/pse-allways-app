@@ -23,7 +23,7 @@ enum class Mode(val modeType: String) {
     /**
      * [Stage] was traveled by running.
      */
-    RUNNING,
+    RUNNING("Rennen"),
 
     /**
      * The means of transportation of [Stage] is an E-Bike.
