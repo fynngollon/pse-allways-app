@@ -314,7 +314,7 @@ fun EditTripDialog(
                             onClick = {
                                 if(stageUiStates.any{ it.mode == Mode.NONE} || tripUiState.purpose == Purpose.NONE) {
                                     scope.launch{
-                                        val result = snackbarHostState.showSnackbar("Wegezweck oder Verkehrsmittel dürfen nicht leer sein.", null, true, SnackbarDuration.Short)
+                                        snackbarHostState.showSnackbar("Wegezweck oder Verkehrsmittel dürfen nicht leer sein.", null, true, SnackbarDuration.Short)
                                     }
                                 } else {
                                     onConfirm()

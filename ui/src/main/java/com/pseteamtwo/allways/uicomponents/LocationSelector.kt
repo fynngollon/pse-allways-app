@@ -106,7 +106,7 @@ fun LocationSelector(
                     factory = {
                             context ->
                         org.osmdroid.views.MapView(context).apply {
-                            Configuration.getInstance().userAgentValue = context.packageName;
+                            Configuration.getInstance().userAgentValue = context.packageName
                             setTileSource(TileSourceFactory.MAPNIK)
                             setMultiTouchControls(true)
 
