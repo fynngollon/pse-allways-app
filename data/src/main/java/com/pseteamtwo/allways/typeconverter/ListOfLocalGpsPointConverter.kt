@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.typeconverter
 
-import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import kotlinx.serialization.encodeToString

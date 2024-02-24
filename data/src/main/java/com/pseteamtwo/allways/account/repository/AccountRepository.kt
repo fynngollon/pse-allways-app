@@ -1,9 +1,9 @@
 package com.pseteamtwo.allways.account.repository
 
-import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
-import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.account.Account
+import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.exception.AccountNotFoundException
+import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlinx.coroutines.flow.Flow
 import kotlin.jvm.Throws
 
@@ -74,7 +74,6 @@ interface AccountRepository {
     suspend fun validateLogin(email: String, password: String): Boolean
 
     /**
-     * TODO("this comment; i don't know the difference to [validateLogin]")
      *
      * @return
      */

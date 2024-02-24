@@ -25,7 +25,8 @@ class HouseholdQuestionNetworkDataSource :
             connection.use {
                 // Prepare and execute SQL statement to retrieve all questions
                 val sqlLoadStatement = "SELECT * FROM `allways-app`.`%s`;"
-                val statement =connection.prepareStatement(sqlLoadStatement.format("tbl${pseudonym}householdquestions"))
+                val statement =connection.prepareStatement(sqlLoadStatement.format(
+                    "tbl${pseudonym}householdquestions"))
                 val resultSet = statement.executeQuery()
 
                 // Extract data from the result set and convert to NetworkQuestion objects
@@ -38,7 +39,7 @@ class HouseholdQuestionNetworkDataSource :
                         resultSet.getString("title"),
                         QuestionType.valueOf(resultSet.getString("type")),
                         optionsList,
-                        resultSet.getString("answer"), // Handle securely if necessary
+                        resultSet.getString("answer"),
                         resultSet.getString("pseudonym")
                     )
                     questions.add(question)
@@ -70,12 +71,15 @@ class HouseholdQuestionNetworkDataSource :
                 // Prepare and execute SQL statement for each question
                 for (question in questions) {
                     // Build the SQL statement with parameters
-                    val sqlSaveStatement = "INSERT INTO `allways-app`.`%s` (`id`, `title`, `type`, `options`, `answer`, `pseudonym`) VALUES (?, ?, ?, ?, ?, ?);"
-                    val statement = connection.prepareStatement(sqlSaveStatement.format("tbl${pseudonym}householdquestions"))
+                    val sqlSaveStatement = "INSERT INTO `allways-app`.`%s` (`id`, `title`," +
+                            " `type`, `options`, `answer`, `pseudonym`) VALUES (?, ?, ?, ?, ?, ?);"
+                    val statement = connection.prepareStatement(sqlSaveStatement.format(
+                        "tbl${pseudonym}householdquestions"))
                     statement.setString(1, question.id)
                     statement.setString(2, question.title)
                     statement.setString(3, question.type.toString())
-                    statement.setString(4, question.options?.joinToString(","))
+                    statement.setString(4, question.options?.joinToString(
+                        ","))
                     statement.setString(5, question.answer)
                     statement.setString(6, question.pseudonym)
 
@@ -103,7 +107,8 @@ class HouseholdQuestionNetworkDataSource :
             connection.use {
                 // Prepare and execute SQL statement to delete the question
                 val sqlDeleteStatement = "DELETE FROM `allways-app`.`%s` WHERE (`id` = ?);"
-                val statement = connection.prepareStatement(sqlDeleteStatement.format("tbl${pseudonym}householdquestions"))
+                val statement = connection.prepareStatement(sqlDeleteStatement.format(
+                    "tbl${pseudonym}householdquestions"))
                 statement.setString(1, id)
                 statement.executeUpdate()
                 statement.close()

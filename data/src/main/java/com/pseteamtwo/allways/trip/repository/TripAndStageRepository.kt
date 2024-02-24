@@ -11,10 +11,10 @@ import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
 import com.pseteamtwo.allways.trip.Trip
 import kotlinx.coroutines.flow.Flow
+import kotlin.jvm.Throws
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
-import kotlin.jvm.Throws
 
 /**
  * Repository to handle all [Trip]s, [Stage]s and [GpsPoint]s and

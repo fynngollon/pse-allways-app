@@ -26,13 +26,12 @@ class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE) //TODO("not sure if private is right")
+        context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
 
     /**
      * This companion object holds various strings as keys for storing and accessing
      * the settings in [SharedPreferences].
      */
-    //TODO("why is this in a companion object?")
     companion object {
         //Settings keys
         private const val KEY_LANGUAGE = "language"
@@ -64,7 +63,6 @@ class AppPreferences @Inject constructor(
 
     private fun getDefaultLanguage(): Language {
         return Language.GERMAN
-        //TODO("should that be here or anywhere else?")
     }
 
     /*
@@ -115,7 +113,7 @@ class AppPreferences @Inject constructor(
             if(isBatteryDependencyEnabled) {
                 val batteryLevel = getBatteryLevel() //TODO("could cause high battery usage")
                 if(batteryLevel <= batteryDependency.first) {
-                    this.trackingRegularity = batteryDependency.second //TODO("don't know if this uses the set()-function call how it should be")
+                    this.trackingRegularity = batteryDependency.second
                 }
             }
             //actual get-method
@@ -133,7 +131,6 @@ class AppPreferences @Inject constructor(
             ).apply()
         }
 
-    //TODO("Not sure if this code does what it is intended to do but cant test it yet")
     private fun getBatteryLevel(): Double {
         val batteryManager = context.getSystemService(BatteryManager::class.java)!!
         val level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)

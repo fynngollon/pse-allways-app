@@ -17,11 +17,33 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
+/**
+ * NOT INTEGRATED YET, BUT FULLY FUNCTIONAL. See [LocationClient] for more information.
+ *
+ * A Client that runs continuously while tracking is active. It receives the latest user locations
+ * and provides them as a hot flow (callers keep getting updates) to other classes.
+ */
 class DefaultLocationClient(
     private val context: Context,
     private val client: FusedLocationProviderClient
 ) : LocationClient {
 
+    /**
+     * Returns a callback flow of the user's current location. This function can be called to
+     * continuously get the last received tracking location updates of the user.
+     * Firstly, it checks if the user has granted all necessary permissions to allow location
+     * tracking and the device has internet connection and GPS enabled.
+     * Then it creates a [LocationRequest], request updates and continuously listens to new
+     * tracking location.
+     * Upon received, it sends the locations into the flow for the listeners to collect.
+     *
+     * @throws [LocationClient.LocationException] if the user hasn't granted all necessary permissions for location
+     * tracking
+     * @param interval defines how often the users location should be requested. Note that the
+     * frequency of locations returned by the [LocationRequest] from Google Play Services still
+     * varies drastically depending on the battery percentage and the user's activity.
+     * @return a callback flow (hot flow) of [Location] with the latest user locations.
+     */
     @SuppressLint("MissingPermission")
     override fun getLocationUpdates(interval: Long): Flow<Location> {
         return callbackFlow {

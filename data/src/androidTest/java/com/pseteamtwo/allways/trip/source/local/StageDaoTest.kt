@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.trip.source.local
 
-import android.location.Location
 import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider

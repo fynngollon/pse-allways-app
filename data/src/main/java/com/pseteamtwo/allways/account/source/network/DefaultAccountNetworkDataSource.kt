@@ -22,7 +22,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             connection.use {
                 // Prepare and execute SQL statement
-                val statement = connection.prepareStatement("SELECT * FROM tblaccounts WHERE email = ?")
+                val statement = connection.prepareStatement(
+                    "SELECT * FROM tblaccounts WHERE email = ?")
                 statement.setString(1, email)
                 val resultSet = statement.executeQuery()
 
@@ -32,8 +33,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                     val networkAccount = NetworkAccount(
                         resultSet.getString("email"),
                         resultSet.getString("pseudonym"),
-                        resultSet.getString("passwordHash"), // Avoid storing or transmitting plaintext passwords
-                        resultSet.getString("passwordSalt") // Avoid storing or transmitting plaintext passwords
+                        resultSet.getString("passwordHash"),
+                        resultSet.getString("passwordSalt")
                     )
 
                     // Close the result set before closing the statement
@@ -65,16 +66,17 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             connection.use {
                 // 2. Prepare and execute SQL statement
                 val statement = connection.prepareStatement(
-                    "INSERT INTO `allways-app-accounts`.`tblaccounts` (`email`, `pseudonym`, `passwordHash`, `passwordSalt`) VALUES (?, ?, ?, ?);")
+                    "INSERT INTO `allways-app-accounts`.`tblaccounts` (`email`, `pseudonym`," +
+                            " `passwordHash`, `passwordSalt`) VALUES (?, ?, ?, ?);")
                 statement.setString(1, account.email)
                 statement.setString(2, account.pseudonym)
-                statement.setString(3, account.passwordHash) // Ensure proper hashing and security best practices
-                statement.setString(4, account.passwordSalt) // Ensure proper hashing and security best practices
+                statement.setString(3, account.passwordHash)
+                statement.setString(4, account.passwordSalt)
                 statement.executeUpdate()
                 //3. Close the prepared statement
                 statement.close()
 
-                //creates a table in the data-bank for the trips of the user with the given pseudonym
+                //creates a table in the data-bank for the trips with the given pseudonym
                 val tripTableString = "tbl${account.pseudonym}trips"
                 val sqlTripStatement = "CREATE TABLE `allways-app`.`%s` (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
@@ -88,11 +90,12 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                         "  `endLocation` VARCHAR(100) NULL,\n" +
                         "  PRIMARY KEY (`id`),\n" +
                         "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"
-                val createTripsStatement = connection.prepareStatement(sqlTripStatement.format(tripTableString))
+                val createTripsStatement = connection.prepareStatement(
+                    sqlTripStatement.format(tripTableString))
                 createTripsStatement.executeUpdate()
                 createTripsStatement.close()
 
-                //creates a table in the data-bank for the stages of the user with the given pseudonym
+                //creates a table in the data-bank for the stages with the given pseudonym
                 val stageTableString = "tbl${account.pseudonym}stages"
                 val sqlStagesStatement = "CREATE TABLE `allways-app`.`%s` (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
@@ -106,11 +109,12 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                         "  `endLocation` VARCHAR(100) NULL,\n" +
                         "  PRIMARY KEY (`id`),\n" +
                         "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"
-                val createStagesStatement = connection.prepareStatement(sqlStagesStatement.format(stageTableString))
+                val createStagesStatement = connection.prepareStatement(
+                    sqlStagesStatement.format(stageTableString))
                 createStagesStatement.executeUpdate()
                 createStagesStatement.close()
 
-                //creates a table in the data-bank for the householdQuestions of the user with the given pseudonym
+                //creates a table in the data-bank for the householdQuestions with the given pseudonym
                 val householdQuestionTableString = "tbl${account.pseudonym}householdquestions"
                 val sqlHouseholdQuestionsStatement = "CREATE TABLE `allways-app`.`%s` (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
@@ -121,7 +125,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                         "  `pseudonym` VARCHAR(100) NULL,\n" +
                         "  PRIMARY KEY (`id`),\n" +
                         "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"
-                val createHouseholdQuestionStatement = connection.prepareStatement(sqlHouseholdQuestionsStatement.format(householdQuestionTableString))
+                val createHouseholdQuestionStatement = connection.prepareStatement(
+                    sqlHouseholdQuestionsStatement.format(householdQuestionTableString))
                 createHouseholdQuestionStatement.executeUpdate()
                 createHouseholdQuestionStatement.close()
 
@@ -136,7 +141,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                         "  `pseudonym` VARCHAR(100) NULL,\n" +
                         "  PRIMARY KEY (`id`),\n" +
                         "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"
-                val createProfileQuestionStatement = connection.prepareStatement(sqlProfileQuestionStatement.format(profileQuestionTableString))
+                val createProfileQuestionStatement = connection.prepareStatement(
+                    sqlProfileQuestionStatement.format(profileQuestionTableString))
                 createProfileQuestionStatement.executeUpdate()
                 createProfileQuestionStatement.close()
             }
@@ -185,7 +191,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             connection.use {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("SELECT 1 FROM tblaccounts WHERE email = ?")
+                val statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblaccounts WHERE email = ?")
                 statement.setString(1, email)
                 val resultSet = statement.executeQuery()
 
@@ -218,7 +225,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
             connection.use {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("SELECT 1 FROM tblaccounts WHERE pseudonym = ?")
+                val statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblaccounts WHERE pseudonym = ?")
                 statement.setString(1, pseudonym)
                 val resultSet = statement.executeQuery()
 

@@ -11,12 +11,13 @@ import com.pseteamtwo.allways.trip.tracking.ACTIVITY_RECOGNITION_NOTIFICATION_ID
 import com.pseteamtwo.allways.trip.tracking.ACTIVITY_RECOGNITION_NOTIFICATION_TEXT
 import com.pseteamtwo.allways.trip.tracking.ACTIVITY_RECOGNITION_NOTIFICATION_TITLE
 import com.pseteamtwo.allways.trip.tracking.TrackingService
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-
+/**
+ * NOT FUNCTIONAL YET
+ */
 //@AndroidEntryPoint
 class ActivityTransitionService : TrackingService() {
 
