@@ -4,18 +4,19 @@ package com.pseteamtwo.allways.trips
 
 import android.location.Address
 import android.location.Location
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.pseteamtwo.allways.map.addressToString
 import com.pseteamtwo.allways.trip.GpsPoint
-
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
-
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
+
 import dagger.hilt.android.lifecycle.HiltViewModel
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,23 +25,31 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 import org.osmdroid.bonuspack.location.GeocoderNominatim
 import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+
 import java.io.IOException
 import java.util.Locale
+
 import javax.inject.Inject
 
-
+/**
+ * View model holding the [TripsScreen's][TripsScreen] UI state. Converts trip data from a
+ * [TripAndStageRepository] into a [TripsUiState] and passes user input back.
+ *
+ * @property tripsUiState the current TripUiState
+ * */
 @HiltViewModel
 class TripsViewModel @Inject constructor(private val tripAndStageRepository: TripAndStageRepository) : ViewModel() {
-    private var _tripsUiState: MutableStateFlow<TripsUiState> = MutableStateFlow(TripsUiState(loading = true))
+    private var _tripsUiState: MutableStateFlow<TripsUiState> = MutableStateFlow(TripsUiState())
     val tripsUiState: StateFlow<TripsUiState> = _tripsUiState.asStateFlow()
 
-    private var nextId: Long = 0
+    private var nextTripUiStateId: Long = 0
 
     private val geocoder: GeocoderNominatim = GeocoderNominatim(Locale.getDefault(), Configuration.getInstance().userAgentValue)
 
@@ -49,7 +58,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             tripAndStageRepository.observeAllTrips().collect {
                 trips ->
                 val tripUiStates: MutableList<TripUiState> = mutableListOf()
-                val tripUiStateId = nextId
+                val tripUiStateId = nextTripUiStateId
                 for (trip in trips) {
 
                     val tripUiState = TripUiState(
@@ -74,7 +83,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         updateTrip = {updateTrip(trip.id)},
                         sendToServer = false
                     )
-                    nextId++
+                    nextTripUiStateId++
 
                     tripUiStates.add(tripUiState)
 
@@ -107,8 +116,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                 _tripsUiState.update {
                     it.copy(
                         tripUiStates = tripUiStates,
-                        loading = false,
-                        serverConnectionFailed = false
                     )
                 }
             }
@@ -118,7 +125,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
     fun addTrip(): TripUiState {
         val oldTripUiStates = _tripsUiState.value.tripUiStates
 
-        val tripUiStateId = nextId
+        val tripUiStateId = nextTripUiStateId
         val stageUiStateId: Int = 0
 
         val dateTime = LocalDateTime.now()
@@ -275,7 +282,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                 tripUiStates = (oldTripUiStates + tripUiState).sorted()
             )
         }
-        nextId++
+        nextTripUiStateId++
 
         return tripUiState
     }
