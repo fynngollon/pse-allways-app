@@ -117,10 +117,10 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
     }
 
-    fun addTrip(): TripUiState {
+    fun addTrip(): Long {
         val oldTripUiStates = _tripsUiState.value.tripUiStates
 
-        val tripUiStateId = nextId
+        val tripUiStateId = nextId++
         val stageUiStateId: Int = 0
 
         val dateTime = LocalDateTime.now()
@@ -130,7 +130,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
 
         val tripUiState = TripUiState(
             id = tripUiStateId,
-            tripId = 0,
+            tripId = 0L,
             stageUiStates = listOf(
                 StageUiState(
                     id = stageUiStateId,
@@ -275,12 +275,11 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                 tripUiStates = (oldTripUiStates + tripUiState).sorted()
             )
         }
-        nextId++
 
-        return tripUiState
+        return tripUiStateId
     }
 
-    private fun deleteTrip(tripUiStateId: Long) {
+   fun deleteTrip(tripUiStateId: Long) {
         val tripUiState = getTripUiState(tripUiStateId)
         viewModelScope.launch {
             tripAndStageRepository.deleteTrip(tripUiState.tripId)
@@ -466,7 +465,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         return getTripUiStates().indexOfFirst{it.id == tripUiStateId}
     }
 
-    private fun getTripUiState(tripUiStateId: Long): TripUiState {
+    fun getTripUiState(tripUiStateId: Long): TripUiState {
         return getTripUiStates()[getTripUiStateIndex(tripUiStateId)]
     }
 
