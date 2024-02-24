@@ -1,7 +1,6 @@
 package com.pseteamtwo.allways.question.source.network
 
 import com.pseteamtwo.allways.question.QuestionType
-import com.pseteamtwo.allways.question.source.local.LocalQuestion
 import kotlinx.serialization.Serializable
 
 /**
