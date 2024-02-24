@@ -180,20 +180,20 @@ fun StageCard(
                                 initialDateTime = stageUiState.startDateTime,
                                 initialHour = stageUiState.startHour,
                                 initialMinute = stageUiState.startMinute,
-                                minDateTime = previousStageUiState?.endDateTime ?: LocalDateTime.MIN,
+                                //minDateTime = previousStageUiState?.endDateTime ?: LocalDateTime.MIN,
                                 minHour = if(previousStageUiState?.endDate == stageUiState.startDate) previousStageUiState.endHour else 0,
                                 minMinute =
                                 if(previousStageUiState?.endDate == stageUiState.startDate) {
                                     if (previousStageUiState.endHour == stageUiState.startHour) previousStageUiState.endMinute else 0
                                 } else 0,
-                                maxDateTime = stageUiState.endDateTime,
+                                //maxDateTime = stageUiState.endDateTime,
                                 maxHour = if(stageUiState.startDate == stageUiState.endDate) stageUiState.endHour else 23,
                                 maxMinute =
                                 if(stageUiState.startDate == stageUiState.endDate) {
                                     if (stageUiState.startHour == stageUiState.endHour) stageUiState.endMinute else 59
                                 } else 59,
                                 onTimeChange = { hour: Int, minute: Int -> stageUiState.setStartTime(hour, minute)},
-                                onDateChange = { date: LocalDate -> stageUiState.setStartDate(date)}
+                                //onDateChange = { date: LocalDate -> stageUiState.setStartDate(date)}
                             )
                         }
                         Row(
@@ -212,10 +212,10 @@ fun StageCard(
 
                             Text(
                                 text = "Verkehrsmittel: ",
-                                modifier = modifier.weight(2.5f)
+                                modifier = modifier.weight(2.2f)
                             )
 
-                            Spacer(modifier = modifier.weight(1.5f))
+                            Spacer(modifier = modifier.weight(0.2f))
 
                             ExposedDropdownMenuBox(
                                 expanded = expanded,
@@ -224,7 +224,7 @@ fun StageCard(
                             ) {
 
                                 OutlinedTextField(
-                                    value = selectedMode.name,
+                                    value = selectedMode.modeType,
                                     onValueChange = {},
                                     readOnly = true,
                                     leadingIcon = {
@@ -239,6 +239,7 @@ fun StageCard(
                                     modifier = Modifier
                                         .menuAnchor()
                                         .height(50.dp)
+                                        .width(300.dp)
                                 )
 
                                 ExposedDropdownMenu(expanded = expanded,
@@ -247,7 +248,7 @@ fun StageCard(
                                     for(mode in Mode.entries) {
                                         DropdownMenuItem(
                                             text = {
-                                                Text(mode.name)
+                                                Text(mode.modeType)
                                             },
                                             onClick = {
                                                 expanded = false
@@ -259,7 +260,7 @@ fun StageCard(
                                 }
                             }
 
-                            Spacer(modifier = modifier.weight(0.25f))
+                            Spacer(modifier = modifier.weight(0.2f))
                         }
                         Row(
                             modifier = modifier
@@ -271,20 +272,20 @@ fun StageCard(
                                 initialDateTime = stageUiState.endDateTime,
                                 initialHour = stageUiState.endDateTime.hour,
                                 initialMinute = stageUiState.endDateTime.minute,
-                                minDateTime = stageUiState.startDateTime,
+                                //minDateTime = stageUiState.startDateTime,
                                 minHour = if(stageUiState.startDate == stageUiState.endDate) stageUiState.startHour else 0,
                                 minMinute =
                                     if(stageUiState.startDate == stageUiState.endDate) {
                                         if (stageUiState.startHour == stageUiState.endHour) stageUiState.startMinute else 0
                                     } else 0,
-                                maxDateTime = nextStageUiState?.startDateTime ?: LocalDateTime.MAX,
+                                //maxDateTime = nextStageUiState?.startDateTime ?: LocalDateTime.MAX,
                                 maxHour = if(stageUiState.endDate == nextStageUiState?.startDate) nextStageUiState.startHour else 23,
                                 maxMinute =
                                     if(stageUiState.endDate == nextStageUiState?.startDate) {
                                         if(stageUiState.endHour == nextStageUiState.startHour) nextStageUiState.startMinute else 59
                                     } else 59,
                                 onTimeChange = { hour: Int, minute: Int -> stageUiState.setEndTime(hour, minute)},
-                                onDateChange = { date: LocalDate -> stageUiState.setEndDate(date)}
+                                //onDateChange = { date: LocalDate -> stageUiState.setEndDate(date)}
                             )
 
                         }
@@ -357,14 +358,14 @@ fun TimeField(
     initialDateTime: LocalDateTime,
     initialHour: Int,
     initialMinute: Int,
-    minDateTime: LocalDateTime,
+    //minDateTime: LocalDateTime,
     minHour: Int,
     minMinute: Int,
-    maxDateTime: LocalDateTime,
+    //maxDateTime: LocalDateTime,
     maxHour: Int,
     maxMinute: Int,
     onTimeChange: (Int, Int) -> Unit,
-    onDateChange: (LocalDate) -> Unit
+    //onDateChange: (LocalDate) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyBoardController = LocalSoftwareKeyboardController.current
@@ -398,9 +399,9 @@ fun TimeField(
         mutableStateOf(false)
     }
 
-    val datePickerState = rememberDatePickerState(
+    /*val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = initialDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    )
+    )*/
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -575,12 +576,12 @@ fun TimeField(
             text = "Uhr",
             //modifier = modifier.weight(1f)
         )
-        Spacer(modifier = modifier.width(4.dp))
+        /*Spacer(modifier = modifier.width(4.dp))
         IconButton(
             onClick = { showDatePicker = true },
         ) {
             Icon(imageVector = Icons.Rounded.CalendarMonth, contentDescription = "Datum auswählen")
-        }
+        }*/
         /*if (showDatePicker) {
             DatePickerDialog(
                 onDismissRequest = { showDatePicker = false },

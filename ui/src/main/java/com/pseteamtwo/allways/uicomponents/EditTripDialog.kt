@@ -116,6 +116,7 @@ fun EditTripDialog(
 
                 item {
                     Column {
+                        Spacer(modifier = modifier.height(16.dp))
                         Row(
                             modifier = modifier
                                 .fillMaxWidth(),
@@ -181,8 +182,8 @@ fun EditTripDialog(
 
                             Spacer(modifier = modifier.weight(0.2f))
                         }
+                        Spacer(modifier = modifier.height(16.dp))
                     }
-
                 }
 
                 if (tripUiState.tripId != 0L) {
