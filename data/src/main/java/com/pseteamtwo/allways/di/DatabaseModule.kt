@@ -148,11 +148,7 @@ abstract class RepositoryModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataSourceModule {
-    @Singleton
-    @Binds
-    abstract fun bindAccountDataSource(dataSource: DefaultAccountNetworkDataSource):
-            AccountNetworkDataSource
+class DataSourceModule {
 
     @Singleton
     @Provides
@@ -163,12 +159,6 @@ abstract class DataSourceModule {
             "Account.db"
         ).build()
     }
-
-    @Singleton
-    @Binds
-    abstract fun bindProfileQuestionDataSource(
-        dataSource: ProfileQuestionNetworkDataSource
-    ): QuestionNetworkDataSource
 
     @Singleton
     @Provides
@@ -182,11 +172,6 @@ abstract class DataSourceModule {
         ).build()
     }
 
-    @Singleton
-    @Binds
-    abstract fun bindHouseholdQuestionDataSource(
-        dataSource: HouseholdQuestionNetworkDataSource
-    ): QuestionNetworkDataSource
 
     @Singleton
     @Provides
@@ -200,10 +185,6 @@ abstract class DataSourceModule {
         ).build()
     }
 
-    @Singleton
-    @Binds
-    abstract fun bindTripDataSource(dataSource: DefaultTripNetworkDataSource):
-            TripNetworkDataSource
 
     @Singleton
     @Provides
@@ -215,10 +196,36 @@ abstract class DataSourceModule {
             "Trip.db"
         ).build()
     }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataSourceBindModule {
 
     @Singleton
     @Binds
     abstract fun bindStageDataSource(dataSource: DefaultStageNetworkDataSource):
             StageNetworkDataSource
 
+    @Singleton
+    @Binds
+    abstract fun bindTripDataSource(dataSource: DefaultTripNetworkDataSource):
+            TripNetworkDataSource
+
+    @Singleton
+    @Binds
+    abstract fun bindHouseholdQuestionDataSource(
+        dataSource: HouseholdQuestionNetworkDataSource
+    ): QuestionNetworkDataSource
+
+    @Singleton
+    @Binds
+    abstract fun bindProfileQuestionDataSource(
+        dataSource: ProfileQuestionNetworkDataSource
+    ): QuestionNetworkDataSource
+
+    @Singleton
+    @Binds
+    abstract fun bindAccountDataSource(dataSource: DefaultAccountNetworkDataSource):
+            AccountNetworkDataSource
 }
