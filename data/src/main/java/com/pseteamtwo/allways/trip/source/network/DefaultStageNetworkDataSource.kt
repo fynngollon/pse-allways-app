@@ -7,7 +7,7 @@ import com.pseteamtwo.allways.trip.Mode
 import kotlinx.coroutines.sync.Mutex
 
 /**
- * This class implements the [StageNetworkDataSource]
+ * This class implements the [StageNetworkDataSource].
  *
  * @constructor Creates an instance of the class.
  */
