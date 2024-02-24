@@ -55,7 +55,8 @@ fun HomeScreen(
             profileViewModel,
             profileQuestions = profileViewModel.profileUiState.value.profileQuestions,
             householdQuestions = profileViewModel.profileUiState.value.householdQuestions,
-            trips = tripsUiStates
+            trips = tripsUiStates,
+            tripsViewModel = tripsViewModel
         )
     }
 
