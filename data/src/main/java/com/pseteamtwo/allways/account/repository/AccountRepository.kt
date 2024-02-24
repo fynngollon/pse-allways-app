@@ -74,7 +74,6 @@ interface AccountRepository {
     suspend fun validateLogin(email: String, password: String): Boolean
 
     /**
-     * TODO("this comment; i don't know the difference to [validateLogin]")
      *
      * @return
      */

@@ -10,7 +10,6 @@ import androidx.annotation.RequiresApi
 //@HiltAndroidApp
 class TrackingNotification : Application() {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
 

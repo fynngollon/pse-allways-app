@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-
+/**
+ * NOT FUNCTIONAL YET
+ */
 //@AndroidEntryPoint
 class ActivityTransitionService : TrackingService() {
 

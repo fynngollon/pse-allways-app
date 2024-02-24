@@ -102,6 +102,7 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
             accountRepository.observe().first().pseudonym
         }
         //saves all Questions to Network
-        questionNetworkDataSource.saveQuestions(accountRepository.observe().first().pseudonym, questions.toNetwork(pseudonym))
+        questionNetworkDataSource.saveQuestions(accountRepository.observe().first().pseudonym,
+            questions.toNetwork(pseudonym))
     }
 }

@@ -22,7 +22,8 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
             connection.use {
                 // Prepare and execute SQL statement to retrieve all questions
                 val sqlLoadStatement = "SELECT * FROM `allways-app`.`%s`;"
-                val statement = connection.prepareStatement(sqlLoadStatement.format("tbl${pseudonym}profilequestions"))
+                val statement = connection.prepareStatement(sqlLoadStatement.format(
+                    "tbl${pseudonym}profilequestions"))
                 val resultSet = statement.executeQuery()
 
                 // Extract data from the result set and convert to NetworkQuestion objects
@@ -35,7 +36,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
                         resultSet.getString("title"),
                         QuestionType.valueOf(resultSet.getString("type")),
                         optionsList,
-                        resultSet.getString("answer"), // Handle securely if necessary
+                        resultSet.getString("answer"),
                         resultSet.getString("pseudonym")
                     )
                     questions.add(question)

@@ -34,7 +34,8 @@ class HouseholdQuestionRepository @Inject constructor(
     //@ApplicationScope scope: CoroutineScope,
 ): DefaultQuestionRepository<HouseholdQuestionDao,
         HouseholdQuestionNetworkDataSource, HouseholdQuestionnaireNetworkDataSource>(
-    householdQuestionDao, householdQuestionNetworkDataSource, householdQuestionnaireNetworkDataSource,
+    householdQuestionDao, householdQuestionNetworkDataSource,
+    householdQuestionnaireNetworkDataSource,
     accountRepository, dispatcher, //scope
 ) {
 }

@@ -20,7 +20,6 @@ import com.pseteamtwo.allways.question.source.network.NetworkQuestion
  * Without this, type erasure will cause compiler errors because these methods will have the same
  * signature on the JVM.
  */
-//TODO("not sure if JvmName really is necessary")
 
 
 /**
