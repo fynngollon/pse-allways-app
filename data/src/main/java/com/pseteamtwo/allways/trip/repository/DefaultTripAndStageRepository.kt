@@ -1,7 +1,9 @@
 package com.pseteamtwo.allways.trip.repository
 
 import android.location.Location
+import androidx.compose.runtime.rememberCoroutineScope
 import com.pseteamtwo.allways.account.repository.AccountRepository
+import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.exception.NoTimeContinuityException
 import com.pseteamtwo.allways.exception.TeleportationException
@@ -25,11 +27,14 @@ import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.TripNetworkDataSource
 import com.pseteamtwo.allways.trip.toExternal
 import com.pseteamtwo.allways.trip.toLocation
+import com.pseteamtwo.allways.trip.toNetwork
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
@@ -68,7 +73,7 @@ class DefaultTripAndStageRepository @Inject constructor(
     private val gpsPointLocalDataSource: GpsPointDao,
     private val accountRepository: AccountRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    //@ApplicationScope private val scope: CoroutineScope,
+    @ApplicationScope private val scope: CoroutineScope,
 ) : TripAndStageRepository {
 
     override suspend fun observeAllTrips(): Flow<List<Trip>> {
@@ -715,14 +720,44 @@ class DefaultTripAndStageRepository @Inject constructor(
 
 
 
-    override suspend fun loadTripsAndStagesFromNetwork() {
-        TODO("Not yet implemented")
-    }
+    override suspend fun saveTripsAndStagesToNetwork(tripIds: List<Long>) {
+        val tripsToUpload = mutableListOf<LocalTripWithStages>()
+
+        tripIds.forEach {
+            val localTripWithStagesNullable = withContext(dispatcher) {
+                tripLocalDataSource.getTripWithStages(it)
+            }
+
+            assert(localTripWithStagesNullable != null) {
+                "Trip ID $it does not exist in local database"
+            }
+
+            val localTripWithStages = localTripWithStagesNullable as LocalTripWithStages
+            tripsToUpload.add(localTripWithStages)
+
+            assert(localTripWithStages.trip.isConfirmed) {
+                "Trip with ${localTripWithStages.trip.id} is not confirmed"
+            }
+        }
+
+        val pseudonym = withContext(dispatcher) {
+            accountRepository.observe().first().pseudonym
+        }
+
+        val networkTrips = tripsToUpload.toNetwork()
+
+        scope.launch(dispatcher){
+            tripNetworkDataSource.saveTrips(pseudonym, networkTrips)
+
+            tripsToUpload.forEach {
+                val networkStages = it.stages.toNetwork()
+
+                stageNetworkDataSource.saveStages(pseudonym, networkStages)
+            }
+        }
 
 
 
-    override suspend fun saveTripsAndStagesToNetwork(tripIds: List<String>) {
-        TODO("Not yet implemented")
     }
 
 
@@ -735,7 +770,7 @@ class DefaultTripAndStageRepository @Inject constructor(
      * @param endTime End time to check.
      * @param excludedTripId Trip to not check for interference due to it being the trip the
      * times should be checked of. If null, no trip is excluded in the check.
-     * @return True, if there is such a time conflict; false if no conflicts occur.
+     * @return True, if there is such a time conflict; false if no conflicts occurs.
      */
     private suspend fun isTimeConflictInTrips(
         startTime: LocalDateTime,

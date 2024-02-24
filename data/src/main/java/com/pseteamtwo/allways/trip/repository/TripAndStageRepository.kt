@@ -233,17 +233,6 @@ interface TripAndStageRepository {
      */
     suspend fun getTripsOfTimespan(startTime: LocalDateTime, endTime: LocalDateTime): List<Trip>
 
-    //suspend fun connectTripsAndStages()
-
-    /**
-     * Loads all [Trip]s existing on the network database including all their [Stage]s they
-     * consist of.
-     *
-     * @throws ServerConnectionFailedException If no connection to the network database can be
-     * established.
-     */
-    @Throws(ServerConnectionFailedException::class)
-    suspend fun loadTripsAndStagesFromNetwork()
 
     /**
      * Saves all specified [Trip]s to the network database including all their [Stage]s they
@@ -254,5 +243,5 @@ interface TripAndStageRepository {
      * established.
      */
     @Throws(ServerConnectionFailedException::class)
-    suspend fun saveTripsAndStagesToNetwork(tripIds: List<String>)
+    suspend fun saveTripsAndStagesToNetwork(tripIds: List<Long>)
 }
