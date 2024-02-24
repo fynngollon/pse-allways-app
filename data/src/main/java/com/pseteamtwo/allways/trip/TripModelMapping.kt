@@ -5,6 +5,8 @@ import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
 import com.pseteamtwo.allways.trip.source.local.LocalStageWithGpsPoints
 import com.pseteamtwo.allways.trip.source.local.LocalTripWithStages
+import com.pseteamtwo.allways.trip.source.network.NetworkStage
+import com.pseteamtwo.allways.trip.source.network.NetworkTrip
 import org.osmdroid.util.GeoPoint
 
 /** TODO("kdoc comments are outdated")
@@ -82,6 +84,41 @@ fun LocalTripWithStages.toExternal() = Trip(
 fun List<LocalTripWithStages>.toExternal() = map(LocalTripWithStages::toExternal)
 
 
+/**
+ * Trip: local to network
+ *
+ * Converts a [LocalTripWithStages] into a [NetworkTrip] to upload it to the network database.
+ *
+ * @receiver [LocalTripWithStages]
+ */
+@JvmName("localTripWithStagesToNetwork")
+fun LocalTripWithStages.toNetwork(): NetworkTrip {
+    val trip = this.toExternal()
+    return NetworkTrip(
+        id = this.trip.id,
+        stageIds = this.stages.map { it.stage.id },
+        purpose = this.trip.purpose,
+        startDateTime = trip.startDateTime,
+        endDateTime = trip.endDateTime,
+        startLocation = trip.startLocation,
+        endLocation = trip.endLocation,
+        duration = trip.duration.toInt(),
+        distance = trip.distance
+    )
+}
+
+/**
+ * Trip: local to network (List)
+ *
+ * Converts a list of [LocalTripWithStages]s into a list of [NetworkTrip]
+ * to upload it to the network database.
+ *
+ * @receiver [List]
+ */
+@JvmName("localTripWithStagesListToNetwork")
+fun List<LocalTripWithStages>.toNetwork() = map(LocalTripWithStages::toNetwork)
+
+
 
 /**
  * Stage
@@ -137,6 +174,41 @@ fun LocalStageWithGpsPoints.toExternal() = Stage(
  */
 @JvmName("localStageListToExternal")
 fun List<LocalStageWithGpsPoints>.toExternal() = map(LocalStageWithGpsPoints::toExternal)
+
+
+/**
+ * Stage: local to network
+ *
+ * Converts a [LocalStageWithGpsPoints] into a [NetworkStage] to upload it to the network database.
+ *
+ * @receiver [LocalStageWithGpsPoints]
+ */
+@JvmName("localStageWithGpsPointsToNetwork")
+fun LocalStageWithGpsPoints.toNetwork(): NetworkStage {
+    val stage = this.toExternal()
+    return NetworkStage(
+        id = this.stage.id,
+        tripId = this.stage.tripId!!,
+        mode = this.stage.mode,
+        startDateTime = stage.startDateTime,
+        endDateTime = stage.endDateTime,
+        startLocation = stage.startLocation,
+        endLocation = stage.endLocation,
+        duration = stage.duration.toInt(),
+        distance = stage.distance
+    )
+}
+
+/**
+ * Stage: local to network (List)
+ *
+ * Converts a list of [LocalStageWithGpsPoints]s into a list of [NetworkStage]
+ * to upload it to the network database.
+ *
+ * @receiver [List]
+ */
+@JvmName("localStageWithGpsPointsListToNetwork")
+fun List<LocalStageWithGpsPoints>.toNetwork() = map(LocalStageWithGpsPoints::toNetwork)
 
 
 
