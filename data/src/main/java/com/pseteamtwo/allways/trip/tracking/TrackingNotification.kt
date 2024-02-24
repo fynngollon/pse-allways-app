@@ -18,7 +18,7 @@ class TrackingNotification : Application() {
         val channelLocationTracking = NotificationChannel(
             LOCATION_TRACKING_CHANNEL_ID,
             LOCATION_TRACKING_NOTIFICATION_NAME,
-            NotificationManager.IMPORTANCE_LOW
+            NotificationManager.IMPORTANCE_DEFAULT
         )
 
         /*
