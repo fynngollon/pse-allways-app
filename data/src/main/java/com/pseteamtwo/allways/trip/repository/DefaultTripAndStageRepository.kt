@@ -84,7 +84,6 @@ class DefaultTripAndStageRepository @Inject constructor(
 
 
 
-    //TODO("This could also use [StageDao.getStagesForTrip]")
     override suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>> {
         return tripLocalDataSource.observeTripWithStages(tripId).map { trip ->
             trip.stages.toExternal().sortedBy { it.startDateTime }
@@ -449,10 +448,8 @@ class DefaultTripAndStageRepository @Inject constructor(
 
         localStage.mode = mode
 
-        //TODO("This could also use [GpsPointDao.getGpsPointsForStage] (which is not yet implemented)")
         val gpsPointsOfLocalStage = withContext(dispatcher) {
             stageLocalDataSource.getStageWithGpsPoints(stageId)!!.sortedGpsPoints
-            //TODO("Not null assertion (!!.) maybe has to be deleted")
         }
 
         // check if either of the locations has been changed
@@ -488,7 +485,6 @@ class DefaultTripAndStageRepository @Inject constructor(
         endDateTime: LocalDateTime,
         startLocation: Location
     ) {
-        //TODO("Maybe with dispatcher")
         val localTrip = tripLocalDataSource.get(tripId)
 
         // does trip exist
@@ -500,7 +496,6 @@ class DefaultTripAndStageRepository @Inject constructor(
         val startGpsPoint = LocalGpsPoint(
             location = startLocation
         )
-        //TODO("Maybe with dispatcher")
         val endGpsPoint =
             stageLocalDataSource.getStageWithGpsPoints(tripId)!!.
             sortedGpsPoints.first().copy(id = 0L)
@@ -536,7 +531,6 @@ class DefaultTripAndStageRepository @Inject constructor(
             return
         }
 
-        //TODO("Maybe with dispatcher")
         val startGpsPoint =
             stageLocalDataSource.getStageWithGpsPoints(tripId)!!.
             sortedGpsPoints.first().copy(id = 0L)
@@ -584,7 +578,6 @@ class DefaultTripAndStageRepository @Inject constructor(
 
         val stagesOfTrip =
             tripLocalDataSource.getTripWithStages(localTripOfStage.id)!!.sortedStages
-        //TODO("Not null assertion (!!.) maybe has to be deleted")
 
         if (stagesOfTrip.first() != stageWithGpsPoints
             && stagesOfTrip.last() != stageWithGpsPoints) {
@@ -595,7 +588,6 @@ class DefaultTripAndStageRepository @Inject constructor(
         stageLocalDataSource.update(localStage.copy(tripId = null))
 
         // create trip and change stage
-        //TODO("Not null assertion (!!.) maybe has to be deleted")
         createTrip(
             listOf(stageLocalDataSource.getStageWithGpsPoints(localStage.id)!!.toExternal()),
             localTripOfStage.purpose
@@ -635,7 +627,6 @@ class DefaultTripAndStageRepository @Inject constructor(
 
         val stagesOfTrip =
             tripLocalDataSource.getTripWithStages(localTripOfStage.id)!!.sortedStages
-        //TODO("Not null assertion (!!.) maybe has to be deleted")
 
         if (stagesOfTrip.size == 1) {
             //trip only consisted of that stage so delete the whole trip
@@ -653,7 +644,6 @@ class DefaultTripAndStageRepository @Inject constructor(
 
 
 
-    // TODO can this be called with only one trip by ui? IllegalArgumentException
     override suspend fun connectTrips(tripIds: List<Long>) {
         val localTripsWithStages = mutableListOf<LocalTripWithStages>()
         tripIds.forEach { tripId ->

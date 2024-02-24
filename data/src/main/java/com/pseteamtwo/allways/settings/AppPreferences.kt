@@ -20,13 +20,14 @@ import javax.inject.Singleton
  * @property context Enables access to resources and services of the system.
  * @constructor Creates an instance of this class.
  */
-//TODO("maybe don't set default values here but anywhere else")
 @Singleton
 class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+
+
 
     /**
      * This companion object holds various strings as keys for storing and accessing
@@ -40,6 +41,7 @@ class AppPreferences @Inject constructor(
         private const val KEY_BATTERY_DEPENDENCY_ENABLED = "battery_dependency_enabled"
         private const val KEY_BATTERY_DEPENDENCY = "battery_dependency"
     }
+
 
 
     /**
@@ -65,14 +67,6 @@ class AppPreferences @Inject constructor(
         return Language.GERMAN
     }
 
-    /*
-    fun setLanguage(language: Language) {
-        TODO("Not yet implemented")
-    }
-    fun getLanguage(): Language {
-        TODO("Not yet implemented")
-    }
-    */
 
 
     /**
@@ -89,14 +83,6 @@ class AppPreferences @Inject constructor(
                 isTrackingEnabled
             ).apply()
 
-    /*
-    fun setTracking(tracking: Boolean) {
-        TODO("Not yet implemented")
-    }
-    fun isTrackingActive(): Boolean {
-        TODO("Not yet implemented")
-    }
-    */
 
 
     /**
@@ -143,14 +129,6 @@ class AppPreferences @Inject constructor(
         return (level / scale.toDouble()) * 100.0
     }
 
-    /*
-    fun setTrackingRegularity(trackingRegularity: TrackingRegularity) {
-        TODO("Not yet implemented")
-    }
-    fun getTrackingRegularity(): TrackingRegularity {
-        TODO("Not yet implemented")
-    }
-    */
 
 
     /**
@@ -169,14 +147,6 @@ class AppPreferences @Inject constructor(
                 isBatteryDependencyEnabled
             ).apply()
 
-    /*
-    fun setBatteryDependant(isBatteryDependant: Boolean) {
-        TODO("Not yet implemented")
-    }
-    fun isBatteryDependant(): Boolean {
-        TODO("Not yet implemented")
-    }
-    */
 
 
     /**
@@ -202,12 +172,4 @@ class AppPreferences @Inject constructor(
             ).apply()
         }
 
-    /*
-    fun setBatteryDependency(batteryCharge: Int, trackingRegularity: TrackingRegularity) {
-        TODO("Not yet implemented")
-    }
-    fun getRegularityForBattery(): TrackingRegularity {
-        TODO("Not yet implemented")
-    }
-    */
 }

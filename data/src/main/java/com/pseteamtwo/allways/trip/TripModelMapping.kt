@@ -9,7 +9,7 @@ import com.pseteamtwo.allways.trip.source.network.NetworkStage
 import com.pseteamtwo.allways.trip.source.network.NetworkTrip
 import org.osmdroid.util.GeoPoint
 
-/** TODO("kdoc comments are outdated")
+/**
  * Data model mapping extension functions. There are three model types for trip, stage and gpsPoint:
  *
  *

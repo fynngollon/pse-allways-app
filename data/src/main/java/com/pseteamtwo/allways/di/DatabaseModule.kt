@@ -287,36 +287,7 @@ object StageDatabaseModule {
     }
 }
 
-/*
-/** GPS Point */
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class GpsPointRepositoryModule {
 
-    @Singleton
-    @Binds
-    abstract fun bindGpsPointRepository(repository: DefaultTripAndStageRepository): TripAndStageRepository
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object GpsPointDatabaseModule {
-
-
-    @Singleton
-    @Provides
-    fun provideGpsPointDatabase(@ApplicationContext context: Context): GpsPointDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            GpsPointDatabase::class.java,
-            "GpsPoint.db"
-        ).build()
-    }
-
-    @Provides
-    fun provideGpsPointDao(database: GpsPointDatabase): GpsPointDao = database.gpsPointDao()
-}
-*/
 /** Account */
 @Module
 @InstallIn(SingletonComponent::class)

@@ -116,7 +116,7 @@ class DefaultAccountRepository @Inject constructor(
     }
 
     // doesn't compare email rn
-    // TODO needs review
+    // TODO("needs testing")
     override suspend fun authenticateAccount(): Boolean {
         // loads the local account
         val localAccount = accountLocalDataSource.observe().first()
