@@ -52,7 +52,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             tripAndStageRepository.observeAllTrips().collect {
                 trips ->
                 val tripUiStates: MutableList<TripUiState> = mutableListOf()
-                val tripUiStateId = nextId
+                val tripUiStateId = nextId++
                 for (trip in trips) {
 
                     val tripUiState = TripUiState(
@@ -76,7 +76,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         setPurpose = {purpose: Purpose ->  setTripUiStatePurpose(tripUiStateId, purpose)},
                         updateTrip = {updateTrip(trip.id)}
                     )
-                    nextId++
 
                     tripUiStates.add(tripUiState)
 
