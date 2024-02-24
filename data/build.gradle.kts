@@ -1,7 +1,7 @@
 plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.android")
-    id("com.android.application")
+    id("com.android.library")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         //applicationId = "com.pseteamtwo.allways"
-        minSdk = 23
+        minSdk = 26
         //targetSdk = 34
         //versionCode = 1
         //versionName = "1.0"

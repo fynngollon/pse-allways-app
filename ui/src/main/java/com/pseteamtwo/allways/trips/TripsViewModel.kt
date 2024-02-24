@@ -6,14 +6,11 @@ import android.location.Address
 import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
 import com.pseteamtwo.allways.map.addressToString
 import com.pseteamtwo.allways.trip.GpsPoint
-
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
-
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -30,10 +27,7 @@ import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import org.threeten.bp.ZoneOffset
 import java.io.IOException
-import java.time.Instant
-import java.time.ZoneId
 import java.util.Locale
 import javax.inject.Inject
 
@@ -42,6 +36,9 @@ import javax.inject.Inject
 class TripsViewModel @Inject constructor(private val tripAndStageRepository: TripAndStageRepository) : ViewModel() {
     private var _tripsUiState: MutableStateFlow<TripsUiState> = MutableStateFlow(TripsUiState(loading = true))
     val tripsUiState: StateFlow<TripsUiState> = _tripsUiState.asStateFlow()
+
+    private var _todaysTripsUiState: MutableStateFlow<TripsUiState> = MutableStateFlow(TripsUiState(loading = true))
+    val todaysTripsUiState: StateFlow<TripsUiState> = _todaysTripsUiState.asStateFlow()
 
     private var nextId: Long = 0
 
@@ -73,7 +70,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         createStageUiStates = {createStageUiStates(tripUiStateId)},
                         addStageUiStateBefore = {addStageUiStateBefore(tripUiStateId)},
                         addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
-                        updateTrip = {updateTrip(trip.id)}
+                        updateTrip = {updateTrip(trip.id)},
+                        sendToServer = false
                     )
                     nextId++
 
@@ -113,6 +111,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     )
                 }
             }
+
         }
     }
 
@@ -265,7 +264,9 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         purpose =  tripUiState.purpose
                     )
                 }
-            }
+            },
+            sendToServer = false
+
         )
 
         _tripsUiState.update {
@@ -989,5 +990,15 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         location.longitude = this.longitude
         location.time = time
         return location
+    }
+
+    private fun donateTrips(trips: List<TripUiState>) {
+        viewModelScope.launch {
+            val tripsToSend: MutableList<String> = mutableListOf()
+            for (trip in trips) {
+                tripsToSend.add(trip.tripId.toString())
+            }
+            tripAndStageRepository.saveTripsAndStagesToNetwork(tripsToSend)
+        }
     }
 }

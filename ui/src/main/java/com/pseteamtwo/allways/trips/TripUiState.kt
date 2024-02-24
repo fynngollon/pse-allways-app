@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.trips
 
-import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDateTime
@@ -24,7 +23,8 @@ data class TripUiState(
     val createStageUiStates: () -> Unit,
     val addStageUiStateBefore: () -> Unit,
     val addStageUiStateAfter: () -> Unit,
-    val updateTrip: () -> Unit
+    val updateTrip: () -> Unit,
+    var sendToServer: Boolean
 ): Comparable<TripUiState> {
     override fun compareTo(other: TripUiState): Int {
         return -startDateTime.compareTo(other.startDateTime)

@@ -133,7 +133,6 @@ class ProfileViewModel @Inject constructor(
         for(question in householdQuestions) {
             if(question.sendToServer) {
                 householdQuestionsToSend.add(question.id)
-
             }
         }
         viewModelScope.launch {

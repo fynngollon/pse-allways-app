@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import java.util.stream.IntStream
 import javax.inject.Inject
 
@@ -144,7 +145,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
 
 
     private suspend fun addDistancesOfLastWeekChart() {
-            var currentDate = LocalDate.now()
+            var currentDate = LocalDateTime.now().toLocalDate()
             val distanceLastWeekLabels: MutableList<String> = mutableListOf()
             val distanceLastWeekValues: MutableList<Long> = mutableListOf()
             for(i in IntStream.range(0, 7)) {

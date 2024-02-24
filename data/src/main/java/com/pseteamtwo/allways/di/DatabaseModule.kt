@@ -103,19 +103,20 @@ object ProfileQuestionDatabaseModule {
     {
         return HouseholdQuestionnaireNetworkDataSource()
     }
-
+/*
     @Singleton
     @Provides
     fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource {
         return DefaultTripNetworkDataSource()
     }
-
+*/
+    /*
     @Singleton
     @Provides
     fun provideDefaultStageNetworkDataSource() : DefaultStageNetworkDataSource {
         return DefaultStageNetworkDataSource()
     }
-
+*/
 
     @Singleton
     @Provides
@@ -129,13 +130,13 @@ object ProfileQuestionDatabaseModule {
     fun provideProfileQuestionnaireNetworkDataSource(): ProfileQuestionnaireNetworkDataSource {
         return ProfileQuestionnaireNetworkDataSource()
     }
-
+/*
     @Singleton
     @Provides
     fun provideDefaultAccountNetworkDataSource(): DefaultAccountNetworkDataSource {
         return DefaultAccountNetworkDataSource()
     }
-
+*/
     @Provides
     fun provideProfileQuestionDao(database: ProfileQuestionDatabase): ProfileQuestionDao = database.profileQuestionDao()
 }
@@ -188,6 +189,7 @@ abstract class TripRepositoryModule {
     abstract fun bindTripRepository(repository: DefaultTripAndStageRepository): TripAndStageRepository
 }
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class TripDataSourceModule {
@@ -213,7 +215,7 @@ object TripDatabaseModule {
 
     @Singleton
     @Provides
-    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource  {
+    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource {
         return DefaultTripNetworkDataSource()
     }
 

@@ -26,6 +26,7 @@ import com.pseteamtwo.allways.navigation.Screen
 import com.pseteamtwo.allways.profile.ProfileViewModel
 import com.pseteamtwo.allways.statistics.DetailedStatisticsCard
 import com.pseteamtwo.allways.statistics.StatisticsViewModel
+import com.pseteamtwo.allways.trips.TripsViewModel
 import com.pseteamtwo.allways.uicomponents.DonateDataDialog
 
 @Composable
@@ -35,9 +36,12 @@ fun HomeScreen(
     var showDonateDataDialog by remember{ mutableStateOf(false) }
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val statisticsViewModel: StatisticsViewModel = hiltViewModel()
-    //val tripsViewModel: TripsViewModel = hiltViewModel()
     val statisticsUiState by statisticsViewModel.homeStatisticsUiState.collectAsState()
     val chartUiStates = statisticsUiState.charts
+
+    val tripsViewModel: TripsViewModel = hiltViewModel()
+    val tripsUiState by tripsViewModel.tripsUiState.collectAsState()
+    val tripsUiStates = tripsUiState.tripUiStates
 
 
     if (showDonateDataDialog) {
@@ -45,7 +49,9 @@ fun HomeScreen(
             onDismiss = { showDonateDataDialog = false},
             profileViewModel,
             profileQuestions = profileViewModel.profileUiState.value.profileQuestions,
-            householdQuestions = profileViewModel.profileUiState.value.householdQuestions)
+            householdQuestions = profileViewModel.profileUiState.value.householdQuestions,
+            trips = tripsUiStates
+        )
     }
 
     Column {
@@ -102,6 +108,8 @@ fun HomeScreen(
                         }
                     }
                 }
+
+
             }
         }
     }
