@@ -89,13 +89,14 @@ interface TripAndStageRepository {
      * local stage database temporally.
      */
     @Throws(NoTimeContinuityException::class)
-    suspend fun updateStage(
-        stageId: Long,
-        mode: Mode,
-        startDateTime: LocalDateTime,
-        endDateTime: LocalDateTime,
-        startLocation: GeoPoint,
-        endLocation: GeoPoint
+    suspend fun updateStagesOfTrip(
+        tripId: Long,
+        stageIds: List<Long>,
+        modes: List<Mode>,
+        startDateTimes: List<LocalDateTime>,
+        endDateTimes: List<LocalDateTime>,
+        startLocations: List<GeoPoint>,
+        endLocations: List<GeoPoint>
     )
 
     /**

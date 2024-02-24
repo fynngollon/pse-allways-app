@@ -18,7 +18,7 @@ import org.threeten.bp.LocalDateTime
  * @constructor Creates a gpsPoint with the specified properties.
  */
 data class GpsPoint(
-    var id: Long,
-    var geoPoint: GeoPoint,
-    var time: LocalDateTime
+    val id: Long,
+    val geoPoint: GeoPoint,
+    val time: LocalDateTime
 )

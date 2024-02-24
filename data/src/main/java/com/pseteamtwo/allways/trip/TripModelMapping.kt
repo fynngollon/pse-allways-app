@@ -62,7 +62,7 @@ import org.osmdroid.util.GeoPoint
  * @receiver [LocalTripWithStages]
  */
 @JvmName("localToExternal")
-internal fun LocalTripWithStages.toExternal() = Trip(
+fun LocalTripWithStages.toExternal() = Trip(
     id = trip.id,
     purpose = trip.purpose,
     isConfirmed = trip.isConfirmed,
@@ -78,7 +78,7 @@ internal fun LocalTripWithStages.toExternal() = Trip(
  * @receiver [List]
  */
 @JvmName("localTripListToExternal")
-internal fun List<LocalTripWithStages>.toExternal() = map(LocalTripWithStages::toExternal)
+fun List<LocalTripWithStages>.toExternal() = map(LocalTripWithStages::toExternal)
 
 
 
@@ -94,7 +94,7 @@ internal fun List<LocalTripWithStages>.toExternal() = map(LocalTripWithStages::t
  * @receiver [Stage]
  */
 @JvmName("externalStageToLocal")
-internal fun Stage.toLocal(tripId: Long?) = LocalStage(
+fun Stage.toLocal(tripId: Long?) = LocalStage(
     id = id,
     tripId = tripId,
     mode = mode
@@ -109,7 +109,7 @@ internal fun Stage.toLocal(tripId: Long?) = LocalStage(
  * @receiver [List]
  */
 @JvmName("externalStageListToLocal")
-internal fun List<Stage>.toLocal(tripId: Long?) = map { stage ->  stage.toLocal(tripId)}
+fun List<Stage>.toLocal(tripId: Long?) = map { stage ->  stage.toLocal(tripId)}
 
 /**
  * Stage: local to external
@@ -120,7 +120,7 @@ internal fun List<Stage>.toLocal(tripId: Long?) = map { stage ->  stage.toLocal(
  * @receiver [LocalStageWithGpsPoints]
  */
 @JvmName("localStageToExternal")
-internal fun LocalStageWithGpsPoints.toExternal() = Stage(
+fun LocalStageWithGpsPoints.toExternal() = Stage(
     id = stage.id,
     mode = stage.mode,
     gpsPoints = sortedGpsPoints.toExternal()
@@ -135,7 +135,7 @@ internal fun LocalStageWithGpsPoints.toExternal() = Stage(
  * @receiver [List]
  */
 @JvmName("localStageListToExternal")
-internal fun List<LocalStageWithGpsPoints>.toExternal() = map(LocalStageWithGpsPoints::toExternal)
+fun List<LocalStageWithGpsPoints>.toExternal() = map(LocalStageWithGpsPoints::toExternal)
 
 
 
@@ -152,7 +152,7 @@ internal fun List<LocalStageWithGpsPoints>.toExternal() = map(LocalStageWithGpsP
  * @receiver [LocalGpsPoint]
  */
 @JvmName("localGpsPointToExternal")
-internal fun LocalGpsPoint.toExternal() = GpsPoint(
+fun LocalGpsPoint.toExternal() = GpsPoint(
     id = id,
     geoPoint = GeoPoint(location),
     time = location.time.convertToLocalDateTime()
@@ -167,4 +167,4 @@ internal fun LocalGpsPoint.toExternal() = GpsPoint(
  * @receiver [List]
  */
 @JvmName("localGpsPointListToExternal")
-internal fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)
+fun List<LocalGpsPoint>.toExternal() = map(LocalGpsPoint::toExternal)

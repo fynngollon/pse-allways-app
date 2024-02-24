@@ -211,6 +211,12 @@ object TripDatabaseModule {
         ).build()
     }
 
+    @Singleton
+    @Provides
+    fun provideDefaultTripNetworkDataSource() : DefaultTripNetworkDataSource  {
+        return DefaultTripNetworkDataSource()
+    }
+
     @Provides
     fun provideTripDao(database: TripAndStageDatabase): TripDao = database.tripDao()
 
@@ -222,17 +228,16 @@ object TripDatabaseModule {
 }
 
 /** Stage */
+/*
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class StageRepositoryModule {
-/*
+
     @Singleton
     @Binds
-    abstract fun bindStageRepository(repository: DefaultTripAndStageRepository): DefaultTripAndStageRepository
-*/
-
+    abstract fun bindStageRepository(repository: DefaultTripAndStageRepository): TripAndStageRepository
 }
-
+*/
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class StageDataSourceModule {
@@ -258,9 +263,16 @@ object StageDatabaseModule {
     }
 
     @Provides
-    fun provideStageDao(database: StageDatabase): StageDao = database.stageDao()
+    fun provideStageDao(database: StageDatabase): StageDao = database.stageDao()*/
+
+    @Singleton
+    @Provides
+    fun provideDefaultStageNetworkDataSource() : DefaultStageNetworkDataSource  {
+        return DefaultStageNetworkDataSource()
+    }
 }
 
+/*
 /** GPS Point */
 @Module
 @InstallIn(SingletonComponent::class)
@@ -326,5 +338,10 @@ object AccountDatabaseModule {
 
     @Provides
     fun provideAccountDao(database: AccountDatabase): AccountDao = database.accountDao()
-}
+
+    @Singleton
+    @Provides
+    fun provideDefaultAccountNetworkDataSource() : DefaultAccountNetworkDataSource  {
+        return DefaultAccountNetworkDataSource()
+    }
 }

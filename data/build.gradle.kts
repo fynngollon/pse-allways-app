@@ -1,19 +1,22 @@
 plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.android")
-    id("com.android.library")
+    id("com.android.application")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 
 android {
+    packagingOptions {
+        exclude("META-INF/INDEX.LIST")
+    }
     namespace = "com.pseteamtwo.allways"
     compileSdk = 34
 
     defaultConfig {
         //applicationId = "com.pseteamtwo.allways"
         minSdk = 23
-        targetSdk = 34
+        //targetSdk = 34
         //versionCode = 1
         //versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -59,13 +62,21 @@ android {
                 add("META-INF/*.properties")
             }
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "META-INF/kotlinx_coroutines_core.version"
         }
     }
 
 }
 
 dependencies {
+
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
+    // KSP
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.16")
     // added dependencies
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("com.google.android.gms:play-services-location:21.1.0")
@@ -101,6 +112,11 @@ dependencies {
     // TODO either update to android 8 or use this for duration calculation
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.core:core-ktx:1.12.0")
     // AndroidX Location - for tracking
     //implementation("androidx.location:location-services:2.6.0") TODO not found
     //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found

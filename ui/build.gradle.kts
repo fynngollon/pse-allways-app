@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    //id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
@@ -12,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.pseteamtwo.allways"
-        minSdk = 26
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -21,6 +22,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -33,11 +36,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "19"
     }
     buildFeatures {
         compose = true
@@ -59,14 +62,30 @@ android {
                 add("META-INF/*.properties")
             }
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "META-INF/kotlinx_coroutines_core.version"
         }
     }
+
 }
 
 dependencies {
     // TODO("either update to android 8 or use this for duration calculation")
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
+    implementation("org.osmdroid:osmdroid-android:6.1.14")
+    implementation("org.osmdroid:osmdroid-wms:6.1.14")
+    implementation("org.osmdroid:osmdroid-mapsforge:6.1.14")
+    implementation("org.osmdroid:osmdroid-geopackage:6.1.14")
+    implementation(project(":data"))
+
+    implementation ("com.github.MKergall:osmbonuspack:6.9.0")
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -105,6 +124,9 @@ dependencies {
 
     // For the view system.
     implementation("com.patrykandpatrick.vico:views:1.14.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

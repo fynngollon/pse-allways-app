@@ -12,12 +12,12 @@ import org.threeten.bp.LocalDateTime
  *
  * @property id The unique identification number of the trip for saving, editing and retrieving
  * purposes as well as for preventing duplicates.
- * @property stages A list of [Stage]s of which the trip consists.
- * If the trip is deleted, every of its [stages] should be deleted as well.
  * @property purpose The [Purpose] the trip got traveled for.
  * @property isConfirmed Indicates, whether the trip is confirmed by the user
  * (trips created through tracking are not confirmed until the user confirms,
  * while trips created by the user are confirmed).
+ * @property stages A list of [Stage]s of which the trip consists.
+ * If the trip is deleted, every of its [stages] should be deleted as well.
  * @constructor Creates a trip with the specified properties.
  * The properties [startDateTime], [endDateTime], [startLocation], [endLocation], [duration]
  * and [distance] are computed through the provided list of [Stage]s.
@@ -57,14 +57,15 @@ data class Trip(
         get() = stages.last().endLocation
 
     /**
-     * Duration of the whole trip. (Should equal difference [endDateTime] - [startDateTime]).
+     * Duration of the whole trip. (Should equal difference [endDateTime] - [startDateTime]
+     * if every stage of this trip would start directly after the previous one ended).
      * Calculated as the sum of the durations of the stages of this trip.
      */
     val duration: Long
         get() = stages.sumOf { it.duration }
 
     /**
-     * Duration of the whole trip.
+     * Distance of the whole trip.
      * Calculated as the sum of the distances of the stages of this trip.
      */
     val distance: Int
