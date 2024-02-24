@@ -90,7 +90,7 @@ class LoginViewModel @Inject constructor(private val accountRepository: DefaultA
     fun createAccount(email: String, password: String) {
         viewModelScope.launch {
             try {
-                accountRepository.createAccount(email, password)
+                //accountRepository.createAccount(email, password)
                 setLoginFailed(true)
             } catch (e: ServerConnectionFailedException) {
                 setServerConnectionFailed(true)
