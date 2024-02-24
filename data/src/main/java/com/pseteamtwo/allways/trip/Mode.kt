@@ -21,6 +21,11 @@ enum class Mode {
     WALK,
 
     /**
+     * [Stage] was traveled by running.
+     */
+    RUNNING,
+
+    /**
      * The means of transportation of [Stage] is an E-Bike.
      */
     E_BIKE,

@@ -70,20 +70,13 @@ class DefaultTripAndStageRepository @Inject constructor(
     //@ApplicationScope private val scope: CoroutineScope,
 ) : TripAndStageRepository {
 
-    /**
-     * Retrieves all [GpsPoint]s saved in the local gpsPoint database.
-     *
-     * @return A flow of all [GpsPoint]s saved in the local gpsPoint database in form of a list.
-     */
-    internal fun observeAllGpsPoints(): Flow<List<LocalGpsPoint>> {
-        return gpsPointLocalDataSource.observeAll()
-    }
+
 
 
 
     override suspend fun observeAllTrips(): Flow<List<Trip>> {
         return tripLocalDataSource.observeAllTripsWithStages().map { trip ->
-            trip.toExternal().sortedBy { it.startDateTime }
+            trip.toExternal().sortedByDescending { it.startDateTime }
         }
     }
 
