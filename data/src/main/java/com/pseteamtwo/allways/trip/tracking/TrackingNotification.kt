@@ -8,7 +8,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import dagger.hilt.android.HiltAndroidApp
 
-@HiltAndroidApp
+//@HiltAndroidApp
 class TrackingNotification : Application() {
 
     @RequiresApi(Build.VERSION_CODES.O)

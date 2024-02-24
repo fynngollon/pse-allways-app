@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-@AndroidEntryPoint
+//@AndroidEntryPoint
 class LocationService @Inject constructor(
     private val tripAndStageRepository: DefaultTripAndStageRepository
 ) : TrackingService() {

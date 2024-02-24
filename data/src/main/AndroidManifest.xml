@@ -11,8 +11,8 @@
     <!-- Required for 29+. -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
+    <!-- android:name=".trip.tracking.TrackingNotification" -->
     <application
-        android:name=".trip.tracking.TrackingNotification"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 
-@AndroidEntryPoint
+//@AndroidEntryPoint
 class ActivityTransitionService : TrackingService() {
 
     private lateinit var activityTransitionsClient: ActivityTransitionClient

@@ -149,7 +149,7 @@ abstract class HouseholdQuestionRepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindHouseholdQuestionRepository(repository: HouseholdQuestionRepository): QuestionRepository // TODO potential not the interface as return value
+    abstract fun bindHouseholdQuestionRepository(repository: HouseholdQuestionRepository): QuestionRepository // TODO potentially not the interface as return value
 }
 
 @Module
@@ -158,7 +158,7 @@ abstract class HouseholdQuestionDataSourceModule {
 
     @Singleton
     @Binds
-    abstract fun bindHouseholdQuestionDataSource(dataSource: HouseholdQuestionNetworkDataSource): QuestionNetworkDataSource // TODO potential not the interface as return value
+    abstract fun bindHouseholdQuestionDataSource(dataSource: HouseholdQuestionNetworkDataSource): QuestionNetworkDataSource // TODO potentially not the interface as return value
 }
 
 @Module
