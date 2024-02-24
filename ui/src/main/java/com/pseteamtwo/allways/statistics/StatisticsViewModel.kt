@@ -52,8 +52,10 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
 
      fun updateStatistics() {
          viewModelScope.launch {
+             /*homeChartUiStates = mutableListOf()
+             chartUiStates = mutableListOf()
              assembleStatisticsScreenUiState()
-             assembleHomeScreenUiState()
+             assembleHomeScreenUiState()*/
          }
     }
     /**

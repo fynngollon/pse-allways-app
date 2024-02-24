@@ -104,7 +104,5 @@ fun HomeScreen(
                 }
             }
         }
-
-
     }
 }
