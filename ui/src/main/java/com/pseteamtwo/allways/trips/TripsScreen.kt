@@ -21,6 +21,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,8 +52,8 @@ fun TripsScreen(
     val tripUiStates = tripsUiState.tripUiStates
 
     var showAddTripDialog by rememberSaveable { mutableStateOf(false) }
-    var addedTripUiState: TripUiState? by remember {
-        mutableStateOf(null)
+    var addedTripUiStateId by remember {
+        mutableLongStateOf(-1L)
     }
 
     Surface(
@@ -67,7 +69,7 @@ fun TripsScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                addedTripUiState = tripsViewModel.addTrip()
+                                addedTripUiStateId = tripsViewModel.addTrip()
                                 showAddTripDialog = true
                             },
                         ) {
@@ -118,7 +120,7 @@ fun TripsScreen(
                     Spacer(modifier = modifier.height(24.dp))
                     IconButton(
                         onClick = {
-                            addedTripUiState = tripsViewModel.addTrip()
+                            addedTripUiStateId = tripsViewModel.addTrip()
                             showAddTripDialog = true
                         },
                     ) {
@@ -141,12 +143,12 @@ fun TripsScreen(
         if(showAddTripDialog) {
             EditTripDialog(
                 modifier = modifier,
-                tripUiState = addedTripUiState!!,
+                tripUiState = tripsViewModel.getTripUiState(addedTripUiStateId),
                 onConfirm = {
                     showAddTripDialog = false
                 },
                 onDismissRequest = {
-                    addedTripUiState!!.deleteTrip()
+                    tripsViewModel.deleteTrip(addedTripUiStateId)
                     showAddTripDialog = false
                 }
             )
