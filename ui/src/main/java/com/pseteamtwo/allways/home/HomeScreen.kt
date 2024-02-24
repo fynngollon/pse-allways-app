@@ -29,6 +29,11 @@ import com.pseteamtwo.allways.statistics.StatisticsViewModel
 import com.pseteamtwo.allways.trips.TripsViewModel
 import com.pseteamtwo.allways.uicomponents.DonateDataDialog
 
+/**
+ * composable function for displaying the screen of the home view of the application.
+ * @param navController thze navcontroller for navigation
+ */
+
 @Composable
 fun HomeScreen(
     navController: NavController
@@ -74,7 +79,6 @@ fun HomeScreen(
                     Text(text = "Einstellungen")
                 }
             }
-            
         }
 
         Row(modifier = Modifier.padding(start = 20.dp, top = 20.dp)) {

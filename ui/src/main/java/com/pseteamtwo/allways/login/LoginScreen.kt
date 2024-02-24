@@ -20,7 +20,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.pseteamtwo.allways.navigation.Screen
 
-
+/**
+ * Composable function for displaying all the items in the login screen
+ */
 @Composable
 fun LoginScreen(navController: NavController) {
     val loginViewModel: LoginViewModel = hiltViewModel()
