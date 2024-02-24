@@ -18,10 +18,11 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LocationService : TrackingService() {
+class LocationService @Inject constructor(
+    private val tripAndStageRepository: DefaultTripAndStageRepository
+) : TrackingService() {
 
     private lateinit var locationClient: LocationClient
-    @Inject lateinit var tripAndStageRepository: DefaultTripAndStageRepository
 
     override fun onCreate() {
         super.onCreate()
@@ -58,7 +59,7 @@ class LocationService : TrackingService() {
             .setContentText(
                 LOCATION_TRACKING_NOTIFICATION_TEXT
             )
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.allways_app_icon)
             .setOngoing(true)
     }
 

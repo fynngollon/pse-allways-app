@@ -23,10 +23,6 @@
         tools:replace="android:allowBackup"
         tools:targetApi="s">
         <service
-            android:name=".trip.tracking.MyService"
-            android:enabled="true"
-            android:exported="true"></service>
-        <service
             android:name=".trip.tracking.location.LocationService"
             android:foregroundServiceType="location"
             tools:ignore="ForegroundServicePermission" />
@@ -42,17 +38,7 @@
             <intent-filter>
                 <action android:name="TRANSITION_RECEIVER" />
             </intent-filter>
-        </receiver> <!-- temporary for testing -->
-        <activity
-            android:name=".trip.tracking.todo.MainActivityTEMP"
-            android:exported="true"
-            android:theme="@style/Theme.AllWays">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        </receiver>
     </application>
 
 </manifest>

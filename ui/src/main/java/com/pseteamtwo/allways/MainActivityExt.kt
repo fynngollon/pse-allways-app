@@ -1,16 +1,13 @@
-package com.pseteamtwo.allways.trip.tracking.todo
+package com.pseteamtwo.allways
 
-import android.Manifest
 import android.content.Intent
-import android.os.Build
 import androidx.compose.runtime.Composable
-import androidx.core.app.ActivityCompat
 import com.pseteamtwo.allways.settings.AppPreferences
 import com.pseteamtwo.allways.trip.tracking.ACTION_START
 import com.pseteamtwo.allways.trip.tracking.ACTION_STOP
 import com.pseteamtwo.allways.trip.tracking.location.LocationService
 
-fun MainActivityTEMP.startTracking() { // TODO to MainActivity
+fun MainActivity.startTracking() {
     Intent(applicationContext, LocationService::class.java).apply {
         action = ACTION_START
         startService(this)
@@ -26,7 +23,7 @@ fun MainActivityTEMP.startTracking() { // TODO to MainActivity
     AppPreferences(this).isTrackingEnabled = true
 }
 
-fun MainActivityTEMP.stopTracking() { // TODO to MainActivity
+fun MainActivity.stopTracking() {
     Intent(applicationContext, LocationService::class.java).apply {
         action = ACTION_STOP
         startService(this)
@@ -43,26 +40,26 @@ fun MainActivityTEMP.stopTracking() { // TODO to MainActivity
 }
 
 @Composable
-fun MainActivityTEMP.TrackingPermissionCheck() {
-    ActivityCompat.requestPermissions(
+fun MainActivity.TrackingPermissionCheck() {
+    androidx.core.app.ActivityCompat.requestPermissions(
         this,
         arrayOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
             "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
         ),
         0
     )
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+        androidx.core.app.ActivityCompat.requestPermissions(this,
+            arrayOf(android.Manifest.permission.ACTIVITY_RECOGNITION),
             0)
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+        androidx.core.app.ActivityCompat.requestPermissions(this,
+            arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
             0)
     }
 }
