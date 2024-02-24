@@ -150,7 +150,10 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             val distanceLastWeekValues: MutableList<Long> = mutableListOf()
             for(i in IntStream.range(0, 7)) {
                 distanceLastWeekLabels.add((currentDate.plusDays((i-6).toLong())).dayOfMonth.toString() + ".")
-                distanceLastWeekValues.add(statisticsRepository.getTripDistanceOfDate(currentDate).toLong())
+                distanceLastWeekValues.add(statisticsRepository.getTripDistanceOfDate(currentDate.plusDays(
+                    (i-6).toLong()
+                ))
+                    .toLong())
                 //currentDate = currentDate.plusDays(-1)
             }
 
