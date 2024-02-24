@@ -10,7 +10,8 @@ import org.threeten.bp.LocalDateTime
  *
  * This UI state contains all the necessary information to display the respective stage in the UI.
  *
- * @property id the unique identification number of this stage UI state inside the UI layer.
+ * @property id the identification number of this stage UI state inside the List of stage UI states
+ * of a trip
  * @property stageId The unique identification number of the respective stage in the Data layer (is
  * 0 if no respective stage exists yet).
  * @property mode the mode of the respective stage.

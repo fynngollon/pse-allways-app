@@ -45,24 +45,36 @@ import javax.inject.Inject
  * [TripAndStageRepository] into a [TripsUiState] and passes user input back.
  *
  * @property tripsUiState the current TripUiState
+ *
+ * @see TripsScreen
+ * @see TripAndStageRepository
+ * @see TripsUiState
+ * @see TripUiState
  * */
 @HiltViewModel
 class TripsViewModel @Inject constructor(private val tripAndStageRepository: TripAndStageRepository) : ViewModel() {
+    //actual mutable UI state
     private var _tripsUiState: MutableStateFlow<TripsUiState> = MutableStateFlow(TripsUiState())
+
+    //public immutable version of the UI state which can be observed by other classes
     val tripsUiState: StateFlow<TripsUiState> = _tripsUiState.asStateFlow()
 
+    //ID for next TripUiState
     private var nextTripUiStateId: Long = 0
 
+    //geocoder for geocoding GeoPoints to Addresses
     private val geocoder: GeocoderNominatim = GeocoderNominatim(Locale.getDefault(), Configuration.getInstance().userAgentValue)
 
+    //runs after initialization
     init {
         viewModelScope.launch {
             tripAndStageRepository.observeAllTrips().collect {
                 trips ->
                 val tripUiStates: MutableList<TripUiState> = mutableListOf()
                 val tripUiStateId = nextTripUiStateId++
-                for (trip in trips) {
 
+                for (trip in trips) {
+                    //create tripUiState
                     val tripUiState = TripUiState(
                         id = tripUiStateId,
                         tripId = trip.id,
@@ -81,25 +93,39 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         createStageUiStates = {createStageUiStates(tripUiStateId)},
                         addStageUiStateBefore = {addStageUiStateBefore(tripUiStateId)},
                         addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
-                        setPurpose = {purpose: Purpose ->  setTripUiStatePurpose(tripUiStateId, purpose)},
+                        setPurpose = {
+                            purpose: Purpose ->  setTripUiStatePurpose(tripUiStateId, purpose)
+                        },
                         updateTrip = {updateTrip(trip.id)},
                         sendToServer = false
                     )
 
+                    //add to list
                     tripUiStates.add(tripUiState)
 
+                    //try to get addresses for start and end locations of trip
                     CoroutineScope(Dispatchers.IO).launch{
                         var addresses: List<Address>
                         var startLocationName: String
                         var endLocationName: String
                         try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(trip.startLocation.latitude, trip.startLocation.longitude, 1)}
+                            addresses = withContext(Dispatchers.IO) {
+                                geocoder.getFromLocation(
+                                    trip.startLocation.latitude,
+                                    trip.startLocation.longitude, 1
+                                )
+                            }
                             startLocationName = addressToString(addresses[0])
                         } catch (exception: IOException) {
                             startLocationName = "-"
                         }
                         try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(trip.startLocation.latitude, trip.startLocation.longitude, 1)}
+                            addresses = withContext(Dispatchers.IO) {
+                                geocoder.getFromLocation(
+                                    trip.startLocation.latitude,
+                                    trip.startLocation.longitude, 1
+                                )
+                            }
                             endLocationName = addressToString(addresses[0])
                         } catch (exception: IOException) {
                             endLocationName = "-"
@@ -114,6 +140,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         )
                     }
                 }
+
+                //update UI state
                 _tripsUiState.update {
                     it.copy(
                         tripUiStates = tripUiStates,
@@ -123,6 +151,11 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
     }
 
+    /**
+     * Creates a new [TripsUiState]
+     *
+     * @return the ID of the new TripUiState
+     * */
     fun addTrip(): Long {
         val oldTripUiStates = _tripsUiState.value.tripUiStates
 
@@ -131,7 +164,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
 
         val dateTime = LocalDateTime.now()
 
-        val location = GeoPoint(49.009592,8.41512) //TODO: aktuelle Poition?
+        val location = GeoPoint(49.009592,8.41512)
         val locationName = "-"
 
         val tripUiState = TripUiState(
@@ -287,6 +320,12 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         return tripUiStateId
     }
 
+    /**
+     * Deletes the trip which belongs to the TripUiState with the specified [tripUiStateId] from the
+     * database
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * */
    fun deleteTrip(tripUiStateId: Long) {
         val tripUiState = getTripUiState(tripUiStateId)
         viewModelScope.launch {
@@ -294,6 +333,11 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
     }
 
+    /**
+     * Deletes the TripUiState with the specified [tripUiStateId]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * */
     private fun deleteTripUiState(tripUiStateId: Long) {
         val tripUiStateIndex = getTripUiStateIndex(tripUiStateId)
         _tripsUiState.update {
@@ -305,6 +349,12 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
     }
 
+    /**
+     * Creates StageUiStates for them and adds them to the TripUiState with the specified
+     * [tripUiStateId]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * */
     private fun createStageUiStates(tripUiStateId: Long) {
         viewModelScope.launch {
             tripAndStageRepository.observeStagesOfTrip(tripUiStateId).collect {
@@ -466,29 +516,68 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
     }
 
+    /**
+     * Gets the list of all TripUiStates
+     * */
     private fun getTripUiStates(): List<TripUiState> {
         return _tripsUiState.value.tripUiStates
     }
+
+    /**
+     * Gets the index of the TripUiState with the specified [tripUiStateId]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * */
     private fun getTripUiStateIndex(tripUiStateId: Long): Int {
         return getTripUiStates().indexOfFirst{it.id == tripUiStateId}
     }
 
+    /**
+     * Gets the TripUiState with the specified [tripUiStateId]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * */
     fun getTripUiState(tripUiStateId: Long): TripUiState {
         return getTripUiStates()[getTripUiStateIndex(tripUiStateId)]
     }
 
+
+    /**
+     * Gets the list of StageUiStates of the TripUiState with the specified [tripUiStateId]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * */
     private fun getStageUiStates(tripUiStateId: Long): List<StageUiState> {
         return getTripUiState(tripUiStateId).stageUiStates
     }
 
+    /**
+     * Gets the index of the StageUiState with the specified [stageUiStateId] belonging to the
+     * TripUiState with the [tripUiStateId]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * @param stageUiStateId the ID of the StageUiState
+     * */
     private fun getStageUiStateIndex(tripUiStateId: Long, stageUiStateId: Int): Int {
         return getStageUiStates(tripUiStateId).indexOfFirst{it.id == stageUiStateId}
     }
 
+    /**
+     * Gets the StageUiState with the specified [stageUiStateId] and [tripUiStateId]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * @param stageUiStateId the ID of the StageUiState
+     * */
     private fun getStageUiState(tripUiStateId: Long, stageUiStateId: Int): StageUiState {
         return getStageUiStates(tripUiStateId)[getStageUiStateIndex(tripUiStateId, stageUiStateId)]
     }
 
+    /**
+     * Replaces the TripUiState with the specified [tripUiStateId] with the [newTripUiState]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * @param newTripUiState the new TripUiState
+     * */
     private fun updateTripUiState(tripUiStateId: Long, newTripUiState: TripUiState) {
         val tripUiStates = getTripUiStates()
         val tripUiStateIndex = getTripUiStateIndex(tripUiStateId)
@@ -502,6 +591,14 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
     }
 
+    /**
+     * Replaces the StageUiState with the specified [stageUiStateId] belonging to the TripUiState
+     * with the specified [tripUiStateId] with the [newStageUiState]
+     *
+     * @param stageUiStateId the ID of the StageUiState
+     * @param tripUiStateId the ID of the TripUiState
+     * @param newStageUiState the new StageUiState
+     * */
     private fun updateStageUiState(tripUiStateId: Long, stageUiStateId: Int, newStageUiState: StageUiState) {
         val tripUiState = getTripUiState(tripUiStateId)
         val stageUiStates = getStageUiStates(tripUiStateId)
@@ -518,6 +615,13 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
+    /**
+     * Sets the purpose of the TripUiState with the specified [tripUiStateId] to the specified
+     * [purpose]
+     *
+     * @param tripUiStateId the ID of the TripUiState
+     * @param purpose the purpose to be set
+     * */
     private fun setTripUiStatePurpose(
         tripUiStateId: Long,
         purpose: Purpose
