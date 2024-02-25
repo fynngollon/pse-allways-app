@@ -122,8 +122,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         try {
                             addresses = withContext(Dispatchers.IO) {
                                 geocoder.getFromLocation(
-                                    trip.startLocation.latitude,
-                                    trip.startLocation.longitude, 1
+                                    trip.endLocation.latitude,
+                                    trip.endLocation.longitude, 1
                                 )
                             }
                             endLocationName = addressToString(addresses[0])
@@ -496,7 +496,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                             startLocationName = "-"
                         }
                         try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.startLocation.latitude, stageUiState.startLocation.longitude, 1)}
+                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.endLocation.latitude, stageUiState.endLocation.longitude, 1)}
                             endLocationName = addressToString(addresses[0])
                         } catch (exception: IOException) {
                             endLocationName = "-"
