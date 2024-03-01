@@ -85,9 +85,6 @@ fun StageCard(
     modifier: Modifier = Modifier,
     stageUiState: StageUiState,
 ) {
-    val previousStageUiState = stageUiState.getPreviousStageUiState()
-    val nextStageUiState = stageUiState.getNextStageUiState()
-
     var showStartLocationSelector by rememberSaveable {
         mutableStateOf(false)
     }
@@ -386,9 +383,6 @@ fun TimeField(
             )
         )
     }
-    var lastValidHour by rememberSaveable {
-        mutableIntStateOf(initialHour)
-    }
 
     var minuteTextFieldValue by remember {
         mutableStateOf(
@@ -397,9 +391,6 @@ fun TimeField(
                 selection = TextRange(2)
             )
         )
-    }
-    var lastValidMinute by rememberSaveable {
-        mutableIntStateOf(initialHour)
     }
 
     /*var showDatePicker by rememberSaveable {
