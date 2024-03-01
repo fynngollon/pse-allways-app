@@ -823,7 +823,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             viewModelScope.launch {
                 if(it.isToBeAddedBefore) {
                     tripAndStageRepository.addUserStageBeforeTripStart(
-                        tripId = tripUiState.id,
+                        tripId = tripUiState.tripId,
                         mode = it.mode,
                         startDateTime = it.startDateTime,
                         endDateTime = it.endDateTime,
@@ -831,7 +831,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     )
                 } else {
                     tripAndStageRepository.addUserStageAfterTripEnd(
-                        tripId = tripUiState.id,
+                        tripId = tripUiState.tripId,
                         mode = it.mode,
                         startDateTime = it.startDateTime,
                         endDateTime = it.endDateTime,
