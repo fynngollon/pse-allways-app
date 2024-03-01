@@ -188,17 +188,17 @@ fun StageCard(
                                 initialHour = stageUiState.startHour,
                                 initialMinute = stageUiState.startMinute,
                                 //minDateTime = previousStageUiState?.endDateTime ?: LocalDateTime.MIN,
-                                minHour = if(previousStageUiState?.endDate == stageUiState.startDate) previousStageUiState.endHour else 0,
-                                minMinute =
+                                //minHour = if(previousStageUiState?.endDate == stageUiState.startDate) previousStageUiState.endHour else 0,
+                                /*minMinute =
                                 if(previousStageUiState?.endDate == stageUiState.startDate) {
                                     if (previousStageUiState.endHour == stageUiState.startHour) previousStageUiState.endMinute else 0
-                                } else 0,
+                                } else 0,*/
                                 //maxDateTime = stageUiState.endDateTime,
-                                maxHour = if(stageUiState.startDate == stageUiState.endDate) stageUiState.endHour else 23,
-                                maxMinute =
+                                //maxHour = if(stageUiState.startDate == stageUiState.endDate) stageUiState.endHour else 23,
+                                /*maxMinute =
                                 if(stageUiState.startDate == stageUiState.endDate) {
                                     if (stageUiState.startHour == stageUiState.endHour) stageUiState.endMinute else 59
-                                } else 59,
+                                } else 59,*/
                                 onTimeChange = { hour: Int, minute: Int -> stageUiState.setStartTime(hour, minute)},
                                 //onDateChange = { date: LocalDate -> stageUiState.setStartDate(date)}
                             )
@@ -280,17 +280,17 @@ fun StageCard(
                                 initialHour = stageUiState.endDateTime.hour,
                                 initialMinute = stageUiState.endDateTime.minute,
                                 //minDateTime = stageUiState.startDateTime,
-                                minHour = if(stageUiState.startDate == stageUiState.endDate) stageUiState.startHour else 0,
-                                minMinute =
+                                //minHour = if(stageUiState.startDate == stageUiState.endDate) stageUiState.startHour else 0,
+                                /*minMinute =
                                     if(stageUiState.startDate == stageUiState.endDate) {
                                         if (stageUiState.startHour == stageUiState.endHour) stageUiState.startMinute else 0
-                                    } else 0,
+                                    } else 0,*/
                                 //maxDateTime = nextStageUiState?.startDateTime ?: LocalDateTime.MAX,
-                                maxHour = if(stageUiState.endDate == nextStageUiState?.startDate) nextStageUiState.startHour else 23,
-                                maxMinute =
+                                //maxHour = if(stageUiState.endDate == nextStageUiState?.startDate) nextStageUiState.startHour else 23,
+                                /*maxMinute =
                                     if(stageUiState.endDate == nextStageUiState?.startDate) {
                                         if(stageUiState.endHour == nextStageUiState.startHour) nextStageUiState.startMinute else 59
-                                    } else 59,
+                                    } else 59,*/
                                 onTimeChange = { hour: Int, minute: Int -> stageUiState.setEndTime(hour, minute)},
                                 //onDateChange = { date: LocalDate -> stageUiState.setEndDate(date)}
                             )
@@ -366,11 +366,11 @@ fun TimeField(
     initialHour: Int,
     initialMinute: Int,
     //minDateTime: LocalDateTime,
-    minHour: Int,
-    minMinute: Int,
+    //minHour: Int,
+    //minMinute: Int,
     //maxDateTime: LocalDateTime,
-    maxHour: Int,
-    maxMinute: Int,
+    //maxHour: Int,
+    //maxMinute: Int,
     onTimeChange: (Int, Int) -> Unit,
     //onDateChange: (LocalDate) -> Unit
 ) {
@@ -442,6 +442,12 @@ fun TimeField(
                         text = it.text,
                         selection = TextRange(it.text.length)
                     )
+                    if(hourTextFieldValue.text != "") {
+                        onTimeChange(
+                            hourTextFieldValue.text.toInt(),
+                            minuteTextFieldValue.text.toInt()
+                        )
+                    }
                 }
 
             },
@@ -459,7 +465,7 @@ fun TimeField(
                 onDone = {
                     focusManager.clearFocus()
                     keyBoardController?.hide()
-                    if (hourTextFieldValue.text.isEmpty()) {
+                    /*if (hourTextFieldValue.text.isEmpty()) {
                         hourTextFieldValue = TextFieldValue(
                             text = String.format("%02d", lastValidHour),
                             selection = TextRange(2)
@@ -478,7 +484,7 @@ fun TimeField(
                                 selection = TextRange(2)
                             )
                         }
-                    }
+                    }*/
                 }
             ),
             decorationBox = {innerTextField ->
@@ -524,6 +530,13 @@ fun TimeField(
                         text = it.text,
                         selection = TextRange(it.text.length)
                     )
+                    if(minuteTextFieldValue.text != "") {
+                        onTimeChange(
+                            hourTextFieldValue.text.toInt(),
+                            minuteTextFieldValue.text.toInt()
+                        )
+                    }
+
                 }
 
             },
@@ -541,7 +554,7 @@ fun TimeField(
                 onDone = {
                     focusManager.clearFocus()
                     keyBoardController?.hide()
-                    if (hourTextFieldValue.text.isEmpty()) {
+                    /*if (hourTextFieldValue.text.isEmpty()) {
                         hourTextFieldValue = TextFieldValue(
                             text = String.format("%02d", lastValidMinute),
                             selection = TextRange(2)
@@ -560,7 +573,7 @@ fun TimeField(
                                 selection = TextRange(2)
                             )
                         }
-                    }
+                    }*/
                 }
             ),
             decorationBox = {innerTextField ->
