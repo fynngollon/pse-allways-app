@@ -89,7 +89,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         endLocationName = "Lädt...",
                         duration = trip.duration,
                         distance = trip.distance,
-                        deleteTrip = {deleteTrip(trip.id)},
+                        deleteTrip = {deleteTrip(tripUiStateId)},
                         createStageUiStates = {createStageUiStates(tripUiStateId)},
                         addStageUiStateBefore = {addStageUiStateBefore(tripUiStateId)},
                         addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
