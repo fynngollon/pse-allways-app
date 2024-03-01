@@ -71,6 +71,7 @@ import org.osmdroid.util.GeoPoint
 
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import java.lang.IllegalArgumentException
 
 /**
  * Composable function to display a Dialog for editing a trip.
@@ -312,13 +313,17 @@ fun EditTripDialog(
                     ) {
                         Button(
                             onClick = {
-                                if(stageUiStates.any{ it.mode == Mode.NONE} || tripUiState.purpose == Purpose.NONE) {
-                                    scope.launch{
-                                        snackbarHostState.showSnackbar("Wegezweck oder Verkehrsmittel dürfen nicht leer sein.", null, true, SnackbarDuration.Short)
-                                    }
-                                } else {
-                                    onConfirm()
+                                var errorHasOccurred = false
+                                try {
                                     tripUiState.updateTrip()
+                                } catch (exception: IllegalArgumentException) {
+                                    errorHasOccurred = true
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(exception.message!!, null, true, SnackbarDuration.Short)
+                                    }
+                                }
+                                if(!errorHasOccurred) {
+                                    onConfirm()
                                 }
                             },
                             modifier = modifier,

@@ -71,9 +71,9 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             tripAndStageRepository.observeAllTrips().collect {
                 trips ->
                 val tripUiStates: MutableList<TripUiState> = mutableListOf()
-                val tripUiStateId = nextTripUiStateId++
 
                 for (trip in trips) {
+                    val tripUiStateId = nextTripUiStateId++
                     //create tripUiState
                     val tripUiState = TripUiState(
                         id = tripUiStateId,
@@ -96,9 +96,10 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         setPurpose = {
                             purpose: Purpose ->  setTripUiStatePurpose(tripUiStateId, purpose)
                         },
-                        updateTrip = {updateTrip(trip.id)},
+                        updateTrip = {updateTrip(tripUiStateId)},
                         sendToServer = false
                     )
+
 
                     //add to list
                     tripUiStates.add(tripUiState)
@@ -160,7 +161,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         val oldTripUiStates = _tripsUiState.value.tripUiStates
 
         val tripUiStateId = nextTripUiStateId++
-        val stageUiStateId: Int = 0
+        val stageUiStateId = 0
 
         val dateTime = LocalDateTime.now()
 
@@ -278,8 +279,13 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             addStageUiStateAfter = {addStageUiStateAfter(tripUiStateId)},
             setPurpose = {purpose: Purpose -> setTripUiStatePurpose(tripUiStateId, purpose)},
             updateTrip = {
+
                 val tripUiState = getTripUiState(tripUiStateId)
-                viewModelScope.launch {
+
+                var errorHasOccurred = false
+                var errorMessage = ""
+
+                viewModelScope.launch() {
                     val stages: MutableList<Stage> = mutableListOf()
                     for(stageUiState in getStageUiStates(tripUiStateId)) {
                         stages.add(
@@ -301,14 +307,22 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                             )
                         )
                     }
-                    tripAndStageRepository.createTrip(
-                        stages = stages,
-                        purpose =  tripUiState.purpose
-                    )
+                    try {
+                        tripAndStageRepository.createTrip(
+                            stages = stages,
+                            purpose =  tripUiState.purpose
+                        )
+                    } catch (exception: IllegalArgumentException) {
+                        errorHasOccurred = true
+                        errorMessage = exception.message.toString()
+                    }
+                }
+
+                if (errorHasOccurred) {
+                    throw IllegalArgumentException(errorMessage)
                 }
             },
             sendToServer = false
-
         )
 
         _tripsUiState.update {
@@ -356,12 +370,12 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
      * @param tripUiStateId the ID of the TripUiState
      * */
     private fun createStageUiStates(tripUiStateId: Long) {
+        val tripUiState = getTripUiState(tripUiStateId)
         viewModelScope.launch {
-            tripAndStageRepository.observeStagesOfTrip(tripUiStateId).collect {
+            tripAndStageRepository.observeStagesOfTrip(tripUiState.tripId).collect {
                 stages ->
                /* val tripUiStates = getTripUiStates()
                 val tripUiStateIndex = getTripUiStateIndex(tripUiStateId)*/
-                val tripUiState = getTripUiState(tripUiStateId)
                 val stageUiStates: MutableList<StageUiState> = mutableListOf()
                 for (i in stages.indices) {
                     val stage = stages[i]
