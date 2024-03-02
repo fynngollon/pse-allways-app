@@ -803,7 +803,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             if(it.isInDatabase) {
                 stageIds.add(it.stageId)
                 modes.add(it.mode)
-                startDateTimes.add(it.endDateTime)
+                startDateTimes.add(it.startDateTime)
                 endDateTimes.add(it.endDateTime)
                 startLocations.add(it.startLocation)
                 endLocations.add(it.endLocation)
