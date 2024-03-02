@@ -716,11 +716,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         minute: Int = getStageUiState(tripUiStateId, stageUiStateId).endDateTime.minute
     ) {
         val stageUiState = getStageUiState(tripUiStateId, stageUiStateId)
-        var endDate = stageUiState.endDateTime.toLocalDate()
+        val endDate = stageUiState.endDateTime.toLocalDate()
         val endTime = LocalTime.of(hour, minute)
-        if (endTime < stageUiState.startDateTime.toLocalTime()) {
-            endDate = endDate.plusDays(1)
-        }
         updateStageUiState(
             tripUiStateId = tripUiStateId,
             stageUiStateId = stageUiStateId,
