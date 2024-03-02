@@ -312,9 +312,12 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                             stages = stages,
                             purpose =  tripUiState.purpose
                         )
-                    } catch (exception: IllegalArgumentException) {
+                    // using Exception here because catching multiple exceptions like in Java
+                    // ( e.g. catch(RuntimeException | IllegalArgumentException e) ) is not possible
+                    // in Kotlin and I wanted to avoid multiple catch-blocks with the same code
+                    } catch (exception: Exception) {
                         errorHasOccurred = true
-                        errorMessage = exception.message.toString()
+                        errorMessage = exception.message!!
                     }
                 }
 
@@ -789,6 +792,9 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
 
     private fun updateStages(tripUiState: TripUiState) {
 
+        var errorHasOccurred = false
+        var errorMessage = ""
+
         val stageIds: MutableList<Long> = mutableListOf()
         val modes: MutableList<Mode> = mutableListOf()
         val startDateTimes: MutableList<LocalDateTime> = mutableListOf()
@@ -808,15 +814,27 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
 
         viewModelScope.launch {
-            tripAndStageRepository.updateStagesOfTrip(
-                tripId = tripUiState.tripId,
-                stageIds = stageIds,
-                modes = modes,
-                startDateTimes = startDateTimes,
-                endDateTimes = endDateTimes,
-                startLocations = startLocations,
-                endLocations = endLocations,
-            )
+            try {
+                tripAndStageRepository.updateStagesOfTrip(
+                    tripId = tripUiState.tripId,
+                    stageIds = stageIds,
+                    modes = modes,
+                    startDateTimes = startDateTimes,
+                    endDateTimes = endDateTimes,
+                    startLocations = startLocations,
+                    endLocations = endLocations
+                )
+            // using Exception here because catching multiple exceptions like in Java
+            // ( e.g. catch(RuntimeException | IllegalArgumentException e) ) is not possible
+            // in Kotlin and I wanted to avoid multiple catch-blocks with the same code
+            } catch (exception: Exception) {
+                errorHasOccurred = true
+                errorMessage = exception.message!!
+            }
+        }
+
+        if(errorHasOccurred) {
+            throw IllegalArgumentException(errorMessage)
         }
 
         tripUiState.stageUiStates.filter{ !it.isInDatabase }.forEach{
@@ -865,8 +883,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         isToBeAddedBefore = true,
                         isFirstStageOfTrip = true,
                         isLastStageOfTrip = false,
-                        startDateTime = dateTime,
-                        endDateTime = dateTime,
+                        startDateTime = dateTime.minusMinutes(2),
+                        endDateTime = dateTime.minusMinutes(1),
                         startLocation = location,
                         endLocation = location,
                         startLocationName = startLocationName,
@@ -1019,8 +1037,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         isToBeAddedBefore = false,
                         isFirstStageOfTrip = false,
                         isLastStageOfTrip = true,
-                        startDateTime = dateTime,
-                        endDateTime = dateTime,
+                        startDateTime = dateTime.plusMinutes(1),
+                        endDateTime = dateTime.plusMinutes(2),
                         startLocation = location,
                         endLocation = location,
                         startLocationName = startLocationName,
