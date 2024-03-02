@@ -270,8 +270,16 @@ fun TripCard(
         EditTripDialog(
             modifier = modifier,
             tripUiState = tripUiState,
-            onConfirm = {showEditTripDialog = false},
-            onDismissRequest = {showEditTripDialog = false}
+            onConfirm = {
+                showEditTripDialog = false
+            },
+            onDelete = {
+                tripUiState.deleteTrip()
+                showEditTripDialog = false
+            },
+            onDismissRequest = {
+                showEditTripDialog = false
+            }
         )
     }
 }

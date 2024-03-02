@@ -77,8 +77,9 @@ import java.lang.IllegalArgumentException
  * Composable function to display a Dialog for editing a trip.
  *
  * @param modifier optional composable modifier
- * @param onDismissRequest executes when the user dismisses the dialog
  * @param onConfirm executes when the user confirms their input
+ * @param onDelete executes when the user tips on the "delete" button
+ * @param onDismissRequest executes when the user dismisses the dialog
  * @param tripUiState the tripUiState of the trip to be edited
  * */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,6 +87,7 @@ import java.lang.IllegalArgumentException
 fun EditTripDialog(
     modifier: Modifier = Modifier,
     onConfirm: () -> Unit,
+    onDelete: () -> Unit,
     onDismissRequest: () -> Unit,
     tripUiState: TripUiState,
 ) {
@@ -124,8 +126,7 @@ fun EditTripDialog(
                         )
                         IconButton(
                             onClick = {
-                                tripUiState.deleteTrip()
-                                onDismissRequest()
+                                onDelete()
                             },
                             modifier.scale(1.25f)
                         ) {
@@ -428,6 +429,7 @@ fun EditTripDialogPreview() {
             setPurpose = {}
         ),
         onConfirm = {},
+        onDelete = {},
         onDismissRequest = {}
     )
 }

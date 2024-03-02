@@ -160,8 +160,12 @@ fun TripsScreen(
                 onConfirm = {
                     showAddTripDialog = false
                 },
+                onDelete = {
+                    tripsViewModel.deleteTripUiState(addedTripUiStateId)
+                    showAddTripDialog = false
+                },
                 onDismissRequest = {
-                    tripsViewModel.deleteTrip(addedTripUiStateId)
+                    tripsViewModel.deleteTripUiState(addedTripUiStateId)
                     showAddTripDialog = false
                 }
             )
