@@ -433,7 +433,7 @@ fun TimeField(
                         text = it.text,
                         selection = TextRange(it.text.length)
                     )
-                    if(hourTextFieldValue.text != "") {
+                    if(hourTextFieldValue.text != "" && minuteTextFieldValue.text != "") {
                         onTimeChange(
                             hourTextFieldValue.text.toInt(),
                             minuteTextFieldValue.text.toInt()
@@ -521,7 +521,7 @@ fun TimeField(
                         text = it.text,
                         selection = TextRange(it.text.length)
                     )
-                    if(minuteTextFieldValue.text != "") {
+                    if(hourTextFieldValue.text != "" && minuteTextFieldValue.text != "") {
                         onTimeChange(
                             hourTextFieldValue.text.toInt(),
                             minuteTextFieldValue.text.toInt()
