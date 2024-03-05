@@ -12,6 +12,7 @@ import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
+import com.pseteamtwo.allways.trip.Trip
 import com.pseteamtwo.allways.trip.convertToLocalDateTime
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.StageDao
@@ -67,6 +68,14 @@ class DefaultTripAndStageRepositoryTest {
         )
     )
 
+    private val userTrip1 = Trip(
+        1,
+        Purpose.WORK,
+        true,
+        listOf(stage1, stage2)
+    )
+
+
 
     //Test dependencies
     private lateinit var accountRepository: AccountRepository
@@ -85,6 +94,7 @@ class DefaultTripAndStageRepositoryTest {
 
     //Class under test
     private lateinit var repository: DefaultTripAndStageRepository
+
 
 
     // using an in-memory database because the information stored here disappears when the
@@ -128,6 +138,7 @@ class DefaultTripAndStageRepositoryTest {
 
     }
 
+
     @Test
     fun createTripStagesGpsPointsTest() = runTest {
         val gps1 = repository.createGpsPoint(geoPoint1.toLocation(time1))
@@ -149,8 +160,15 @@ class DefaultTripAndStageRepositoryTest {
         assertEquals(1, trips.size)
         assertEquals(2, stages.size)
         assertEquals(4, gpsPoints.size)
+    }
 
-        //assertEquals(stage1, createdStage1)
-        //assertEquals(stage2, createdStage2)
+
+
+    @Test
+    fun createTripTest() = runTest {
+        repository.createTrip(userTrip1.stages, userTrip1.purpose)
+
+        val savedUserTrip = repository.observeAllTrips().first().first()
+        assertEquals(userTrip1, savedUserTrip)
     }
 }

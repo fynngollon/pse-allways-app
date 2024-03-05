@@ -55,9 +55,9 @@ import javax.inject.Singleton
  *
  * @property tripLocalDataSource A [TripDao] to access the local trip database.
  * @property tripNetworkDataSource A [TripNetworkDataSource] to access the network trip database.
- * @property stageLocalDataSource A [StageDao] to access the local trip database.
+ * @property stageLocalDataSource A [StageDao] to access the local stage database.
  * @property stageNetworkDataSource A [StageNetworkDataSource] to access the network stage database.
- * @property gpsPointLocalDataSource A [TripDao] to access the local trip database.
+ * @property gpsPointLocalDataSource A [GpsPointDao] to access the local gpsPoint database.
  * @property accountRepository A [AccountRepository] to access the user's account data for saving
  * and retrieving data from the network database.
  * @property dispatcher A dispatcher to allow asynchronous function calls because this class uses
@@ -101,7 +101,9 @@ class DefaultTripAndStageRepository @Inject constructor(
         //check if stages are correct:
         //ids == 0, modes != NONE, gpsPoints.size == 2, timeContinuity in gpsPoints of each stage
         stages.forEach { stage ->
-            if(stage.id != 0L || stage.mode == Mode.NONE || stage.gpsPoints.size != 2) {
+            if(stage.mode == Mode.NONE || stage.gpsPoints.size != 2
+                //|| stage.id != 0L
+            ) {
                 throw IllegalArgumentException("Provided stages are invalid.")
             }
             val timeOfFirstGpsPoint = stage.gpsPoints.first().time
@@ -152,7 +154,7 @@ class DefaultTripAndStageRepository @Inject constructor(
             }
             listOfStages.add(createStageOfExistingGpsPoints(listOfGpsPoints, stage.mode))
         }
-        createTripOfExistingStages(listOfStages, purpose)
+        createTripOfExistingStages(listOfStages, purpose, true)
 
         //TODO("the following part is deprecated but still saved because it could be better on certain errors")
         /*val tripWithoutId = LocalTrip(purpose = purpose, isConfirmed = true)
@@ -184,7 +186,8 @@ class DefaultTripAndStageRepository @Inject constructor(
      */
     internal suspend fun createTripOfExistingStages(
         localStages: List<LocalStage>,
-        purpose: Purpose
+        purpose: Purpose,
+        isCreatedByUser: Boolean = false
     ): LocalTrip {
         require(localStages.isNotEmpty())
         // stages are in local db and aren't assigned to a trip
@@ -222,7 +225,7 @@ class DefaultTripAndStageRepository @Inject constructor(
 
         val localTripWithoutIds = LocalTrip(
             purpose = purpose,
-            isConfirmed = false
+            isConfirmed = isCreatedByUser
         )
 
         // inserts the local trip without stages to generate the trip id
@@ -772,7 +775,7 @@ class DefaultTripAndStageRepository @Inject constructor(
      * @param endTime End time to check.
      * @param excludedTripId Trip to not check for interference due to it being the trip the
      * times should be checked of. If null, no trip is excluded in the check.
-     * @return True, if there is such a time conflict; false if no conflicts occurs.
+     * @return True, if there is such time conflict; false if no conflicts occur.
      */
     private suspend fun isTimeConflictInTrips(
         startTime: LocalDateTime,
