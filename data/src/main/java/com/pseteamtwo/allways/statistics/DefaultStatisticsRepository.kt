@@ -73,10 +73,9 @@ class DefaultStatisticsRepository @Inject constructor(
         return ( trips.sumOf { it.duration } / trips.size.toDouble() ).roundToLong()
     }
 
-    override suspend fun getAverageTripSpeed(): Long {//TODO("get this into meters per second if it isn't already")
+    override suspend fun getAverageTripSpeed(): Long {
         return ( getAverageTripDistance() / getAverageTripDuration().toDouble() ).roundToLong()
     }
-
 
     override suspend fun getModalSplitOfAll(percentaged: Boolean): EnumMap<Mode, Int> {
         val trips: List<Trip> = tripAndStageRepository.observeAllTrips().first()
@@ -116,7 +115,7 @@ class DefaultStatisticsRepository @Inject constructor(
         trips: List<Trip>,
         percentaged: Boolean
     ): EnumMap<Mode, Int> {
-        val modalSplit: EnumMap<Mode, Int> = EnumMap(Mode::class.java) //TODO("not sure if this is correct")
+        val modalSplit: EnumMap<Mode, Int> = EnumMap(Mode::class.java)
 
         //set the distance for every mode to 0
         Mode.entries.forEach {
@@ -147,3 +146,9 @@ class DefaultStatisticsRepository @Inject constructor(
         return modalSplit
     }
 }
+
+
+
+
+
+

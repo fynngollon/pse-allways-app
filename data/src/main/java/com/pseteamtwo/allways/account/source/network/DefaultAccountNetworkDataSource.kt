@@ -4,6 +4,11 @@ import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import kotlinx.coroutines.sync.Mutex
 import java.sql.SQLException
 
+/**
+ * This class implements the [AccountNetworkDataSource]
+ *
+ * @constructor Creates an instance of the class.
+ */
 class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDataSource() {
     private val accessMutex = Mutex()
 
@@ -15,9 +20,10 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // Connect to the MySQL database
             val connection = createAccountConnection()
 
-            try {
+            connection.use {
                 // Prepare and execute SQL statement
-                val statement = connection.prepareStatement("SELECT * FROM tblaccounts WHERE email = ?")
+                val statement = connection.prepareStatement(
+                    "SELECT * FROM tblaccounts WHERE email = ?")
                 statement.setString(1, email)
                 val resultSet = statement.executeQuery()
 
@@ -27,8 +33,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                     val networkAccount = NetworkAccount(
                         resultSet.getString("email"),
                         resultSet.getString("pseudonym"),
-                        resultSet.getString("passwordHash"), // Avoid storing or transmitting plaintext passwords
-                        resultSet.getString("passwordSalt") // Avoid storing or transmitting plaintext passwords
+                        resultSet.getString("passwordHash"),
+                        resultSet.getString("passwordSalt")
                     )
 
                     // Close the result set before closing the statement
@@ -39,10 +45,6 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                     // Handle case where no account is found (return null or throw exception)
                     throw Exception("Account not found")
                 }
-
-            } finally {
-                // Close the connection
-                connection.close()
             }
 
         } catch (e: Exception) {
@@ -61,55 +63,58 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // 1. Connect to the MySQL database
             val connection = createAccountConnection() // Replace with your MySQL connection logic
 
-            try {
+            connection.use {
                 // 2. Prepare and execute SQL statement
                 val statement = connection.prepareStatement(
-                    "INSERT INTO `allways-app-accounts`.`tblaccounts` (`email`, `pseudonym`, `passwordHash`, `passwordSalt`) VALUES (?, ?, ?, ?);")
+                    "INSERT INTO `allways-app-accounts`.`tblaccounts` (`email`, `pseudonym`," +
+                            " `passwordHash`, `passwordSalt`) VALUES (?, ?, ?, ?);")
                 statement.setString(1, account.email)
                 statement.setString(2, account.pseudonym)
-                statement.setString(3, account.passwordHash) // Ensure proper hashing and security best practices
-                statement.setString(4, account.passwordSalt) // Ensure proper hashing and security best practices
+                statement.setString(3, account.passwordHash)
+                statement.setString(4, account.passwordSalt)
                 statement.executeUpdate()
                 //3. Close the prepared statement
                 statement.close()
 
-                //creates a table in the data-bank for the trips of the user with the given pseudonym
+                //creates a table in the data-bank for the trips with the given pseudonym
                 val tripTableString = "tbl${account.pseudonym}trips"
                 val sqlTripStatement = "CREATE TABLE `allways-app`.`%s` (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
                         "  `stageIds` VARCHAR(200) NULL,\n" +
                         "  `purpose` VARCHAR(100) NULL,\n" +
-                        "  `startDateTime` DATETIME NULL,\n" +
-                        "  `endDateTime` DATETIME NULL,\n" +
+                        "  `startDateTime` VARCHAR(100) NULL,\n" +
+                        "  `endDateTime` VARCHAR(100) NULL,\n" +
                         "  `duration` INT NULL,\n" +
                         "  `distance` INT NULL,\n" +
                         "  `startLocation` VARCHAR(100) NULL,\n" +
                         "  `endLocation` VARCHAR(100) NULL,\n" +
                         "  PRIMARY KEY (`id`),\n" +
                         "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"
-                val createTripsStatement = connection.prepareStatement(sqlTripStatement.format(tripTableString))
+                val createTripsStatement = connection.prepareStatement(
+                    sqlTripStatement.format(tripTableString))
                 createTripsStatement.executeUpdate()
                 createTripsStatement.close()
 
-                //creates a table in the data-bank for the stages of the user with the given pseudonym
+                //creates a table in the data-bank for the stages with the given pseudonym
                 val stageTableString = "tbl${account.pseudonym}stages"
                 val sqlStagesStatement = "CREATE TABLE `allways-app`.`%s` (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
                         "  `tripId` VARCHAR(100) NULL,\n" +
                         "  `mode` VARCHAR(100) NULL,\n" +
-                        "  `startDateTime` DATETIME NULL,\n" +
-                        "  `endDateTime` DATETIME NULL,\n" +
+                        "  `startDateTime` VARCHAR(100) NULL,\n" +
+                        "  `endDateTime` VARCHAR(100) NULL,\n" +
                         "  `duration` INT NULL,\n" +
                         "  `distance` INT NULL,\n" +
                         "  `startLocation` VARCHAR(100) NULL,\n" +
                         "  `endLocation` VARCHAR(100) NULL,\n" +
                         "  PRIMARY KEY (`id`),\n" +
                         "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"
-                val createStagesStatement = connection.prepareStatement(sqlStagesStatement.format(stageTableString))
+                val createStagesStatement = connection.prepareStatement(
+                    sqlStagesStatement.format(stageTableString))
                 createStagesStatement.executeUpdate()
                 createStagesStatement.close()
 
-                //creates a table in the data-bank for the householdQuestions of the user with the given pseudonym
+                //creates a table in the data-bank for the householdQuestions with the given pseudonym
                 val householdQuestionTableString = "tbl${account.pseudonym}householdquestions"
                 val sqlHouseholdQuestionsStatement = "CREATE TABLE `allways-app`.`%s` (\n" +
                         "  `id` VARCHAR(100) NOT NULL,\n" +
@@ -120,7 +125,8 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                         "  `pseudonym` VARCHAR(100) NULL,\n" +
                         "  PRIMARY KEY (`id`),\n" +
                         "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"
-                val createHouseholdQuestionStatement = connection.prepareStatement(sqlHouseholdQuestionsStatement.format(householdQuestionTableString))
+                val createHouseholdQuestionStatement = connection.prepareStatement(
+                    sqlHouseholdQuestionsStatement.format(householdQuestionTableString))
                 createHouseholdQuestionStatement.executeUpdate()
                 createHouseholdQuestionStatement.close()
 
@@ -135,14 +141,10 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                         "  `pseudonym` VARCHAR(100) NULL,\n" +
                         "  PRIMARY KEY (`id`),\n" +
                         "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"
-                val createProfileQuestionStatement = connection.prepareStatement(sqlProfileQuestionStatement.format(profileQuestionTableString))
+                val createProfileQuestionStatement = connection.prepareStatement(
+                    sqlProfileQuestionStatement.format(profileQuestionTableString))
                 createProfileQuestionStatement.executeUpdate()
                 createProfileQuestionStatement.close()
-
-            } finally {
-
-                // 4. Close the prepared connection
-                connection.close()
             }
 
         } catch (sqlExc: SQLException) {
@@ -162,28 +164,14 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // 1. Connect to the MySQL database
             val connection = createAccountConnection() // Replace with your MySQL connection logic
 
-            try {
+            connection.use {
                 // 2. Prepare and execute SQL statement
                 val statement = connection.prepareStatement(
-                    "CREATE TABLE `allways-app`.`?` (\n" +
-                            "  `id` VARCHAR(100) NOT NULL,\n" +
-                            "  `stageIds` TEXT,\n" +
-                            "  `purpose` VARCHAR(100) NULL,\n" +
-                            "  `startDateTime` DATETIME(6) NULL,\n" +
-                            "  `endDateTime` DATETIME(6) NULL,\n" +
-                            "  `duration` INT UNSIGNED NULL,\n" +
-                            "  `distance` INT UNSIGNED NULL,\n" +
-                            "  `startLocation` VARCHAR(100) NULL,\n" +
-                            "  `endLocation` VARCHAR(100) NULL,\n" +
-                            "  PRIMARY KEY (`id`)\n" +
-                            ");")
+                    "DELETE FROM `allways-app-accounts`.`tblaccounts` WHERE (`email` = ?);")
                 statement.setString(1, account.email)
                 statement.executeUpdate()
                 //3. Close the prepared statement
                 statement.close()
-            } finally {
-                // 4. Close the prepared connection
-                connection.close()
             }
             connection.close()
         } catch (e: Exception) {
@@ -201,9 +189,10 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // 1. Connect to the MySQL database
             val connection = createAccountConnection() // Replace with your MySQL connection logic
 
-            try {
+            connection.use {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("SELECT 1 FROM tblaccounts WHERE email = ?")
+                val statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblaccounts WHERE email = ?")
                 statement.setString(1, email)
                 val resultSet = statement.executeQuery()
 
@@ -217,10 +206,6 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 statement.close()
 
                 return doesExist
-
-            } finally {
-                // 6. Close the connection (after statement)
-                connection.close()
             }
 
         } catch (e: Exception) {
@@ -238,9 +223,10 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             // 1. Connect to the MySQL database
             val connection = createAccountConnection() // Replace with your MySQL connection logic
 
-            try {
+            connection.use {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement("SELECT 1 FROM tblaccounts WHERE pseudonym = ?")
+                val statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblaccounts WHERE pseudonym = ?")
                 statement.setString(1, pseudonym)
                 val resultSet = statement.executeQuery()
 
@@ -254,10 +240,6 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 statement.close()
 
                 return doesExist
-
-            } finally {
-                // 6. Close the connection (after statement)
-                connection.close()
             }
 
         } catch (e: Exception) {

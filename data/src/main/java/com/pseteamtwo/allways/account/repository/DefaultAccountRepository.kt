@@ -6,13 +6,11 @@ import com.pseteamtwo.allways.account.source.local.LocalAccount
 import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
 import com.pseteamtwo.allways.account.toExternal
 import com.pseteamtwo.allways.account.toNetwork
-import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.exception.AccountNotFoundException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
@@ -22,7 +20,6 @@ import java.security.MessageDigest
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.jvm.Throws
 
 /**
  * This implementation of [AccountRepository] holds a local and a network data access object
@@ -49,10 +46,9 @@ class DefaultAccountRepository @Inject constructor(
         return accountLocalDataSource.observe().map { it.toExternal() }
     }
 
-    @Throws(ServerConnectionFailedException::class, AccountAlreadyExistsException::class)
     override suspend fun createAccount(email: String, password: String) {
         // checks if the user is already logged in to an account
-        assert (accountLocalDataSource.observe().count() == 0) {
+        assert (accountLocalDataSource.getAll().isEmpty()) {
             "Another account is already saved in database"
         }
 
@@ -94,7 +90,6 @@ class DefaultAccountRepository @Inject constructor(
         accountLocalDataSource.upsert(localAccount)
     }
 
-    @Throws(ServerConnectionFailedException::class, AccountNotFoundException::class)
     override suspend fun deleteAccount() {
         if (!authenticateAccount()) {
             throw AccountNotFoundException()
@@ -104,7 +99,7 @@ class DefaultAccountRepository @Inject constructor(
         accountLocalDataSource.deleteAccount()
     }
 
-    @Throws(ServerConnectionFailedException::class)
+
     override suspend fun validateLogin(email: String, password: String): Boolean {
         // checks if an account exists with the email
         if (!accountNetworkDataSource.doesEmailExist(email)) {
@@ -121,8 +116,7 @@ class DefaultAccountRepository @Inject constructor(
     }
 
     // doesn't compare email rn
-    // TODO needs review
-    @Throws(ServerConnectionFailedException::class)
+    // TODO("needs testing")
     override suspend fun authenticateAccount(): Boolean {
         // loads the local account
         val localAccount = accountLocalDataSource.observe().first()

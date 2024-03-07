@@ -13,7 +13,24 @@ import androidx.room.RoomDatabase
 )
 abstract class TripAndStageDatabase : RoomDatabase() {
 
+    /**
+     * Provides the [TripDao] for this database to modify the trips table.
+     *
+     * @return The [TripDao] for this database.
+     */
     abstract fun tripDao(): TripDao
+
+    /**
+     * Provides the [StageDao] for this database to modify the stages table.
+     *
+     * @return The [StageDao] for this database.
+     */
     abstract fun stageDao(): StageDao
+
+    /**
+     * Provides the [GpsPointDao] for this database to modify the gpsPoints table.
+     *
+     * @return The [GpsPointDao] for this database.
+     */
     abstract fun gpsPointDao(): GpsPointDao
 }

@@ -1,23 +1,37 @@
 package com.pseteamtwo.allways.trip.source.local
 
 import android.location.Location
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.pseteamtwo.allways.typeconverter.LocationConverter
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
-// stageId is nullable to allow LocalGpsPoint entries to exist without being associated with a LocalStage.
-// However, if a stageId is present, the onDelete = ForeignKey.CASCADE will ensure that when the
-// Please note that if a LocalGpsPoint is associated with a LocalStage, and you delete that LocalStage,
-// all corresponding LocalGpsPoint entries will be removed automatically due to the
-// onDelete = ForeignKey.CASCADE configuration.
+
+/**
+ * Representation of a gpsPoint for saving as an element of the [androidx.room.Database]
+ * [TripAndStageDatabase].
+ *
+ * A gpsPoint is saved with an unique [id] which will be overwritten on the insertion to the
+ * database due to it being auto-generated.
+ *
+ * A gpsPoint is saved with a [stageId] to associate it to a [LocalStage] in the database.
+ * This property is nullable to allow [LocalGpsPoint] to exist without such association.
+ * If [stageId] is present, the database won't allow the existence of the gpsPoint without
+ * the according stage also existent inside the database already due to the ForeignKey setting.
+ * Due to onDelete = ForeignKey.CASCADE, deletion of the stage will lead to all gpsPoints with
+ * the accordingly set [stageId] to be also deleted.
+ *
+ * @property id The unique identification number of the gpsPoint. Will be auto-generated on
+ * database insertion.
+ * @property stageId The id of the [LocalStage] this gpsPoints belongs to. If it is null, it has
+ * no such stage.
+ * @property location The location data of the gpsPoint (especially longitude, latitude and time).
+ * @constructor Creates a gpsPoint with the given properties (id and stageId are optional).
+ */
 @Serializable
 @Entity(
     tableName = "gps_points",
@@ -36,56 +50,3 @@ data class LocalGpsPoint(
     var stageId: Long? = null,
     @Contextual var location: Location
 )
-
-/*
-@Serializable
-data class LocationWrapper(
-    val provider: String,
-    val latitude: Double,
-    val longitude: Double,
-    val time: Long,
-    val speed: Float
-) {
-    fun toLocation(): Location {
-        val location = Location(provider)
-        location.latitude = latitude
-        location.longitude = longitude
-        location.time = time
-        location.speed = speed
-        return location
-    }
-
-    companion object {
-        fun fromLocation(location: Location): LocationWrapper {
-            return LocationWrapper(
-                provider = location.provider.orEmpty(),
-                longitude = location.longitude,
-                latitude = location.latitude,
-                time = location.time,
-                speed = location.speed
-            )
-        }
-    }
-}
-
-class LocationWrapperConverter {
-    @TypeConverter
-    fun fromLocation(location: LocationWrapper): String {
-        return "${location.provider},${location.latitude},${location.longitude},${location.time},${location.speed}"
-    }
-
-    @TypeConverter
-    fun toLocation(locationString: String): LocationWrapper {
-        val parts = locationString.split(",")
-        return LocationWrapper(
-            provider = parts[0],
-            latitude = parts[1].toDouble(),
-            longitude = parts[2].toDouble(),
-            time = parts[3].toLong(),
-            speed = parts[4].toFloat()
-        )
-    }
-}
-
- */
-

@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <!-- Required for 29+. -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <application
+        android:name=".AllWaysApp"
         android:allowBackup="true"
         android:icon="@mipmap/allways_app_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/allways_app_icon_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AllWays">
+        android:theme="@style/Theme.AllWays"
+        tools:replace="android:allowBackup">
         <activity
-            android:name=".MainActivity"
+            android:name="com.fynng.allways.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AllWays">
             <intent-filter>
@@ -19,5 +31,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

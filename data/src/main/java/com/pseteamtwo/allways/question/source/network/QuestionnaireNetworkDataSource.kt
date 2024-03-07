@@ -1,17 +1,28 @@
 package com.pseteamtwo.allways.question.source.network
 
-import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.exception.IncorrectJsonFileException
+import com.pseteamtwo.allways.exception.ServerConnectionFailedException
+import com.pseteamtwo.allways.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.serialization.json.Json
-import java.io.File
-import java.lang.reflect.Type
-import java.util.Locale
-import kotlin.jvm.Throws
 
-abstract class QuestionnaireNetworkDataSource {
+/**
+ * This class handles all network interactions for the questionnaires and converts the Json-file
+ * that is stored in the database into NetworkQuestions.
+ *
+ * @constructor Create empty Questionnaire network data source
+ */
+abstract class QuestionnaireNetworkDataSource: BaseNetworkDataSource() {
     private val questionnaireFilePath = ""
 
+    /**
+     * Load questionnaire searches in the database for the questionnaire Json file and uses the
+     * convertJsonToQuestions method to give back the list of NetworkQuestions.
+     * It creates a connection to a MySql-server and executes the load-sql-statement.
+     * The given string is then converted and the NetworkQuestions get returned.
+     *
+     * @return List of NetworkQuestions from the JsonFile.
+     */
     @Throws(ServerConnectionFailedException::class)
     abstract suspend fun loadQuestionnaire(): List<NetworkQuestion>
 
@@ -36,10 +47,16 @@ abstract class QuestionnaireNetworkDataSource {
         return networkQuestions
     }*/
 
+    /**
+     * Convert json to questions converts a Json-file into a list of NetworkQuestions by using a
+     * decoder from the kotlinx-serialization library.
+     *
+     * @param jsonQuestionnaire Is the Json-file string.
+     * @return Is the List of NetworkQuestions stored in the Json-file
+     */
     @Throws(IncorrectJsonFileException::class)
     protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
 
-        //TODO Json String validation might be required.
         val format = Json {
             ignoreUnknownKeys = true // Add this line to ignore unknown keys if needed
         }

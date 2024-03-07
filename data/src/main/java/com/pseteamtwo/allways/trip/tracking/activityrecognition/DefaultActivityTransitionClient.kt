@@ -19,7 +19,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
-
+/**
+ * NOT FUNCTIONAL YET
+ */
 class DefaultActivityTransitionClient(
     private val context: Context,
     private val client: ActivityRecognitionClient

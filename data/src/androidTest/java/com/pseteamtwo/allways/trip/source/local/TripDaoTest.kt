@@ -1,11 +1,13 @@
 package com.pseteamtwo.allways.trip.source.local
 
-import android.location.Location
+import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
+import com.pseteamtwo.allways.trip.toExternal
+import com.pseteamtwo.allways.trip.toLocation
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.flow.first
@@ -65,28 +67,24 @@ class TripDaoTest {
             purpose = Purpose.WORK,
             isConfirmed = false
         )
-        val id = database.tripDao().insert(trip)
+        val tripId = database.tripDao().insert(trip)
+
+        val stageId = database.stageDao().insert(stage1.copy(tripId = tripId))
+
+        val gspPoint1Id = database.gpsPointDao().insert(location1.copy(stageId = stageId))
+        val gspPoint2Id = database.gpsPointDao().insert(location2.copy(stageId = stageId))
 
         val allLoaded = database.tripDao().observeAll().first()
         assertEquals(1, allLoaded.size)
 
         // WHEN - Get the trip by id from the database
-        val loaded = database.tripDao().get(id)
+        val loadedTripWithStages = database.tripDao().getTripWithStages(tripId)
 
         // THEN - The loaded data contains the expected values
-        assertNotNull(loaded as LocalTrip)
-        assertEquals(id, loaded.id)
-        assertEquals(trip.purpose, loaded.purpose)
-        assertEquals(trip.isConfirmed, loaded.isConfirmed)
-    }
+        assertNotNull(loadedTripWithStages as LocalTripWithStages)
+        assertEquals(1, loadedTripWithStages.stages.size)
+        assertEquals(2, loadedTripWithStages.stages.first().gpsPoints.size)
 
-
-    private fun GeoPoint.toLocation(time: Long): Location {
-        val location = Location("osmdroid")
-        location.latitude = this.latitude
-        location.longitude = this.longitude
-        location.time = time
-        location.speed = 0f
-        return location
+        Log.d("LogTest", loadedTripWithStages.toExternal().toString())
     }
 }

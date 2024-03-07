@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.trip.repository
 
-import android.location.Location
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -13,13 +12,15 @@ import com.pseteamtwo.allways.trip.GpsPoint
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
 import com.pseteamtwo.allways.trip.Stage
+import com.pseteamtwo.allways.trip.Trip
+import com.pseteamtwo.allways.trip.convertToLocalDateTime
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
-import com.pseteamtwo.allways.trip.source.local.LocalStage
 import com.pseteamtwo.allways.trip.source.local.StageDao
-import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase
+import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.DefaultTripNetworkDataSource
+import com.pseteamtwo.allways.trip.toLocation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
@@ -42,33 +43,39 @@ class DefaultTripAndStageRepositoryTest {
     //Test data
     private val geoPoint1 = GeoPoint(0.000, 0.001)
     private val geoPoint2 = GeoPoint(0.000, 0.002)
-    private val geoPoint3 = GeoPoint(0.000, 0.003)
+    private val geoPoint3 = GeoPoint(0.000, 0.002)
+    private val geoPoint4 = GeoPoint(0.000, 0.003)
 
-    private val location1 = GpsPoint(0, (geoPoint1.toLocation(0)))
-    private val location2 = GpsPoint(1, (geoPoint2.toLocation(10)))
-    private val location3 = GpsPoint(2, (geoPoint3.toLocation(20)))
+    private val time1: Long = 0
+    private val time2: Long = 10
+    private val time3: Long = 20
+    private val time4: Long = 50
 
     private val stage1 = Stage(
-        1000,
+        1,
         Mode.WALK,
-        listOf(location1, location2)
+        listOf(
+            GpsPoint(1, geoPoint1, time1.convertToLocalDateTime()),
+            GpsPoint(2, geoPoint2, time2.convertToLocalDateTime())
+        )
     )
     private val stage2 = Stage(
-        1001,
+        2,
         Mode.MOTORCYCLE,
-        listOf(location2, location3)
+        listOf(
+            GpsPoint(3, geoPoint3, time3.convertToLocalDateTime()),
+            GpsPoint(4, geoPoint4, time4.convertToLocalDateTime())
+        )
     )
 
-    private val localStage1 = LocalStage(
-        1000,
-        null,
-        Mode.WALK
+    private val userTrip1 = Trip(
+        1,
+        Purpose.WORK,
+        true,
+        listOf(stage1, stage2)
     )
-    private val localStage2 = LocalStage(
-        1001,
-        null,
-        Mode.MOTORCYCLE
-    )
+
+
 
     //Test dependencies
     private lateinit var accountRepository: AccountRepository
@@ -87,6 +94,7 @@ class DefaultTripAndStageRepositoryTest {
 
     //Class under test
     private lateinit var repository: DefaultTripAndStageRepository
+
 
 
     // using an in-memory database because the information stored here disappears when the
@@ -124,16 +132,26 @@ class DefaultTripAndStageRepositoryTest {
             DefaultStageNetworkDataSource(),
             gpsPointDao,
             accountRepository,
-            testDispatcher
+            testDispatcher,
+            testScope
         )
 
     }
 
+
     @Test
-    fun createTripTest() = runTest {
-        database.stageDao().insert(localStage1)
-        database.stageDao().insert(localStage2)
-        repository.createTrip(listOf(stage1, stage2), Purpose.WORK)
+    fun createTripStagesGpsPointsTest() = runTest {
+        val gps1 = repository.createGpsPoint(geoPoint1.toLocation(time1))
+        val gps2 = repository.createGpsPoint(geoPoint2.toLocation(time2))
+        val gps3 = repository.createGpsPoint(geoPoint3.toLocation(time3))
+        val gps4 = repository.createGpsPoint(geoPoint4.toLocation(time4))
+
+        val createdStage1 =
+            repository.createStageOfExistingGpsPoints(listOf(gps1, gps2), Mode.WALK)
+        val createdStage2 =
+            repository.createStageOfExistingGpsPoints(listOf(gps3, gps4), Mode.MOTORCYCLE)
+
+        repository.createTripOfExistingStages(listOf(createdStage1, createdStage2), Purpose.WORK)
 
         val trips = tripDao.observeAll().first()
         val stages = stageDao.getAll()
@@ -141,16 +159,16 @@ class DefaultTripAndStageRepositoryTest {
 
         assertEquals(1, trips.size)
         assertEquals(2, stages.size)
+        assertEquals(4, gpsPoints.size)
     }
 
 
 
-    private fun GeoPoint.toLocation(time: Long): Location {
-        val location = Location("osmdroid")
-        location.latitude = this.latitude
-        location.longitude = this.longitude
-        location.time = time
-        location.speed = 0f
-        return location
+    @Test
+    fun createTripTest() = runTest {
+        repository.createTrip(userTrip1.stages, userTrip1.purpose)
+
+        val savedUserTrip = repository.observeAllTrips().first().first()
+        assertEquals(userTrip1, savedUserTrip)
     }
 }

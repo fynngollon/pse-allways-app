@@ -9,7 +9,7 @@ package com.pseteamtwo.allways.exception
  *
  * @param message The detail message.
  */
-class TeleportationException(message: String?) : Exception(message) {
+class TeleportationException(message: String?) : IllegalArgumentException(message) {
     /**
      * @constructor Constructs a [TeleportationException] with no detail message.
      */
