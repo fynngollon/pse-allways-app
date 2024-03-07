@@ -21,10 +21,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.jvm.Throws
 
-abstract class DefaultQuestionRepository<T: QuestionDao, S: QuestionNetworkDataSource>(
+abstract class DefaultQuestionRepository<T: QuestionDao,
+        S: QuestionNetworkDataSource, U: QuestionnaireNetworkDataSource>(
     protected val questionDao:  T,
     protected val questionNetworkDataSource:  S,
-    protected val questionnaireNetworkDataSource: QuestionnaireNetworkDataSource,
+    protected val questionnaireNetworkDataSource: U,
     protected val accountRepository: AccountRepository,
     @DefaultDispatcher protected val dispatcher: CoroutineDispatcher,
     @ApplicationScope protected val scope: CoroutineScope,
@@ -55,9 +56,15 @@ abstract class DefaultQuestionRepository<T: QuestionDao, S: QuestionNetworkDataS
 
     @Throws(ServerConnectionFailedException::class)
     override suspend fun refresh() {
-        val networkQuestions = questionnaireNetworkDataSource.loadQuestionnaire()
-        val localQuestions = networkQuestions.toLocal()
+        val pseudonym = withContext(dispatcher) {
+            accountRepository.observe().first().pseudonym
+        }
+        val networkQuestions = questionNetworkDataSource.loadQuestions(pseudonym)
+        if(networkQuestions.isEmpty()) {
+            return
+        }
 
+        val localQuestions = networkQuestions.toLocal()
         questionDao.deleteAll()
         questionDao.upsertAll(localQuestions)
     }
@@ -75,6 +82,6 @@ abstract class DefaultQuestionRepository<T: QuestionDao, S: QuestionNetworkDataS
             accountRepository.observe().first().pseudonym
         }
         //saves all Questions to Network
-        questionNetworkDataSource.saveQuestions(questions.toNetwork(pseudonym))
+        questionNetworkDataSource.saveQuestions(accountRepository.observe().first().pseudonym, questions.toNetwork(pseudonym))
     }
 }

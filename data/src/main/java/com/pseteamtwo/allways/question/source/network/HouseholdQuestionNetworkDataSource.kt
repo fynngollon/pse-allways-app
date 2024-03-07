@@ -9,7 +9,11 @@ class HouseholdQuestionNetworkDataSource : QuestionNetworkDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveQuestions(questions: List<NetworkQuestion>) {
+    override suspend fun saveQuestions(pseudonym: String, questions: List<NetworkQuestion>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteQuestion(pseudonym: String, id: String) {
         TODO("Not yet implemented")
     }
 }

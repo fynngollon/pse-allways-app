@@ -6,6 +6,7 @@ import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.question.source.local.ProfileQuestionDao
 import com.pseteamtwo.allways.question.source.network.ProfileQuestionNetworkDataSource
+import com.pseteamtwo.allways.question.source.network.ProfileQuestionnaireNetworkDataSource
 import com.pseteamtwo.allways.question.source.network.QuestionnaireNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -16,11 +17,12 @@ import javax.inject.Singleton
 class ProfileQuestionRepository @Inject constructor(
     profileQuestionDao: ProfileQuestionDao,
     profileQuestionNetworkDataSource: ProfileQuestionNetworkDataSource,
-    profileQuestionnaireNetworkDataSource: QuestionnaireNetworkDataSource,
+    profileQuestionnaireNetworkDataSource: ProfileQuestionnaireNetworkDataSource,
     accountRepository: AccountRepository,
     @DefaultDispatcher dispatcher: CoroutineDispatcher,
     @ApplicationScope scope: CoroutineScope,
-): DefaultQuestionRepository<ProfileQuestionDao, ProfileQuestionNetworkDataSource>(
+): DefaultQuestionRepository<ProfileQuestionDao,
+        ProfileQuestionNetworkDataSource, ProfileQuestionnaireNetworkDataSource>(
     profileQuestionDao, profileQuestionNetworkDataSource, profileQuestionnaireNetworkDataSource,
     accountRepository, dispatcher, scope
 ) {

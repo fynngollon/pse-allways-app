@@ -1,14 +1,9 @@
 package com.pseteamtwo.allways.question.source.network
 
-import com.google.gson.JsonSyntaxException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
 import com.pseteamtwo.allways.exception.IncorrectJsonFileException
 import com.pseteamtwo.allways.question.QuestionType
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.lang.reflect.Type
 import java.util.Locale
@@ -21,7 +16,7 @@ abstract class QuestionnaireNetworkDataSource {
     abstract suspend fun loadQuestionnaire(): List<NetworkQuestion>
 
     //Throws JsonSyntaxException
-    protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
+    /*protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
         val file = File(questionnaireFilePath)
         assert(file.exists() && file.isFile) { "The file is not valid or does not exist." }
 
@@ -39,11 +34,12 @@ abstract class QuestionnaireNetworkDataSource {
         }
 
         return networkQuestions
-    }
+    }*/
 
-    /*protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
-        // No file validation needed, assuming jsonQuestionnaire is already valid
+    @Throws(IncorrectJsonFileException::class)
+    protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
 
+        //TODO Json String validation might be required.
         val format = Json {
             ignoreUnknownKeys = true // Add this line to ignore unknown keys if needed
         }
@@ -54,8 +50,11 @@ abstract class QuestionnaireNetworkDataSource {
         } catch (e: Exception) {
             throw IncorrectJsonFileException()
         }
+        if (!areAllNetworkQuestionsCorrect(networkQuestions)) {
+            throw IncorrectJsonFileException()
+        }
         return networkQuestions
-    }*/
+    }
 
     private fun areAllNetworkQuestionsCorrect(networkQuestions: List<NetworkQuestion>): Boolean {
         return networkQuestions.all { question ->
@@ -79,12 +78,11 @@ abstract class QuestionnaireNetworkDataSource {
     }
 }
 
-class QuestionTypeDeserializer : JsonDeserializer<QuestionType> {
+/*class QuestionTypeDeserializer : JsonDeserializer<QuestionType> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
     ): QuestionType {
         return QuestionType.valueOf(json?.asString?.uppercase(Locale.ROOT) ?: "TEXT")
-    }
-}
+    }*/

@@ -2,7 +2,6 @@ package com.pseteamtwo.allways.trip.repository
 
 import android.location.Location
 import com.pseteamtwo.allways.account.repository.AccountRepository
-import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
 import com.pseteamtwo.allways.exception.NoTimeContinuityException
 import com.pseteamtwo.allways.exception.TeleportationException
@@ -15,19 +14,18 @@ import com.pseteamtwo.allways.trip.Trip
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.trip.source.local.LocalStage
-import com.pseteamtwo.allways.trip.source.local.LocalStageWithoutGpsPoints
+import com.pseteamtwo.allways.trip.source.local.LocalStageWithGpsPoints
 import com.pseteamtwo.allways.trip.source.local.LocalTrip
-import com.pseteamtwo.allways.trip.source.local.LocalTripWithoutStages
+import com.pseteamtwo.allways.trip.source.local.LocalTripWithStages
 import com.pseteamtwo.allways.trip.source.local.StageDao
 import com.pseteamtwo.allways.trip.source.local.TripDao
 import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.TripNetworkDataSource
 import com.pseteamtwo.allways.trip.toExternal
 import com.pseteamtwo.allways.trip.toLocal
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -35,12 +33,31 @@ import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
 // stages can exist in the database without belonging to any trip:
 // they won't be observed then; once added to a trip they will be deleted alongside the trip
+
+/**
+ * This implementation of [TripAndStageRepository] holds all local and network data access objects
+ * for [Trip]s, [Stage]s and [GpsPoint]s.
+ * For enabling saving those to the network database, it also has access to the [AccountRepository],
+ * because the tracking data has to be saved under the according user account
+ * on the network database.
+ * This class follows the singleton-pattern.
+ *
+ * @property tripLocalDataSource A [TripDao] to access the local trip database.
+ * @property tripNetworkDataSource A [TripNetworkDataSource] to access the network trip database.
+ * @property stageLocalDataSource A [StageDao] to access the local trip database.
+ * @property stageNetworkDataSource A [StageNetworkDataSource] to access the network stage database.
+ * @property gpsPointLocalDataSource A [TripDao] to access the local trip database.
+ * @property accountRepository A [AccountRepository] to access the user's account data for saving
+ * and retrieving data from the network database.
+ * @property dispatcher A dispatcher to allow asynchronous function calls because this class uses
+ * complex computing and many accesses to databases which shall not block the program flow.
+ * @constructor Creates an instance of this class.
+ */
 @Singleton
 class DefaultTripAndStageRepository @Inject constructor(
     private val tripLocalDataSource: TripDao,
@@ -50,76 +67,95 @@ class DefaultTripAndStageRepository @Inject constructor(
     private val gpsPointLocalDataSource: GpsPointDao,
     private val accountRepository: AccountRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope,
+    //@ApplicationScope private val scope: CoroutineScope,
 ) : TripAndStageRepository {
 
-    internal fun observeAllGpsPoints(): StateFlow<List<LocalGpsPoint>> {
-        return gpsPointLocalDataSource.observeAll()
-    }
+
 
     override suspend fun observeAllTrips(): Flow<List<Trip>> {
-        return tripLocalDataSource.observeAll().map { trip ->
-            trip.toExternal().sortedBy { it.startDateTime }
+        return tripLocalDataSource.observeAllTripsWithStages().map { trip ->
+            trip.toExternal().sortedByDescending { it.startDateTime }
         }
     }
 
+    //TODO("This could also use [StageDao.getStagesForTrip]")
     override suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>> {
-        return tripLocalDataSource.observe(tripId).map { trip ->
+        return tripLocalDataSource.observeTripWithStages(tripId).map { trip ->
             trip.stages.toExternal().sortedBy { stage ->  stage.startDateTime }
         }
     }
 
     override suspend fun createTrip(stages: List<Stage>, purpose: Purpose) {
         require(stages.isNotEmpty())
-        // asserting stages aren't empty, stages are in local db, stages aren't assigned to a trip
-        for (stage in stages) {
-            assert(stageLocalDataSource.get(stage.id)?.stageData?.tripId == 0L) {
-                "Stage with ID ${stage.id} is either missing or already assigned to another trip"
+        // stages are in local db and aren't assigned to a trip
+        stages.forEach {
+            if(stageLocalDataSource.get(it.id) == null) {
+                assert(false) { "A stage is missing in the database" }
+            }
+            assert(stageLocalDataSource.get(it.id)?.tripId == null) {
+                "A stage is already assigned to another trip"
             }
         }
 
-        val localTripWithoutStages = LocalTripWithoutStages(
+        val localTripWithoutIds = LocalTrip(
             purpose = purpose,
             isConfirmed = false
         )
 
         // inserts the local trip without stages to generate the trip id
-        val tripId = tripLocalDataSource.insert(localTripWithoutStages)
+        val tripId = tripLocalDataSource.insert(localTripWithoutIds)
 
         val localStages = stages.toLocal(tripId)
         localStages.forEach {
             stageLocalDataSource.update(it)
         }
-
-        val localTrip = LocalTrip(
-            tripData = localTripWithoutStages.copy(id = tripId),
-            stages = localStages
-        )
-        tripLocalDataSource.update(localTrip)
     }
 
+    /**
+     * Creates a new [LocalStage] with the provided parameters and converts it to a [Stage].
+     * Therefore creates a unique id for the new stage and saves it into the local stage database.
+     *
+     * @param localGpsPoints The list of [LocalGpsPoint]s which the new stage consists of.
+     * @param mode The [Mode] of the new stage.
+     * @return The created [Stage].
+     */
     // this seems to be for the tracking algorithm
     // creates trips that don't belong to any trip!
     internal suspend fun createStage(localGpsPoints: List<LocalGpsPoint>, mode: Mode): Stage {
         require(localGpsPoints.isNotEmpty())
-        val localStageWithoutGpsPoints = LocalStageWithoutGpsPoints(
+        // gpsPoints are in local db and aren't assigned to a stage
+        localGpsPoints.forEach {
+            assert(gpsPointLocalDataSource.get(it.id)?.stageId == 0L) {
+                "A GpsPoint is either missing in the database or already assigned to another stage"
+            }
+        }
+        val localStageWithoutUpdatedIds = LocalStage(
             mode = mode
         )
 
-        // inserts the local stage without GPS points to generate the stage id
-        val stageId = stageLocalDataSource.insert(localStageWithoutGpsPoints)
-        if (stageId == -1L) {
-            throw NoTimeContinuityException()
+        // inserts the local stage
+        val stageId = stageLocalDataSource.insert(localStageWithoutUpdatedIds)
+
+        // TODO check for no time continuity
+        //if (stageId == -1L) {
+        //    throw NoTimeContinuityException()
+        //}
+
+        localGpsPoints.forEach {
+            it.stageId = stageId
+            gpsPointLocalDataSource.update(it)
         }
 
-        localGpsPoints.forEach { it.stageId = stageId }
-        val localStage = LocalStage(
-            stageData = localStageWithoutGpsPoints.copy(id = stageId),
-            gpsPoints = localGpsPoints
-        )
+        //val localStage = localStageWithoutUpdatedIds.copy(id = stageId)
+        // alt: val localStage = localStageWithoutUpdatedIds.copy(id = stageId, gpsPoints = localGpsPoints)
 
-        stageLocalDataSource.update(localStage)
-        return localStage.toExternal()
+        val createdStage = Stage(stageId, mode, localGpsPoints.toExternal())
+        val createdStageOutOfDatabase = stageLocalDataSource.getStageWithGpsPoints(stageId)
+        assert(createdStageOutOfDatabase != null) {
+            "Created Stage could not be added to the database (or not in the right way)"
+        }
+        assertEquals(createdStage, createdStageOutOfDatabase?.toExternal())
+        return createdStage
     }
 
     // TODO should this be internal and LocalGpsPoint?
@@ -145,15 +181,15 @@ class DefaultTripAndStageRepository @Inject constructor(
             return
         }
 
-        localTrip.tripData.purpose = purpose
+        localTrip.purpose = purpose
         tripLocalDataSource.update(localTrip)
     }
 
     override suspend fun updateStage(
         stageId: Long,
         mode: Mode,
-        startTime: LocalDateTime,
-        endTime: LocalDateTime,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
         startLocation: GeoPoint,
         endLocation: GeoPoint
     ) {
@@ -166,37 +202,39 @@ class DefaultTripAndStageRepository @Inject constructor(
             return
         }
 
-        localStage.stageData.mode = mode
+        localStage.mode = mode
 
         // check for time conflicts with other stages
-        if (isTimeConflict(startTime.toMillis(), endTime.toMillis(), stageId)) {
+        if (isTimeConflict(startDateTime.toMillis(), endDateTime.toMillis(), stageId)) {
             throw NoTimeContinuityException()
         }
 
-
-        // check if either of the locations has been changed
-        val startLocationOfLocalStage = localStage.gpsPoints.first().location
-        val endLocationOfLocalStage = localStage.gpsPoints.last().location
-        val startTimeMillis = startTime.toMillis()
-        val endTimeMillis = endTime.toMillis()
-
-        if (startLocation.compareTo(startLocationOfLocalStage)
-            && endLocation.compareTo(endLocationOfLocalStage)) {
-            // start and end location haven't changed
-            // set new start and end time
-            localStage.gpsPoints.first().location.time = startTimeMillis
-            localStage.gpsPoints.last().location.time = endTimeMillis
-        } else {
-            // start and end location have changed
-            // create new GPS Points and update GPS Points List of Stage
-            val startLocalGpsPoint = createGpsPoint(startLocation.toLocation(startTimeMillis)).toLocal(stageId)
-            val endLocalGpsPoint = createGpsPoint(endLocation.toLocation(endTimeMillis)).toLocal(stageId)
-            gpsPointLocalDataSource.update(startLocalGpsPoint)
-            gpsPointLocalDataSource.update(endLocalGpsPoint)
-
-            localStage.gpsPoints = listOf(startLocalGpsPoint, endLocalGpsPoint)
+        //TODO("This could also use [GpsPointDao.getGpsPointsForStage] (which is not yet implemented)")
+        val gpsPointsOfLocalStage = withContext(dispatcher) {
+            stageLocalDataSource.getStageWithGpsPoints(stageId)!!.gpsPoints
+            //TODO("Not null assertion (!!.) maybe has to be deleted")
         }
 
+        // check if either of the locations has been changed
+        val startLocationOfLocalStage = gpsPointsOfLocalStage.first().location
+        val endLocationOfLocalStage = gpsPointsOfLocalStage.last().location
+        val startTimeMillis = startDateTime.toMillis()
+        val endTimeMillis = endDateTime.toMillis()
+
+        if (!startLocation.compareTo(startLocationOfLocalStage)
+            || !endLocation.compareTo(endLocationOfLocalStage)
+            || startLocationOfLocalStage.time != startTimeMillis
+            || endLocationOfLocalStage.time != endTimeMillis) {
+            //start or end location or start or end time have changed
+            //delete all former GpsPoints of the stage
+            gpsPointsOfLocalStage.forEach { localGpsPoint ->
+                gpsPointLocalDataSource.delete(localGpsPoint.id)
+            }
+            //create new start and end gpsPoint (inserted into database and assigned to localStage)
+            createGpsPoint(startLocation.toLocation(startTimeMillis)).toLocal(stageId)
+            createGpsPoint(endLocation.toLocation(endTimeMillis)).toLocal(stageId)
+        }
+        //update mode of localStage in database
         stageLocalDataSource.update(localStage)
     }
 
@@ -208,6 +246,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         endDateTime: LocalDateTime,
         startLocation: Location
     ) {
+        //TODO("Maybe with dispatcher")
         val localTrip = tripLocalDataSource.get(tripId)
 
         // does trip exist
@@ -216,25 +255,24 @@ class DefaultTripAndStageRepository @Inject constructor(
             return
         }
 
-        val localStageWithoutGpsPoints = LocalStageWithoutGpsPoints(
+        val startGpsPoint = LocalGpsPoint(
+            location = startLocation
+        )
+        //TODO("Maybe with dispatcher")
+        val endGpsPoint =
+            stageLocalDataSource.getStageWithGpsPoints(tripId)!!.gpsPoints.first().copy(id = 0L)
+
+        val startGpsPointId = gpsPointLocalDataSource.insert(startGpsPoint)
+        val endGpsPointId = gpsPointLocalDataSource.insert(endGpsPoint)
+
+        val localStage = LocalStage(
             tripId = tripId,
             mode = mode
         )
 
-        val stageId = stageLocalDataSource.insert(localStageWithoutGpsPoints)
-
-        val localStage = LocalStage(
-            stageData = localStageWithoutGpsPoints.copy(id = stageId),
-            gpsPoints = listOf(
-                LocalGpsPoint(
-                    stageId = stageId,
-                    location = startLocation
-                ),
-                localTrip.stages.first().gpsPoints.first()
-            )
-        )
-
-        stageLocalDataSource.update(localStage)
+        val stageId = stageLocalDataSource.insert(localStage)
+        gpsPointLocalDataSource.update(startGpsPoint.copy(id = startGpsPointId, stageId = stageId))
+        gpsPointLocalDataSource.update(endGpsPoint.copy(id = endGpsPointId, stageId = stageId))
     }
 
     // time continuity
@@ -253,25 +291,23 @@ class DefaultTripAndStageRepository @Inject constructor(
             return
         }
 
-        val localStageWithoutGpsPoints = LocalStageWithoutGpsPoints(
+        //TODO("Maybe with dispatcher")
+        val startGpsPoint =
+            stageLocalDataSource.getStageWithGpsPoints(tripId)!!.gpsPoints.first().copy(id = 0L)
+        val endGpsPoint = LocalGpsPoint(
+            location = endLocation
+        )
+        val startGpsPointId = gpsPointLocalDataSource.insert(startGpsPoint)
+        val endGpsPointId = gpsPointLocalDataSource.insert(endGpsPoint)
+
+        val localStage = LocalStage(
             tripId = tripId,
             mode = mode
         )
 
-        val stageId = stageLocalDataSource.insert(localStageWithoutGpsPoints)
-
-        val localStage = LocalStage(
-            stageData = localStageWithoutGpsPoints.copy(id = stageId),
-            gpsPoints = listOf(
-                localTrip.stages.last().gpsPoints.last(),
-                LocalGpsPoint(
-                    stageId = stageId,
-                    location = endLocation
-                )
-            )
-        )
-
-        stageLocalDataSource.update(localStage)
+        val stageId = stageLocalDataSource.insert(localStage)
+        gpsPointLocalDataSource.update(startGpsPoint.copy(id = startGpsPointId, stageId = stageId))
+        gpsPointLocalDataSource.update(endGpsPoint.copy(id = endGpsPointId, stageId = stageId))
     }
 
     override suspend fun separateStageFromTrip(stageId: Long) {
@@ -282,28 +318,36 @@ class DefaultTripAndStageRepository @Inject constructor(
             assert(false) { "Stage with ID $stageId not found in database" }
             return
         }
-
-        // update trip
-        val localTripOfStage = localStage.stageData.tripId?.let { tripLocalDataSource.get(it) }
-
-        if (localTripOfStage == null) {
+        //is stage assigned to a trip
+        if (localStage.tripId == null) {
             assert(false) { "Stage does not belong to any trip" }
             return
         }
 
-        val stagesOfTrip = localTripOfStage.stages.toMutableList()
-        stagesOfTrip.find { it.stageData.id == stageId }?.let { stagesOfTrip.remove(it) }
-        val updatedTrip = localTripOfStage.copy(stages = stagesOfTrip)
-        tripLocalDataSource.update(updatedTrip)
+        // update trip
+        val localTripOfStage = localStage.tripId?.let { tripLocalDataSource.get(it) }
+        //is trip existent
+        if (localTripOfStage == null) {
+            assert(false) { "Stage has a trip with id ${localStage.tripId} assigned " +
+                    "but this trip does not exist" }
+            return
+        }
+
+        val stagesOfTrip =
+            stageLocalDataSource.getStagesForTrip(localTripOfStage.id).first().toMutableList()
+
+        if (stagesOfTrip.first() != localStage && stagesOfTrip.last() != localStage) {
+            throw TimeTravelException()
+        }
 
         // remove tripId from stage
-        val localStageWithoutTripId =
-            localStage.copy(stageData = localStage.stageData.copy(tripId = null))
+        stageLocalDataSource.update(localStage.copy(tripId = null))
 
         // create trip and change stage
-        val tripId = createTrip(
-            listOf(localStageWithoutTripId.toExternal()),
-            localTripOfStage.tripData.purpose
+        //TODO("Not null assertion (!!.) maybe has to be deleted")
+        createTrip(
+            listOf(stageLocalDataSource.getStageWithGpsPoints(localStage.id)!!.toExternal()),
+            localTripOfStage.purpose
         )
     }
 
@@ -315,57 +359,91 @@ class DefaultTripAndStageRepository @Inject constructor(
     override suspend fun deleteStage(stageId: Long) {
         val localStage = stageLocalDataSource.get(stageId)
 
+        // does stage exist
         if (localStage == null) {
-            assert(false) { "Stage does not exist in database" }
+            assert(false) { "Stage with ID $stageId not found in database" }
+            return
+        }
+        //is stage assigned to a trip
+        if (localStage.tripId == null) {
+            assert(false) { "Stage does not belong to any trip" }
             return
         }
 
-        val localTripOfStage = localStage.stageData.tripId?.let { tripLocalDataSource.get(it) }
-
+        val localTripOfStage = localStage.tripId?.let { tripLocalDataSource.get(it) }
+        //is trip existent
         if (localTripOfStage == null) {
-            assert(false) { "Trip of stage not found" }
+            assert(false) { "Stage has a trip with id ${localStage.tripId} assigned " +
+                    "but this trip does not exist" }
             return
         }
 
-        if (localTripOfStage.stages.size == 1) {
-            deleteTrip(localTripOfStage.tripData.id)
-        } else {
-            localTripOfStage.stages.filterNot { it.stageData.id == stageId }
-            tripLocalDataSource.update(localTripOfStage)
+        val stagesOfTrip =
+            stageLocalDataSource.getStagesForTrip(localTripOfStage.id).first().toMutableList()
 
-            stageLocalDataSource.delete(stageId)
+        if (stagesOfTrip.size == 1) {
+            //trip only consisted of that stage so delete the whole trip
+            deleteTrip(localTripOfStage.id)
+        } else if(localStage != stagesOfTrip.first() && localStage != stagesOfTrip.last()) {
+                stageLocalDataSource.delete(stageId)
+        } else {
+            //stage is in between other stages inside the trip
+            //TODO("solution for this case not yet implemented")
+            assert(false) { "Cannot delete stage which is not the beginning or ending" +
+                    "stage of the trip in this version of the app" }
         }
     }
 
     // TODO can this be called with only one trip by ui? IllegalArgumentException
     override suspend fun connectTrips(tripIds: List<Long>) {
-        val localTrips = mutableListOf<LocalTrip>()
+        val localTripsWithStages = mutableListOf<LocalTripWithStages>()
         tripIds.forEach { tripId ->
-            tripLocalDataSource.get(tripId)?.let { localTrips.add(it) }
+            tripLocalDataSource.getTripWithStages(tripId)?.let { localTripsWithStages.add(it) }
         }
 
-        require(localTrips.size >= 2) { "Needs at least two trip to connect" }
+        require(localTripsWithStages.size >= 2) { "Needs at least two trips to connect" }
 
         // checks if the trips are subsequent
         val allTrips = withContext(dispatcher) {
             observeAllTrips().first()
         }
-        if (isSubsequenceWithoutInterruptions(allTrips, localTrips.toList().toExternal())) {
+        if (isSubsequenceWithoutInterruptions(
+                allTrips,
+                localTripsWithStages.toList().toExternal())
+            ) {
             throw TimeTravelException()
         }
 
-        val localStages = mutableListOf<LocalStage>()
-        localTrips.forEach { localStages.addAll(it.stages) }
+        val localStagesWithGpsPoints = mutableListOf<LocalStageWithGpsPoints>()
+        localTripsWithStages.forEach { localStagesWithGpsPoints.addAll(it.stages) }
 
-        // checks if the end and start locations between the trips match
-        for (i in 1 until localStages.size - 1) {
-            if (localStages[0].gpsPoints.last().location
-                != localStages[1].gpsPoints.first().location) {
-                throw TeleportationException()
+        localTripsWithStages.sortBy { it.stages.first().gpsPoints.first().location.time }
+
+        //checks if the start and end locations between the trips match
+        //checks if the start and end time between trips don't interfere with physical logic of time
+        for(i in 0 until localTripsWithStages.size - 1) {
+            val prevEndLocation =
+                localTripsWithStages[i].stages.last().gpsPoints.last().location
+            val nextStartLocation =
+                localTripsWithStages[i+1].stages.first().gpsPoints.first().location
+            if(prevEndLocation == nextStartLocation) {//TODO("not sure if comparable like that")
+                throw TeleportationException("Locations between trips to connect have to be same")
+            }
+
+            val prevEndTime =
+                localTripsWithStages[i].stages.last().gpsPoints.last().location.time
+            val nextStartTime =
+                localTripsWithStages[i+1].stages.first().gpsPoints.first().location.time
+            if(prevEndTime > nextStartTime) {
+                throw TimeTravelException("Times between trips do not allow time travel")
             }
         }
+        localStagesWithGpsPoints.forEach { localStageWithGpsPoints ->
+            stageLocalDataSource.update(localStageWithGpsPoints.stage.copy(tripId = null))
+        }
 
-        createTrip(localStages.toExternal(), Purpose.NONE)
+        //create new connected trip
+        createTrip(localStagesWithGpsPoints.toExternal(), Purpose.NONE)
         tripIds.forEach { tripLocalDataSource.delete(it) }
     }
 
@@ -425,6 +503,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         location.latitude = this.latitude
         location.longitude = this.longitude
         location.time = time
+        location.speed = 0f
         return location
     }
 
@@ -433,8 +512,8 @@ class DefaultTripAndStageRepository @Inject constructor(
     }
 
     private suspend fun isTimeConflict(startTime: Long, endTime: Long, excludedStageId: Long): Boolean {
-        return stageLocalDataSource.getAll().any { stage ->
-            if (stage.stageData.id == excludedStageId) {
+        return stageLocalDataSource.getAllStagesWithGpsPoints().any { stage ->
+            if (stage.stage.id == excludedStageId) {
                 return@any false
             }
 

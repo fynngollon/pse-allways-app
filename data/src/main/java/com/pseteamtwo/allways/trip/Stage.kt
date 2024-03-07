@@ -1,7 +1,7 @@
 package com.pseteamtwo.allways.trip
 
 import android.location.Location
-import org.osmdroid.util.GeoPoint
+import com.pseteamtwo.allways.trip.tracking.calculateDistance
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
@@ -9,10 +9,25 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import kotlin.math.roundToInt
 
+/**
+ * Representation of a stage traveled by the user (to be also used outside this data module).
+ *
+ * A stage can be created by recording through [com.pseteamtwo.allways.trip.tracking] tracking
+ * or by the user himself. A stage should be part of only 1 [Trip].
+ *
+ * @property id The unique identification number of the stage for saving, editing and retrieving
+ * purposes as well as for preventing duplicates.
+ * @property gpsPoints A list of [GpsPoint]s of which the stage consists.
+ * If the stage is deleted, every of its [gpsPoints] should be deleted as well.
+ * @property mode The [Mode] the stage got traveled in.
+ * @constructor Creates a stage with the specified properties.
+ * The properties [startDateTime], [endDateTime], [startLocation], [endLocation], [duration]
+ * and [distance] are computed through the provided list of [GpsPoint]s.
+ */
 data class Stage(
     val id: Long,
-    val gpsPoints: List<GpsPoint>,
     val mode: Mode,
+    val gpsPoints: List<GpsPoint>
 ) {
 
     val startDateTime: LocalDateTime by lazy {
@@ -42,17 +57,6 @@ data class Stage(
         Duration.between(zonedStartDateTime, zonedEndDateTime).toMinutes()
     }
 
-    val distance: Int by lazy {
-        (0 until gpsPoints.size - 1).sumOf {
-            val result = FloatArray(1)
-            Location.distanceBetween(
-                gpsPoints[it].location.latitude,
-                gpsPoints[it].location.longitude,
-                gpsPoints[it + 1].location.latitude,
-                gpsPoints[it + 1].location.longitude,
-                result
-            )
-            result[0].roundToInt()
-        }
-    }
+    val distance: Int
+        get() = calculateDistance(gpsPoints.map { it.location })
 }
