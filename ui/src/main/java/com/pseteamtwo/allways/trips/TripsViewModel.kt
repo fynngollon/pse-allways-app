@@ -343,7 +343,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
      *
      * @param tripUiStateId the ID of the TripUiState
      * */
-   fun deleteTrip(tripUiStateId: Long) {
+    private fun deleteTrip(tripUiStateId: Long) {
         val tripUiState = getTripUiState(tripUiStateId)
         viewModelScope.launch {
             tripAndStageRepository.deleteTrip(tripUiState.tripId)
