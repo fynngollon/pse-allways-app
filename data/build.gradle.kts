@@ -113,7 +113,8 @@ dependencies {
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.6")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.core:core-ktx:1.12.0")
@@ -122,7 +123,7 @@ dependencies {
     //implementation("androidx.location:location-ktx:2.4.0-beta01") TODO not found
 
     // Google Play Services - for tracking
-    implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 
     // Json
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
