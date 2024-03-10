@@ -467,13 +467,16 @@ class DefaultTripAndStageRepository @Inject constructor(
             || startLocationOfLocalStage.time != startTimeMillis
             || endLocationOfLocalStage.time != endTimeMillis) {
             //start or end location or start or end time have changed
+            //create new start and end gpsPoint (inserted into database and assigned to localStage)
+            val newStartGpsPoint = createGpsPoint(startLocation.toLocation(startTimeMillis))
+            gpsPointLocalDataSource.update(newStartGpsPoint.copy(stageId = stageId))
+            val newEndGpsPoint = createGpsPoint(endLocation.toLocation(endTimeMillis))
+            gpsPointLocalDataSource.update(newEndGpsPoint.copy(stageId = stageId))
+
             //delete all former GpsPoints of the stage
             gpsPointsOfLocalStage.forEach { localGpsPoint ->
                 gpsPointLocalDataSource.delete(localGpsPoint.id)
             }
-            //create new start and end gpsPoint (inserted into database and assigned to localStage)
-            createGpsPoint(startLocation.toLocation(startTimeMillis))
-            createGpsPoint(endLocation.toLocation(endTimeMillis))
         }
         //update mode of localStage in database
         stageLocalDataSource.update(localStage)
