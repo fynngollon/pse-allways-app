@@ -27,6 +27,14 @@ interface AccountDao {
     fun observe(): Flow<LocalAccount>
 
     /**
+     * Get the accounts saved in the database while it should be only one.
+     *
+     * @return The accounts, if present (if not, empty list).
+     */
+    @Query("SELECT * FROM account")
+    suspend fun getAll(): List<LocalAccount>
+
+    /**
      * Inserts or updates the account in the database.
      * (Inserts if not in the database; else updates).
      *

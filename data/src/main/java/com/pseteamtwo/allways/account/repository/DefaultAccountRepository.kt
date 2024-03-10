@@ -48,7 +48,7 @@ class DefaultAccountRepository @Inject constructor(
 
     override suspend fun createAccount(email: String, password: String) {
         // checks if the user is already logged in to an account
-        assert (accountLocalDataSource.observe().count() == 0) {
+        assert (accountLocalDataSource.getAll().isEmpty()) {
             "Another account is already saved in database"
         }
 
