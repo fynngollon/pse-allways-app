@@ -7,15 +7,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+
 import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
+
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -31,6 +34,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -45,27 +50,44 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
+
 import com.pseteamtwo.allways.trips.StageUiState
 import com.pseteamtwo.allways.trips.TripUiState
 import com.pseteamtwo.allways.trips.formatDate
 
 import com.pseteamtwo.allways.trip.Mode
 import com.pseteamtwo.allways.trip.Purpose
+
 import kotlinx.coroutines.launch
+
 import org.osmdroid.util.GeoPoint
+
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import java.lang.IllegalArgumentException
 
+/**
+ * Composable function to display a Dialog for editing a trip.
+ *
+ * @param modifier optional composable modifier
+ * @param onConfirm executes when the user confirms their input
+ * @param onDelete executes when the user tips on the "delete" button
+ * @param onDismissRequest executes when the user dismisses the dialog
+ * @param tripUiState the tripUiState of the trip to be edited
+ * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTripDialog(
     modifier: Modifier = Modifier,
     onConfirm: () -> Unit,
+    onDelete: () -> Unit,
     onDismissRequest: () -> Unit,
     tripUiState: TripUiState,
 ) {
@@ -104,8 +126,7 @@ fun EditTripDialog(
                         )
                         IconButton(
                             onClick = {
-                                tripUiState.deleteTrip()
-                                onDismissRequest()
+                                onDelete()
                             },
                             modifier.scale(1.25f)
                         ) {
@@ -293,13 +314,17 @@ fun EditTripDialog(
                     ) {
                         Button(
                             onClick = {
-                                if(stageUiStates.any{ it.mode == Mode.NONE} || tripUiState.purpose == Purpose.NONE) {
-                                    scope.launch{
-                                        val result = snackbarHostState.showSnackbar("Wegezweck oder Verkehrsmittel dürfen nicht leer sein.", null, true, SnackbarDuration.Short)
-                                    }
-                                } else {
-                                    onConfirm()
+                                var errorHasOccurred = false
+                                try {
                                     tripUiState.updateTrip()
+                                } catch (exception: IllegalArgumentException) {
+                                    errorHasOccurred = true
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(exception.message!!, null, true, SnackbarDuration.Short)
+                                    }
+                                }
+                                if(!errorHasOccurred) {
+                                    onConfirm()
                                 }
                             },
                             modifier = modifier,
@@ -404,6 +429,7 @@ fun EditTripDialogPreview() {
             setPurpose = {}
         ),
         onConfirm = {},
+        onDelete = {},
         onDismissRequest = {}
     )
 }

@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm") version "1.9.22" apply false
 }
 
+
 buildscript {
     val agp_version by extra("8.2.2")
     repositories {

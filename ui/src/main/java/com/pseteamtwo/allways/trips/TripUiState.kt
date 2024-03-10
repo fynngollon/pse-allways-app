@@ -10,7 +10,7 @@ import org.threeten.bp.LocalDateTime
  * This UI state contains all the necessary information to display the respective stage in the UI.
  *
  * @property id the unique identification number of this trip UI state inside the UI layer.
- * @property stageId the unique identification number of the respective trip in the Data layer
+ * @property tripId the unique identification number of the respective trip in the Data layer
  * (is 0 if no respective trip exists yet).
  * @property purpose the purpose of the respective trip.
  * @property isConfirmed whether this trip has been confirmed by the user.

@@ -10,11 +10,12 @@ import org.threeten.bp.LocalDateTime
  *
  * This UI state contains all the necessary information to display the respective stage in the UI.
  *
- * @property id the unique identification number of this stage UI state inside the UI layer.
+ * @property id the identification number of this stage UI state inside the List of stage UI states
+ * of a trip
  * @property stageId The unique identification number of the respective stage in the Data layer (is
  * 0 if no respective stage exists yet).
  * @property mode the mode of the respective stage.
- * @property isInDataBase whether a stage to this stage UI state already exists in the app's trip database
+ * @property isInDatabase whether a stage to this stage UI state already exists in the app's trip database
  * (or a new stage will have to be created).
  * @property isToBeAddedBefore whether the new stage is to be added before the first stage of a trip
  * (or after the last stage of the trip).
@@ -50,7 +51,7 @@ import org.threeten.bp.LocalDateTime
  * [TripsViewModel] it belongs to.
  * @constructor Creates a stage with the specified properties.
  * The properties [startDate], [endDate], [startHour], [startMinute], [endHour]
- *  * and [endMinute] are computed through the provided list of [GpsPoint]s.
+ *  * and [endMinute] are computed.
  * */
 data class StageUiState(
     val id: Int,

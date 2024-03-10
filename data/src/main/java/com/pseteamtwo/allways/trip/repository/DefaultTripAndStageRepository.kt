@@ -1,9 +1,11 @@
 package com.pseteamtwo.allways.trip.repository
 
 import android.location.Location
+import androidx.compose.runtime.rememberCoroutineScope
 import com.pseteamtwo.allways.account.repository.AccountRepository
 import com.pseteamtwo.allways.di.ApplicationScope
 import com.pseteamtwo.allways.di.DefaultDispatcher
+import com.pseteamtwo.allways.exception.NoTimeContinuityException
 import com.pseteamtwo.allways.exception.TeleportationException
 import com.pseteamtwo.allways.exception.TimeTravelException
 import com.pseteamtwo.allways.trip.GpsPoint
@@ -75,12 +77,9 @@ class DefaultTripAndStageRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : TripAndStageRepository {
 
-
-    val list = MutableSharedFlow<List<Trip>>()
-
     override suspend fun observeAllTrips(): Flow<List<Trip>> {
-        return  tripLocalDataSource.observeAllTripsWithStages().map { trip ->
-            trip.toExternal()
+        return tripLocalDataSource.observeAllTripsWithStages().map { trip ->
+            trip.toExternal().sortedByDescending { it.startDateTime }
         }
     }
 
@@ -92,7 +91,6 @@ class DefaultTripAndStageRepository @Inject constructor(
             trip.stages.toExternal().sortedBy { it.startDateTime }
         }
     }
-
 
 
 
@@ -147,7 +145,19 @@ class DefaultTripAndStageRepository @Inject constructor(
         }*/
         //At this point, consistency checks should be done and the trip to create can be created
 
-        val tripWithoutId = LocalTrip(purpose = purpose, isConfirmed = true)
+        val listOfStages = mutableListOf<LocalStage>()
+        stages.forEach { stage ->
+            val listOfGpsPoints = mutableListOf<LocalGpsPoint>()
+            stage.gpsPoints.forEach { gpsPoint ->
+                val location = gpsPoint.geoPoint.toLocation(gpsPoint.time.convertToMillis())
+                listOfGpsPoints.add(createGpsPoint(location))
+            }
+            listOfStages.add(createStageOfExistingGpsPoints(listOfGpsPoints, stage.mode))
+        }
+        createTripOfExistingStages(listOfStages, purpose, true)
+
+        //TODO("the following part is deprecated but still saved because it could be better on certain errors")
+        /*val tripWithoutId = LocalTrip(purpose = purpose, isConfirmed = true)
         val createdTripId = tripLocalDataSource.insert(tripWithoutId)
 
         stages.forEach { stage ->
@@ -159,7 +169,7 @@ class DefaultTripAndStageRepository @Inject constructor(
                 val gpsPointWithoutId = LocalGpsPoint(stageId = createdStageId, location = location)
                 gpsPointLocalDataSource.insert(gpsPointWithoutId)
             }
-        }
+        }*/
     }
 
 
@@ -265,12 +275,10 @@ class DefaultTripAndStageRepository @Inject constructor(
             }
         }
 
-        val nextTripId = tripLocalDataSource.getElementWithMaxId().id + 1
         val localStageWithoutUpdatedId = LocalStage(
             mode = mode,
             tripId = 0
         )
-
 
         // inserts the local stage
         val stageId = stageLocalDataSource.insert(localStageWithoutUpdatedId)
@@ -491,11 +499,20 @@ class DefaultTripAndStageRepository @Inject constructor(
         endDateTime: LocalDateTime,
         startLocation: Location
     ) {
-        //TODO("Maybe with dispatcher")
-        val localTrip = tripLocalDataSource.get(tripId)
+        if(isTimeInFuture(startDateTime) || isTimeInFuture(endDateTime)) {
+            throw TimeTravelException("At least 1 provided time in future" +
+                    "which is invalid.")
+        }
+        if(startDateTime.isAfter(endDateTime)) {
+            throw NoTimeContinuityException("The stage has invalid time continuity.")
+        }
+        if(startDateTime.isEqual(endDateTime)) {
+            throw IllegalArgumentException("The stage has a duration of 0.")
+        }
 
+        val tripToAddStageTo = tripLocalDataSource.getTripWithStages(tripId)
         // does trip exist
-        if (localTrip == null) {
+        if (tripToAddStageTo == null) {
             assert(false) { "Trip with ID $tripId not found in database" }
             return
         }
@@ -589,10 +606,10 @@ class DefaultTripAndStageRepository @Inject constructor(
             tripLocalDataSource.getTripWithStages(localTripOfStage.id)!!.sortedStages
         //TODO("Not null assertion (!!.) maybe has to be deleted")
 
-        /*if (stagesOfTrip.first() != stageWithGpsPoints
+        if (stagesOfTrip.first() != stageWithGpsPoints
             && stagesOfTrip.last() != stageWithGpsPoints) {
             throw TimeTravelException()
-        }*/
+        }
 
         // remove tripId from stage
         stageLocalDataSource.update(localStage.copy(tripId = null))
