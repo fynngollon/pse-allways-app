@@ -4,6 +4,7 @@ package com.pseteamtwo.allways.trips
 
 import android.location.Address
 import android.location.Location
+import android.util.Log
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -59,6 +60,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         viewModelScope.launch {
             tripAndStageRepository.observeAllTrips().collect {
                 trips ->
+                Log.d("Tag", "trip")
                 val tripUiStates: MutableList<TripUiState> = mutableListOf()
                 val tripUiStateId = nextTripUiStateId++
                 for (trip in trips) {

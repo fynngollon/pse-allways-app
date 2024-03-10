@@ -38,7 +38,7 @@ interface TripDao {
      */
     @Transaction
     @Query("SELECT * FROM trips")
-    fun observeAllTripsWithStages(): Flow<List<LocalTripWithStages>>
+     fun observeAllTripsWithStages(): Flow<List<LocalTripWithStages>>
 
     /**
      * Observes the trip specified by the given id.
@@ -143,5 +143,8 @@ interface TripDao {
      */
     @Query("DELETE FROM trips WHERE id = :tripId")
     suspend fun delete(tripId: Long): Int
+
+    @Query("SELECT * FROM trips ORDER BY id DESC LIMIT 1")
+    suspend fun getElementWithMaxId(): LocalTrip
 
 }
