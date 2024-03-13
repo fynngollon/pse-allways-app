@@ -54,8 +54,7 @@ class DefaultAccountRepository @Inject constructor(
         //number and one special character:
         private val PASSWORD_REGEX: Pattern =
             Pattern.compile(
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{4,}$",
-                Pattern.CASE_INSENSITIVE
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{4,}$"
             )
     }
 
