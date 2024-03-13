@@ -213,7 +213,6 @@ class DefaultTrackingAlgorithm @Inject constructor(
      * @param gpsPoints list of [LocalGpsPoint]s which represents a trip already.
      * @return a list of [LocalGpsPoint]s that define potential stages to separate the trip into.
      */
-    // TODO need review, needs segments like predictStagesBySpeedChange
     private suspend fun predictStagesByGeofencing(gpsPoints: List<LocalGpsPoint>): List<List<LocalGpsPoint>> {
         val currentStage = mutableListOf<LocalGpsPoint>()
         val potentialStages = mutableListOf<List<LocalGpsPoint>>()
@@ -221,7 +220,8 @@ class DefaultTrackingAlgorithm @Inject constructor(
         for (i in gpsPoints.indices) {
             currentStage.add(gpsPoints[i])
 
-            if (hasNotMovedOutOfRadius(
+            val durationOfStage = currentStage.last().location.time - currentStage.first().location.time
+            if (durationOfStage > MIN_DURATION_OF_STAGE && hasNotMovedOutOfRadius(
                     gpsPoints.subList(i, gpsPoints.size).map { it.location },
                     FIVE_MINUTES_IN_MILLIS)
             ) {

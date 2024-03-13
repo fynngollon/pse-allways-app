@@ -1,7 +1,8 @@
 package com.pseteamtwo.allways
-/*
+
 import android.content.Intent
 import androidx.compose.runtime.Composable
+import com.fynng.allways.MainActivity
 import com.pseteamtwo.allways.settings.AppPreferences
 import com.pseteamtwo.allways.trip.tracking.ACTION_START
 import com.pseteamtwo.allways.trip.tracking.ACTION_STOP
@@ -45,17 +46,10 @@ fun MainActivity.TrackingPermissionCheck() {
         this,
         arrayOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
+            android.Manifest.permission.ACCESS_FINE_LOCATION
         ),
         0
     )
-
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-        androidx.core.app.ActivityCompat.requestPermissions(this,
-            arrayOf(android.Manifest.permission.ACTIVITY_RECOGNITION),
-            0)
-    }
 
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
         androidx.core.app.ActivityCompat.requestPermissions(this,
@@ -63,4 +57,4 @@ fun MainActivity.TrackingPermissionCheck() {
             0)
     }
 }
- */
+

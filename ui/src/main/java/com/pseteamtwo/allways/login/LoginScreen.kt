@@ -80,7 +80,7 @@ fun LoginScreen(navController: NavController) {
     }
 
     if(accountAlreadyExists) {
-        val onDismissRequest = {loginViewModel.setAccountAlreadyExists(false)}
+        val onDismissRequest = { loginViewModel.setAccountAlreadyExists(false) }
         Dialog(onDismissRequest = onDismissRequest) {
             Card {
                 Column {
@@ -89,7 +89,7 @@ fun LoginScreen(navController: NavController) {
 
                     }
                     Row(modifier = Modifier.padding(20.dp)) {
-                        Button(onClick =  onDismissRequest) {
+                        Button(onClick = onDismissRequest) {
                             Text(text = "OK")
                         }
                     }
@@ -98,8 +98,6 @@ fun LoginScreen(navController: NavController) {
             }
         }
     }
-    
-    
 
     Column(modifier = Modifier.padding(20.dp)) {
         Row(modifier = Modifier.padding(start = 20.dp)) {

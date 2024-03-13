@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!--uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" /-->
     <!-- Required for 29+. -->
@@ -25,19 +25,19 @@
             android:name=".trip.tracking.location.LocationService"
             android:foregroundServiceType="location"
             tools:ignore="ForegroundServicePermission" />
-        <service
+        <!-- service
             android:name=".trip.tracking.activityrecognition.ActivityTransitionService"
             android:foregroundServiceType="location"
-            tools:ignore="ForegroundServicePermission" />
+            tools:ignore="ForegroundServicePermission" /-->
 
-        <receiver
+        <!-- receiver
             android:name=".trip.tracking.activityrecognition.DefaultActivityTransitionClient"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
                 <action android:name="TRANSITION_RECEIVER" />
             </intent-filter>
-        </receiver>
+        </receiver-->
     </application>
 
 </manifest>

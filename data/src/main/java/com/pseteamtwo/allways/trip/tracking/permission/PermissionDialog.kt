@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.permission
+package com.pseteamtwo.allways.trip.tracking.permission
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -53,9 +53,9 @@ fun PermissionDialog(
 
 class LocationPermissionTextProvider {
     fun getDescription(isPermanentlyDeclined: Boolean): String {
-        val description = "Die App benoetigt die Standort-Berechtigungen, um Tracking zu nutzen. "
+        val description = "Die App benötigt die Standort-Berechtigungen, um Tracking zu nutzen. "
         if(isPermanentlyDeclined) {
-            description.plus("Sie koennen in die App-Einstellungen gehen, um diese zu aktivieren.")
+            description.plus("Sie können in die App-Einstellungen gehen, um diese zu aktivieren.")
         }
         return description
     }
