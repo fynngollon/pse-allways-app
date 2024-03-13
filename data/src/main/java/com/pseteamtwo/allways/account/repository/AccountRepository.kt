@@ -3,6 +3,7 @@ package com.pseteamtwo.allways.account.repository
 import com.pseteamtwo.allways.account.Account
 import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.exception.AccountNotFoundException
+import com.pseteamtwo.allways.exception.InvalidEmailFormatException
 import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import kotlinx.coroutines.flow.Flow
 import kotlin.jvm.Throws
@@ -33,10 +34,15 @@ interface AccountRepository {
      * @param password The password to login to the account later after logout.
      * @throws ServerConnectionFailedException If no connection to the network database can be
      * established.
+     * @throws InvalidEmailFormatException If the email specified by the user is of invalid format.
      * @throws AccountAlreadyExistsException If an [Account] with the given email already exists
      * on the network database.
      */
-    @Throws(ServerConnectionFailedException::class, AccountAlreadyExistsException::class)
+    @Throws(
+        ServerConnectionFailedException::class,
+        InvalidEmailFormatException::class,
+        AccountAlreadyExistsException::class
+    )
     suspend fun createAccount(email: String, password: String)
 
     /**
