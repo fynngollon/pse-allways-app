@@ -9,6 +9,8 @@ import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
 import com.pseteamtwo.allways.account.source.network.DefaultAccountNetworkDataSource
 import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.exception.AccountNotFoundException
+import com.pseteamtwo.allways.exception.InvalidEmailFormatException
+import com.pseteamtwo.allways.exception.InvalidPasswordFormatException
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,8 +33,10 @@ class DefaultAccountRepositoryTest {
 
     //Test data
     private val email = "killua.zoldyck@hxh.com"
-    private val password = "Godspeed99"
-    private val password2 = "Nanika"
+    private val invalidEmail = "killua.zoldyck@hxh"
+    private val password = "Godspeed.99"
+    private val password2 = "Nanika?99Alluka!"
+    private val invalidPassword = "Godspeed"
 
 
     //Test dependencies
@@ -81,6 +85,16 @@ class DefaultAccountRepositoryTest {
         assertEquals(true, accountNetworkDataSource.doesEmailExist(email))
         assertEquals(email, createdAccount.email)
         Log.d("Created Account", createdAccount.toString())
+    }
+
+    @Test(expected = InvalidEmailFormatException::class)
+    fun createAccountWithInvalidEmailFormat() = runTest {
+        repository.createAccount(invalidEmail, password)
+    }
+
+    @Test(expected = InvalidPasswordFormatException::class)
+    fun createAccountWithInvalidPasswordFormat() = runTest {
+        repository.createAccount(email, invalidPassword)
     }
 
     @Test(expected = AccountAlreadyExistsException::class)
