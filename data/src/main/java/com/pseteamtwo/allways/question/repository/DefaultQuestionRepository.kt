@@ -60,9 +60,9 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
 
     @Throws(QuestionIdNotFoundException::class)
     override suspend fun updateAnswer(id: String, answer: String) {
-        val question = questionDao.observe(id).first()
+        val question = questionDao.get(id)
         //update answer from question and upsert it
-        question.answer = answer
+        question!!.answer = answer
         questionDao.upsert(question)
         //questions[id.toInt()].answer = answer
     }
@@ -92,7 +92,8 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
     override suspend fun saveQuestionsToNetwork(idList: List<String>) {
         val questions = mutableListOf<LocalQuestion>()
 
-        //gets all Questions from local Database ans saves them in the list. Ids which done exist get ignored
+        //gets all Questions from local Database ans saves them in the list. Ids which don't
+        //exist get ignored
         for (id in idList) {
             questions.add(questionDao.observe(id).first())
         }

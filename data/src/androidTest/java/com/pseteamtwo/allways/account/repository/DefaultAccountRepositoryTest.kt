@@ -52,7 +52,6 @@ class DefaultAccountRepositoryTest {
     private lateinit var repository: DefaultAccountRepository
 
 
-
     // using an in-memory database because the information stored here disappears when the
     // process is killed
     // Ensure that we use a new database for each test.
