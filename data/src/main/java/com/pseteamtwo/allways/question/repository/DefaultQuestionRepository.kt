@@ -102,7 +102,7 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
             val questionOfId = questionDao.observe(id).first()
             if(questionOfId.answer == "") {
                 throw IllegalArgumentException("Any given id specifies a question without an" +
-                        " answer which is invalid for saving to the network database.")
+                        " answer which is invalid for saving it to the network database.")
             }
             questions.add(questionOfId)
         }
