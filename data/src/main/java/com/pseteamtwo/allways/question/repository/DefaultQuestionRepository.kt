@@ -52,6 +52,8 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         return questionDao.observeAll().map { it.toExternal() }
     }
 
+    //TODO("should this method delete all questions in the local database before putting the ones
+    // of the questionnaire in")
     @Throws(ServerConnectionFailedException::class)
     override suspend fun loadQuestionnaire() {
         val networkQuestions = questionnaireNetworkDataSource.loadQuestionnaire()
@@ -64,7 +66,6 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         //update answer from question and upsert it
         question!!.answer = answer
         questionDao.upsert(question)
-        //questions[id.toInt()].answer = answer
     }
 
 
@@ -73,6 +74,9 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         questionDao.deleteQuestion(id)
     }
 
+    //TODO("if network questions are empty for a logged in account, should all questions of
+    // the local database be deleted anyways or not like the behaviour of this method
+    // at the moment?")
     @Throws(ServerConnectionFailedException::class)
     override suspend fun refresh() {
         val pseudonym = withContext(dispatcher) {
@@ -95,7 +99,12 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         //gets all Questions from local Database ans saves them in the list. Ids which don't
         //exist get ignored
         for (id in idList) {
-            questions.add(questionDao.observe(id).first())
+            val questionOfId = questionDao.observe(id).first()
+            if(questionOfId.answer == "") {
+                throw IllegalArgumentException("Any given id specifies a question without an" +
+                        " answer which is invalid for saving to the network database.")
+            }
+            questions.add(questionOfId)
         }
 
         val pseudonym = withContext(dispatcher) {
