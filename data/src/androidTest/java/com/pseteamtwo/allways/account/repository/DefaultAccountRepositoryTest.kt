@@ -34,7 +34,7 @@ class DefaultAccountRepositoryTest {
     //Test data
     private val email = "killua.zoldyck@hxh.com"
     private val invalidEmail = "killua.zoldyck@hxh"
-    private val password = "Godspeed.99"
+    private val password = "Godspeed!99"
     private val password2 = "Nanika?99Alluka!"
     private val invalidPassword = "Godspeed"
 

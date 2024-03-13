@@ -50,11 +50,15 @@ class DefaultQuestionRepositoryTest {
     private val unansweredQuestion2 = NetworkQuestion(
         "education",
         "highest degree of education",
-        QuestionType.CHECKBOX
+        QuestionType.CHECKBOX,
+        listOf("Abitur", "Bachelor", "Master")
     )
     private val answeredQuestion2 = unansweredQuestion2.copy(answer = "Abitur").toLocal()
 
-    private val unansweredQuestionString: String = Json.encodeToString(
+    private val format = Json {
+        ignoreUnknownKeys = true // Add this line to ignore unknown keys if needed
+    }
+    private val unansweredQuestionString: String = format.encodeToString(
         listOf(unansweredQuestion1, unansweredQuestion2)
     )
 
@@ -82,7 +86,7 @@ class DefaultQuestionRepositoryTest {
     // process is killed
     // Ensure that we use a new database for each test.
     @Before
-    fun setUp() {
+    fun createRepository() {
         questionDatabase = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             ProfileQuestionDatabase::class.java

@@ -210,7 +210,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         } catch (e: Exception) {
             // 7. Handle errors (e.g., database connection issues)
-            throw Exception("Failed to check pseudonym existence", e)
+            throw Exception("Failed to check email existence", e)
         } finally {
             accessMutex.unlock() // Release lock after operation
         }
