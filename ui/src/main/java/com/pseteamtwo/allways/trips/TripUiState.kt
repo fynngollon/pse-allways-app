@@ -33,7 +33,8 @@ import org.threeten.bp.LocalDateTime
  * @property setPurpose the function for setting this trip UI state's purpose.
  * @property updateTrip the function for updating the respective trip in the database or creating
  * one.
- * @property sendToServer the function for sending the respective trip to the server.
+ * @property sendToServer whether the respective trips is to be sent to the server when donating
+ * data
  * */
 data class TripUiState(
     val id: Long,
