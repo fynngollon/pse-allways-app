@@ -11,6 +11,7 @@ import com.pseteamtwo.allways.trip.tracking.LOCATION_TRACKING_NOTIFICATION_ID
 import com.pseteamtwo.allways.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TEXT
 import com.pseteamtwo.allways.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TITLE
 import com.pseteamtwo.allways.trip.tracking.TrackingService
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -28,10 +29,12 @@ import javax.inject.Inject
  * The service holds of instance to [LocationClient]. This [LocationClient] provides the actual
  * location updates. The LocationService listens to those updates and saves them into the database.
  */
-//@AndroidEntryPoint
-class LocationService @Inject constructor(
-    private val tripAndStageRepository: DefaultTripAndStageRepository
-) : TrackingService() {
+/*@AndroidEntryPoint
+@Inject constructor(
+private val tripAndStageRepository:
+
+ */
+class LocationService : TrackingService() {
 
     private lateinit var locationClient: LocationClient
 
@@ -65,7 +68,7 @@ class LocationService @Inject constructor(
             .getLocationUpdates(AppPreferences(this).trackingRegularity.regularity)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
-                tripAndStageRepository.createGpsPoint(location)
+                //tripAndStageRepository.createGpsPoint(location)
             }
             .launchIn(serviceScope)
 

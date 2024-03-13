@@ -2,6 +2,7 @@ package com.pseteamtwo.allways.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fynng.allways.MainActivity
 import com.pseteamtwo.allways.account.repository.DefaultAccountRepository
 import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.exception.AccountNotFoundException

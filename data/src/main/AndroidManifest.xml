@@ -21,10 +21,17 @@
         android:theme="@style/Theme.AllWays"
         tools:replace="android:allowBackup"
         tools:targetApi="s">
+        <activity
+            android:name="com.pseteamtwo.allways.trip.tracking.permission.PermissionActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.pseteamtwo.allways.trip.tracking.permission.PermissionActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".trip.tracking.location.LocationService"
-            android:foregroundServiceType="location"
-            tools:ignore="ForegroundServicePermission" />
+            android:foregroundServiceType="location" />
         <!-- service
             android:name=".trip.tracking.activityrecognition.ActivityTransitionService"
             android:foregroundServiceType="location"

@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.pseteamtwo.allways.navigation.BottomNavigation
 import com.pseteamtwo.allways.navigation.SetUpNavGraph
+import com.pseteamtwo.allways.startTracking
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -33,6 +34,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(this)
+
+        startTracking()
+
         setContent {
             navController = rememberNavController()
             var showBottomBar by rememberSaveable { mutableStateOf(true) }

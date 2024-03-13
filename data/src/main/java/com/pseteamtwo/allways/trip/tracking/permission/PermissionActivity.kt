@@ -10,10 +10,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 class PermissionActivity : ComponentActivity() {
+
+    private val permissionsToRequest = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,22 +33,6 @@ class PermissionActivity : ComponentActivity() {
         setContent {
             val viewModel = viewModel<PermissionViewModel>()
             val dialogQueue = viewModel.visiblePermissionDialogQueue
-            val permissionsToRequest = arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-            )
-
-            /*
-        val cameraPermissionResultLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted ->
-                viewModel.onPermissionResult(
-                    permission = Manifest.permission.CAMERA,
-                    isGranted = isGranted
-                )
-            }
-        )
-         */
 
             val trackingPermissionResultLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -50,7 +46,18 @@ class PermissionActivity : ComponentActivity() {
                 }
             )
 
-            trackingPermissionResultLauncher.launch(permissionsToRequest)
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(onClick = {
+                    trackingPermissionResultLauncher.launch(permissionsToRequest)
+                }) {
+                    Text(text = "Request multiple permission")
+                }
+            }
 
             dialogQueue
                 .reversed()
@@ -70,6 +77,7 @@ class PermissionActivity : ComponentActivity() {
                     )
                 }
         }
+
     }
 }
 

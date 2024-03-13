@@ -69,29 +69,14 @@ android {
 
 dependencies {
 
-    implementation(project(":ui"))
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("com.google.dagger:hilt-android:2.50")
-    ksp("com.google.dagger:hilt-compiler:2.50")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    ksp("androidx.hilt:hilt-compiler:1.2.0")
-
     // KSP
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
-    // added dependencies
-    implementation("androidx.room:room-ktx:2.6.1")
-    implementation("com.google.android.gms:play-services-location:21.2.0")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
-
-    implementation("com.google.dagger:hilt-android:2.50")
-    annotationProcessor("com.google.dagger:hilt-compiler:2.50")
-
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
 
     // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     ksp("androidx.room:room-compiler:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
 
     // JSON
     implementation ("net.pwall.json:json-kotlin-schema:0.44")
@@ -103,7 +88,10 @@ dependencies {
 
     // Hilt - data injection
     implementation("com.google.dagger:hilt-android:2.50")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.50")
     ksp("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     // Open-Street-Map
     implementation("org.osmdroid:osmdroid-android:6.1.14")
@@ -141,12 +129,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("com.google.dagger:hilt-android:2.50")
-    ksp("com.google.dagger:hilt-compiler:2.50")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

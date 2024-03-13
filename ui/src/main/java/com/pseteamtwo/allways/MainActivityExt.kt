@@ -40,6 +40,7 @@ fun MainActivity.stopTracking() {
     AppPreferences(this).isTrackingEnabled = false
 }
 
+/*
 @Composable
 fun MainActivity.TrackingPermissionCheck() {
     androidx.core.app.ActivityCompat.requestPermissions(
@@ -58,3 +59,5 @@ fun MainActivity.TrackingPermissionCheck() {
     }
 }
 
+
+ */

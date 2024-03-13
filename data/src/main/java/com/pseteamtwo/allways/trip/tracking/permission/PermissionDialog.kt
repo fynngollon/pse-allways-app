@@ -16,7 +16,7 @@ fun PermissionDialog(
 
     AlertDialog(
         title = {
-            Text(text = "Erforderliche Berechtigungen zum Tracking")
+            Text(text = "Erforderliche Berechtigungen")
         },
         text = {
             Text(
