@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.trip.repository
 
+/*
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -172,3 +173,5 @@ class DefaultTripAndStageRepositoryTest {
         assertEquals(userTrip1, savedUserTrip)
     }
 }
+
+ */

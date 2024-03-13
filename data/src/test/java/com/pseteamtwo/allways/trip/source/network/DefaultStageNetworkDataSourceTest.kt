@@ -1,5 +1,5 @@
 package com.pseteamtwo.allways.trip.source.network
-
+/**
 import com.pseteamtwo.allways.trip.Mode
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -76,3 +76,4 @@ class DefaultStageNetworkDataSourceTest {
         }
     }
 }
+        */

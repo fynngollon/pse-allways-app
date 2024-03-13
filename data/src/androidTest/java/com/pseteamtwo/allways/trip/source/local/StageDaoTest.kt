@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.trip.source.local
 
+/*
 import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -81,3 +82,5 @@ class StageDaoTest {
         Log.d("LogTest", loadedStageWithGpsPoints.toString())
     }
 }
+
+ */

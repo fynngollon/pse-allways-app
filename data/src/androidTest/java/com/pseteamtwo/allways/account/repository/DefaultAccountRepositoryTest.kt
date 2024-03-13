@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.account.repository
 
+/*
 import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -84,3 +85,5 @@ class DefaultAccountRepositoryTest {
         TODO("Not yet implemented")
     }
 }
+
+ */

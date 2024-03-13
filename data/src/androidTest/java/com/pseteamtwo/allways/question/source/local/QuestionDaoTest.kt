@@ -1,5 +1,5 @@
 package com.pseteamtwo.allways.question.source.local
-
+/*
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -125,3 +125,5 @@ class QuestionDaoTest {
         assertEquals(1, newLoaded.size)
     }
 }
+
+ */

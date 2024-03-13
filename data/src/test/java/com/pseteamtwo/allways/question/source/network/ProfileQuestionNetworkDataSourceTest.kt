@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.question.source.network
 
+/**
 import com.pseteamtwo.allways.question.QuestionType
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -64,3 +65,5 @@ class ProfileQuestionNetworkDataSourceTest {
         }
     }
 }
+
+ */

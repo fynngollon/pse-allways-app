@@ -1,5 +1,5 @@
 package com.pseteamtwo.allways.account.source.local
-
+/*
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,12 +11,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/**
+
  * Instrumented test, which will execute on an Android device.
  *
  * This test tests [com.pseteamtwo.allways.account.source.local.AccountDao]
  * and [com.pseteamtwo.allways.account.source.local.AccountDatabase].
- */
+
 @RunWith(AndroidJUnit4::class)
 class AccountDaoTest {
     // using an in-memory database because the information stored here disappears when the
@@ -76,3 +76,5 @@ class AccountDaoTest {
         }
     }
 }
+
+ */

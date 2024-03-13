@@ -5,46 +5,41 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" /-->
-    <!-- Required for 29+. -->
-    <!--uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- android:name=".trip.tracking.TrackingNotification" -->
     <application
         android:allowBackup="true"
+        android:icon="@mipmap/allways_app_icon"
+        android:roundIcon="@mipmap/allways_app_icon_round"
+        android:label="@string/app_name"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AllWays"
         tools:replace="android:allowBackup"
         tools:targetApi="s">
         <activity
-            android:name="com.pseteamtwo.allways.trip.tracking.permission.PermissionActivity"
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AllWays">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".data.trip.tracking.permission.PermissionActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.pseteamtwo.allways.trip.tracking.permission.PermissionActivity" />
+                <action android:name="com.pseteamtwo.allways.data.trip.tracking.permission.PermissionActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <service
-            android:name=".trip.tracking.location.LocationService"
+            android:name=".data.trip.tracking.location.LocationService"
             android:foregroundServiceType="location" />
-        <!-- service
-            android:name=".trip.tracking.activityrecognition.ActivityTransitionService"
-            android:foregroundServiceType="location"
-            tools:ignore="ForegroundServicePermission" /-->
-
-        <!-- receiver
-            android:name=".trip.tracking.activityrecognition.DefaultActivityTransitionClient"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="TRANSITION_RECEIVER" />
-            </intent-filter>
-        </receiver-->
     </application>
 
 </manifest>

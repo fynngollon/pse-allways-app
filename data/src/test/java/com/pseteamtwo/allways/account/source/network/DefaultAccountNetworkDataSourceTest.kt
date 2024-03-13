@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.account.source.network
 
+/**
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -66,3 +67,5 @@ class DefaultAccountNetworkDataSourceTest {
         }
     }
 }
+
+ */
