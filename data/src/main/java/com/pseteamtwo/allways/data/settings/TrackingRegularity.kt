@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.data.settings
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -17,20 +18,28 @@ enum class TrackingRegularity(val regularity: Long) {
     /**
      * This tracking regularity means that the tracking is disabled.
      */
+    @SerialName("never")
     NEVER(0),
 
     /**
      * This regularity means that the tracking should be done once per minute.
      */
+    @SerialName("rarely")
     RARELY(60000),
 
     /**
      * This regularity means that the tracking should be done twice per minute.
      */
+    @SerialName("medium")
     MEDIUM(30000),
 
     /**
      * This regularity means that the tracking should be done 6 times per minute.
      */
+    @SerialName("often")
     OFTEN(10000);
+
+    override fun toString(): String {
+        return this.name + "(" + this.regularity + ")"
+    }
 }
