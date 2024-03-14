@@ -183,10 +183,10 @@ class DefaultTripAndStageRepository @Inject constructor(
      * @param purpose The [Purpose] of the new trip.
      * @return The created [LocalTrip].
      */
-    internal suspend fun createTripOfExistingStages(
+    override suspend fun createTripOfExistingStages(
         localStages: List<LocalStage>,
         purpose: Purpose,
-        isCreatedByUser: Boolean = false
+        isCreatedByUser: Boolean
     ): LocalTrip {
         require(localStages.isNotEmpty())
         // stages are in local db and aren't assigned to a trip
@@ -251,7 +251,7 @@ class DefaultTripAndStageRepository @Inject constructor(
      */
     // this seems to be for the tracking algorithm
     // creates trips that don't belong to any trip!
-    internal suspend fun createStageOfExistingGpsPoints(
+    override suspend fun createStageOfExistingGpsPoints(
         localGpsPoints: List<LocalGpsPoint>,
         mode: Mode
     ): LocalStage {
@@ -310,7 +310,7 @@ class DefaultTripAndStageRepository @Inject constructor(
      * @param location The [Location] which the new gpsPoint consists of.
      * @return The created gpsPoint.
      */
-    internal suspend fun createGpsPoint(location: Location): LocalGpsPoint {
+    override suspend fun createGpsPoint(location: Location): LocalGpsPoint {
         if(isTimeInFuture(location.time)) {
             assert(false) { "Time of gpsPoint to create may not be in the future" }
         }

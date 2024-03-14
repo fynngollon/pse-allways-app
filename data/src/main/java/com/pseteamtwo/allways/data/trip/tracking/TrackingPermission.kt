@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
-
+/*
 fun Context.hasTrackingPermission(): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         if (!hasPermission(Manifest.permission.ACTIVITY_RECOGNITION)) {
@@ -36,3 +36,5 @@ fun Context.hasPermission(permission: String): Boolean {
     return ContextCompat.checkSelfPermission(this, permission) ==
             PackageManager.PERMISSION_GRANTED
 }
+
+ */

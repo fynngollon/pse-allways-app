@@ -27,6 +27,8 @@ class PermissionActivity : ComponentActivity() {
         Manifest.permission.ACCESS_FINE_LOCATION,
     )
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,7 +48,6 @@ class PermissionActivity : ComponentActivity() {
                 }
             )
 
-
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -56,6 +57,11 @@ class PermissionActivity : ComponentActivity() {
                     trackingPermissionResultLauncher.launch(permissionsToRequest)
                 }) {
                     Text(text = "Request multiple permission")
+                }
+                Button(onClick = {
+                    finish()
+                }) {
+                    Text(text = "Cancel")
                 }
             }
 

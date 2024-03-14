@@ -1,18 +1,25 @@
 package com.pseteamtwo.allways.data.trip.tracking.location
 
 import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.LocationServices
 import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.data.settings.AppPreferences
+import com.pseteamtwo.allways.data.trip.repository.TripAndStageRepository
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_CHANNEL_ID
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_ID
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TEXT
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TITLE
 import com.pseteamtwo.allways.data.trip.tracking.TrackingService
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 /**
  * NOT INTEGRATED YET. Needs to be granted permission and MainActivity.startTracking() (in
@@ -26,12 +33,11 @@ import kotlinx.coroutines.flow.onEach
  * The service holds of instance to [LocationClient]. This [LocationClient] provides the actual
  * location updates. The LocationService listens to those updates and saves them into the database.
  */
-/*@AndroidEntryPoint
-@Inject constructor(
-private val tripAndStageRepository:
 
- */
-class LocationService : TrackingService() {
+@AndroidEntryPoint
+class LocationService  : TrackingService() {
+
+    @Inject lateinit var tripAndStageRepository: TripAndStageRepository
 
     private lateinit var locationClient: LocationClient
 
@@ -50,24 +56,33 @@ class LocationService : TrackingService() {
     /**
      * If tracking is enabled, it builds a notification and listens to location tracking updates.
      * When it receives an update it stores the new location in the trip database as a
-     * [com.pseteamtwo.allways.trip.source.local.LocalGpsPoint] and keeps the service running.
+     * [com.pseteamtwo.allways.data.trip.source.local.LocalGpsPoint] and keeps the service running.
      */
     @SuppressLint("NotificationPermission")
     override fun start() {
-        val notification = buildNotification()
-
         if (!AppPreferences(this).isTrackingEnabled) {
             stop()
             return
         }
 
+        val notification = buildNotification()
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
         locationClient
             .getLocationUpdates(AppPreferences(this).trackingRegularity.regularity)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
-                //tripAndStageRepository.createGpsPoint(location)
+                val lat = location.latitude.toString()
+                val long = location.longitude.toString()
+                val updatedNotification = notification.setContentText(
+                    "Location: ($lat, $long)"
+                )
+                notificationManager.notify(1, updatedNotification.build())
+                Log.d("PSE_TRACKING", "Location: ($lat, $long)")
+                tripAndStageRepository.createGpsPoint(location)
             }
             .launchIn(serviceScope)
+
 
         startForeground(LOCATION_TRACKING_NOTIFICATION_ID, notification.build())
     }
@@ -85,5 +100,7 @@ class LocationService : TrackingService() {
             .setSmallIcon(R.mipmap.allways_app_icon)
             .setOngoing(true)
     }
+
+
 
 }

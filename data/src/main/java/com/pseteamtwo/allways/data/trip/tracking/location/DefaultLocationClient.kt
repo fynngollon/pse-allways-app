@@ -10,8 +10,6 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.pseteamtwo.allways.data.trip.tracking.GPS_DISABLED
-import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_PERMISSION_MISSING
-import com.pseteamtwo.allways.data.trip.tracking.hasTrackingPermission
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -47,10 +45,6 @@ class DefaultLocationClient(
     @SuppressLint("MissingPermission")
     override fun getLocationUpdates(interval: Long): Flow<Location> {
         return callbackFlow {
-            if (!context.hasTrackingPermission()) {
-                throw LocationClient.LocationException(LOCATION_TRACKING_PERMISSION_MISSING)
-            }
-
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
             val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)

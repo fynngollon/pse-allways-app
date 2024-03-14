@@ -13,7 +13,6 @@ import com.google.android.gms.location.ActivityTransitionResult
 import com.google.android.gms.location.DetectedActivity
 import com.pseteamtwo.allways.data.trip.tracking.ACTIVITY_RECOGNITION_PERMISSION_MISSING
 import com.pseteamtwo.allways.data.trip.tracking.GPS_DISABLED
-import com.pseteamtwo.allways.data.trip.tracking.hasTrackingPermission
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -71,11 +70,6 @@ class DefaultActivityTransitionClient(
     @SuppressLint("MissingPermission")
     override fun getActivityTransitions(): Flow<ActivityTransitionResult> {
         return callbackFlow {
-            if (!context.hasTrackingPermission()) {
-                throw ActivityTransitionClient.ActivityTransitionException(
-                    ACTIVITY_RECOGNITION_PERMISSION_MISSING
-                )
-            }
 
             val locationManager =
                 context.getSystemService(Context.LOCATION_SERVICE) as LocationManager

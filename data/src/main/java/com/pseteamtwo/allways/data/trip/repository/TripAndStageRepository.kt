@@ -10,6 +10,9 @@ import com.pseteamtwo.allways.data.trip.Mode
 import com.pseteamtwo.allways.data.trip.Purpose
 import com.pseteamtwo.allways.data.trip.Stage
 import com.pseteamtwo.allways.data.trip.Trip
+import com.pseteamtwo.allways.data.trip.source.local.LocalGpsPoint
+import com.pseteamtwo.allways.data.trip.source.local.LocalStage
+import com.pseteamtwo.allways.data.trip.source.local.LocalTrip
 import kotlinx.coroutines.flow.Flow
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
@@ -63,8 +66,18 @@ interface TripAndStageRepository {
     )
     suspend fun createTrip(stages: List<Stage>, purpose: Purpose)
 
-    //suspend fun createStage(gpsPoints: List<GpsPoint>, mode: Mode): Stage
+    suspend fun createTripOfExistingStages(
+        localStages: List<LocalStage>,
+        purpose: Purpose,
+        isCreatedByUser: Boolean = false
+    ): LocalTrip
 
+    suspend fun createStageOfExistingGpsPoints(
+        localGpsPoints: List<LocalGpsPoint>,
+        mode: Mode
+    ): LocalStage
+
+    suspend fun createGpsPoint(location: Location): LocalGpsPoint
 
     /**
      * Updates the purpose of the specified [Trip].

@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.pseteamtwo.allways.data.trip.tracking.permission.PermissionActivity
 import com.pseteamtwo.allways.ui.navigation.BottomNavigation
 import com.pseteamtwo.allways.ui.navigation.SetUpNavGraph
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,10 +31,13 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(this)
+
+
+        //val intent = Intent(this, PermissionActivity::class.java)
+        //startActivity(intent)
 
         startTracking()
 

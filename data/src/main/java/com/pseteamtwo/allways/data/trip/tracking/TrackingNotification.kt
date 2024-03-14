@@ -4,8 +4,9 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import dagger.hilt.android.HiltAndroidApp
 
-//@HiltAndroidApp
+@HiltAndroidApp
 class TrackingNotification : Application() {
 
     override fun onCreate() {
@@ -14,7 +15,7 @@ class TrackingNotification : Application() {
         val channelLocationTracking = NotificationChannel(
             LOCATION_TRACKING_CHANNEL_ID,
             LOCATION_TRACKING_NOTIFICATION_NAME,
-            NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_LOW
         )
 
         /*

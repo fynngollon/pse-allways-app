@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         //applicationId = "com.pseteamtwo.allways"
-        minSdk = 26
+        minSdk = 28
         //targetSdk = 34
         //versionCode = 1
         //versionName = "1.0"
@@ -78,6 +78,13 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     //annotationProcessor("androidx.room:room-compiler:2.6.1")
 
+    // Hilt - data injection
+    implementation("com.google.dagger:hilt-android:2.51")
+    //annotationProcessor("com.google.dagger:hilt-compiler:2.51")
+    ksp("com.google.dagger:hilt-compiler:2.51")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    //ksp("androidx.hilt:hilt-compiler:1.2.0")
+
     // JSON
     implementation ("net.pwall.json:json-kotlin-schema:0.47")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
@@ -86,18 +93,11 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.33")
     //implementation(kotlin("stdlib-jdk8"))
 
-    // Hilt - data injection
-    implementation("com.google.dagger:hilt-android:2.51")
-    //annotationProcessor("com.google.dagger:hilt-compiler:2.51")
-    ksp("com.google.dagger:hilt-compiler:2.51")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    //ksp("androidx.hilt:hilt-compiler:1.2.0")
-
     // Open-Street-Map
-    implementation("org.osmdroid:osmdroid-android:6.1.18")
-    implementation("org.osmdroid:osmdroid-wms:6.1.18")
-    implementation("org.osmdroid:osmdroid-mapsforge:6.1.18")
-    implementation("org.osmdroid:osmdroid-geopackage:6.1.18")
+    //implementation("org.osmdroid:osmdroid-android:6.1.18")
+    //implementation("org.osmdroid:osmdroid-wms:6.1.18")
+    //implementation("org.osmdroid:osmdroid-mapsforge:6.1.18")
+    //implementation("org.osmdroid:osmdroid-geopackage:6.1.18")
     implementation("com.github.MKergall:osmbonuspack:6.9.0")
 
     // Date, Time ...
@@ -153,4 +153,5 @@ dependencies {
 
     // Houses the core logic for charts and other elements. Included in all other modules.
     implementation("com.patrykandpatrick.vico:core:1.14.0")
+
 }
