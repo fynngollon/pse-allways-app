@@ -29,7 +29,6 @@ import com.pseteamtwo.allways.data.trip.toExternal
 import com.pseteamtwo.allways.data.trip.toLocal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -38,6 +37,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 /**
@@ -129,6 +129,7 @@ class DefaultTripAndStageRepositoryTest {
         true,
         listOf(stage1, stage2)
     )
+    private val otherPurpose = Purpose.EDUCATION
 
 
 
@@ -242,6 +243,8 @@ class DefaultTripAndStageRepositoryTest {
             exception?.message
         )
     }
+
+
 
     @Test
     fun createTripTest() = runTest {
@@ -368,4 +371,68 @@ class DefaultTripAndStageRepositoryTest {
         )
     }
 
+
+
+    @Test
+    fun updateTripPurpose() = runTest {
+        createTripTest()
+        repository.updateTripPurpose(userTrip1.id, otherPurpose)
+
+        val loadedTrip = tripDao.getTripWithStages(userTrip1.id)!!
+        assertEquals(
+            userTrip1.copy(purpose = otherPurpose),
+            loadedTrip.toExternal()
+        )
+    }
+    @Test
+    fun updateTripPurposeNoneSoTripGetsUnconfirmed() = runTest {
+        createTripTest()
+        repository.updateTripPurpose(userTrip1.id, Purpose.NONE)
+
+        val loadedTrip = tripDao.getTripWithStages(userTrip1.id)!!
+        assertEquals(
+            userTrip1.copy(purpose = Purpose.NONE, isConfirmed = false),
+            loadedTrip.toExternal()
+        )
+    }
+
+
+
+    @Test
+    fun deleteTripTest() = runTest {
+        createTripTest()
+        assertEquals(1, repository.observeAllTrips().first().size)
+        repository.deleteTrip(userTrip1.id)
+        assertEquals(0, repository.observeAllTrips().first().size)
+        assertEquals(0, stageDao.getAll().size)
+        assertEquals(0, gpsPointDao.observeAll().first().size)
+    }
+
+
+
+    @Test
+    fun getTripsOfDateTest() = runTest {
+        createTripTest()
+        val startDate = LocalDate.of(1970, 1, 1)
+        val loadedTrips = repository.getTripsOfDate(startDate)
+        assertEquals(1, loadedTrips.size)
+        assertEquals(userTrip1, loadedTrips.first())
+    }
+    @Test
+    fun getTripsOfDateButNoTripsAreOnThatDate() = runTest {
+        createTripTest()
+        val startDate = LocalDate.of(1970, 1, 2)
+        val loadedTrips = repository.getTripsOfDate(startDate)
+        assertEquals(0, loadedTrips.size)
+    }
+
+    @Test
+    fun getTripsOfTimespanTest() = runTest {
+        createTripTest()
+        val startOfTimespan = 0L.convertToLocalDateTime()
+        val endOfTimespan = 1L.convertToLocalDateTime()
+        val loadedTrips = repository.getTripsOfTimespan(startOfTimespan, endOfTimespan)
+        assertEquals(1, loadedTrips.size)
+        assertEquals(userTrip1, loadedTrips.first())
+    }
 }

@@ -240,14 +240,14 @@ class DefaultTripAndStageRepository @Inject constructor(
         // gpsPoints are in local db and aren't assigned to a stage
         localGpsPoints.forEach {
             if(gpsPointLocalDataSource.get(it.id) == null) {
-                assert(false) { "A gpsPoint is missing in the database" }
+                assert(false) { "A gpsPoint is missing in the database." }
             }
             assert(gpsPointLocalDataSource.get(it.id)?.stageId == null) {
-                "A gpsPoint is already assigned to another stage"
+                "A gpsPoint is already assigned to another stage."
             }
             if(isTimeInFuture(it.location.time)) {
                 assert(false) { "Time of gpsPoints to create a stage out of" +
-                        " may not be in the future" }
+                        " may not be in the future." }
             }
         }
 
@@ -274,7 +274,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         val createdStage = Stage(stageId, mode, localGpsPoints.toExternal())
         val createdStageOutOfDatabase = stageLocalDataSource.getStageWithGpsPoints(stageId)
         assert(createdStageOutOfDatabase != null) {
-            "Created Stage could not be added to the database (or not in the right way)"
+            "Created Stage could not be added to the database (or not in the right way)."
         }
         assertEquals(createdStage, createdStageOutOfDatabase?.toExternal())
 
@@ -285,7 +285,7 @@ class DefaultTripAndStageRepository @Inject constructor(
 
     override suspend fun createGpsPoint(location: Location): LocalGpsPoint {
         if(isTimeInFuture(location.time)) {
-            assert(false) { "Time of gpsPoint to create may not be in the future" }
+            assert(false) { "Time of gpsPoint to create may not be in the future." }
         }
 
         val localGpsPoint = LocalGpsPoint(
@@ -301,13 +301,7 @@ class DefaultTripAndStageRepository @Inject constructor(
     override suspend fun updateTripPurpose(tripId: Long, purpose: Purpose) {
         val localTrip = withContext(dispatcher) {
             tripLocalDataSource.get(tripId)
-        }
-
-        // check if trip is in db
-        if (localTrip == null) {
-            assert(false) { "Trip with ID $tripId not found in database" }
-            return
-        }
+        } ?: throw IllegalArgumentException("Trip with ID $tripId not in local database.")
 
         localTrip.purpose = purpose
         tripLocalDataSource.update(localTrip)
@@ -718,7 +712,8 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
 
         return allTrips.filter { trip ->
-            trip.startDateTime.isAfter(startTime) && trip.startDateTime.isBefore(endTime)
+            (trip.startDateTime.isAfter(startTime) || trip.startDateTime.isEqual(startTime))
+                    && trip.startDateTime.isBefore(endTime)
         }
     }
 
@@ -794,8 +789,8 @@ class DefaultTripAndStageRepository @Inject constructor(
                     in (tripStartTime + 1)..<tripEndTime)
             val endOverlap = (endTime.convertToMillis()
                     in (tripStartTime + 1)..<tripEndTime)
-            val fullyContained = (tripStartTime > startTime.convertToMillis()
-                    && tripEndTime < endTime.convertToMillis())
+            val fullyContained = (tripStartTime >= startTime.convertToMillis()
+                    && tripEndTime <= endTime.convertToMillis())
 
             startOverlap || endOverlap || fullyContained
         }
