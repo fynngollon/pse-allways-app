@@ -602,39 +602,30 @@ class DefaultTripAndStageRepository @Inject constructor(
         val localStage = stageLocalDataSource.get(stageId)
         val stageWithGpsPoints = stageLocalDataSource.getStageWithGpsPoints(stageId)
 
-        // does stage exist
+        //given stage should be inside the local database
         if (localStage == null) {
-            assert(false) { "Stage with ID $stageId not found in database" }
-            return
+            throw IllegalArgumentException("Stage with ID $stageId not in local database.")
         }
-        //is stage assigned to a trip
+        //stage should be assigned to a trip because this method is to be called from the ui-layer
         if (localStage.tripId == null) {
-            assert(false) { "Stage does not belong to any trip" }
-            return
+            throw IllegalArgumentException("Stage does not belong to any trip.")
         }
 
-        val localTripOfStage = localStage.tripId?.let { tripLocalDataSource.get(it) }
-        //is trip existent
-        if (localTripOfStage == null) {
-            assert(false) { "Stage has a trip with id ${localStage.tripId} assigned " +
-                    "but this trip does not exist" }
-            return
-        }
-
-        val stagesOfTrip =
-            tripLocalDataSource.getTripWithStages(localTripOfStage.id)!!.sortedStages
+        val tripOfStage = tripLocalDataSource.getTripWithStages(localStage.tripId!!)
+            ?: throw IllegalArgumentException("Stage has a trip with id ${localStage.tripId}" +
+                    " assigned but this trip does not exist.")
+        val stagesOfTrip = tripOfStage.sortedStages
 
         if (stagesOfTrip.size == 1) {
             //trip only consisted of that stage so delete the whole trip
-            deleteTrip(localTripOfStage.id)
-        } else if(stageWithGpsPoints != stagesOfTrip.first()
-            && stageWithGpsPoints != stagesOfTrip.last()) {
+            deleteTrip(tripOfStage.trip.id)
+        } else if(stageWithGpsPoints == stagesOfTrip.first()
+            || stageWithGpsPoints == stagesOfTrip.last()) {
                 stageLocalDataSource.delete(stageId)
         } else {
-            //stage is in between other stages inside the trip
-            //TODO("solution for this case not yet implemented")
-            assert(false) { "Cannot delete stage which is not the beginning or ending" +
-                    "stage of the trip in this version of the app" }
+            //stage is in between other stages inside the trip which should not occur
+            throw IllegalArgumentException("Cannot delete stage which is not the beginning or" +
+                    " ending stage of the trip in this version of the app.")
         }
     }
 

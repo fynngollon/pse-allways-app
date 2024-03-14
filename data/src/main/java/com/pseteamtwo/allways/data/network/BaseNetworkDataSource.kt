@@ -7,7 +7,6 @@ import java.sql.SQLException
 
 /**
  * This Class if for creating a connection to a MySql server.
- *
  */
 abstract class BaseNetworkDataSource {
 
@@ -64,7 +63,7 @@ abstract class BaseNetworkDataSource {
             return DriverManager.getConnection(url, username, password)
         } catch (e: Exception) {
             throw SQLException("", e)
-            //throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
+            //throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE) TODO
         }
     }
 

@@ -411,6 +411,20 @@ class DefaultTripAndStageRepositoryTest {
 
 
     @Test
+    fun deleteStageTest() = runTest{
+        createTripTest()
+
+        repository.deleteStage(userTrip1.stages.first().id)
+        val allStagesOnLocalDatabase = stageDao.getAll()
+        assertEquals(1, allStagesOnLocalDatabase.size)
+        val onlyStageOnLocalDatabase =
+            stageDao.getStageWithGpsPoints(allStagesOnLocalDatabase.first().id)!!
+        assertEquals(stage2, onlyStageOnLocalDatabase.toExternal())
+    }
+
+
+
+    @Test
     fun getTripsOfDateTest() = runTest {
         createTripTest()
         val startDate = LocalDate.of(1970, 1, 1)
