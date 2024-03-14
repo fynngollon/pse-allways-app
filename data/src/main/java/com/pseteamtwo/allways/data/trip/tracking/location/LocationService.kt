@@ -3,6 +3,7 @@ package com.pseteamtwo.allways.data.trip.tracking.location
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -17,6 +18,7 @@ import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TITLE
 import com.pseteamtwo.allways.data.trip.tracking.TrackingAlgorithmManager
 import com.pseteamtwo.allways.data.trip.tracking.TrackingService
+import com.pseteamtwo.allways.data.trip.tracking.calculateSpeedBetweenLocations
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -43,6 +45,7 @@ class LocationService : TrackingService() {
     @Inject lateinit var trackingAlgorithmManager: TrackingAlgorithmManager
 
     private lateinit var locationClient: LocationClient
+    private var lastLocation: Location? = null
 
     /**
      * Calls the parent class and initializes the [LocationClient].
@@ -77,12 +80,19 @@ class LocationService : TrackingService() {
             .onEach { location ->
                 val lat = location.latitude.toString()
                 val long = location.longitude.toString()
+                if (lastLocation != null) {
+                    val speed = calculateSpeedBetweenLocations(lastLocation!!, location)
+                    location.speed = speed
+                }
+                lastLocation = location
+
                 val updatedNotification = notification.setContentText(
-                    "Location: ($lat, $long)"
+                    "Location: ($lat, $long)\nSpeed: ${location.speed}"
                 )
                 notificationManager.notify(1, updatedNotification.build())
+                Log.d("PSE_TRACKING", "-------------------------------------------------")
                 Log.d("PSE_TRACKING", "Location: ($lat, $long)")
-                Log.d("PSE_TRACKING", AppPreferences(this).trackingRegularity.toString())
+                Log.d("PSE_TRACKING", "Speed: ${location.speed}")
                 tripAndStageRepository.createGpsPoint(location)
                 trackingAlgorithmManager.requestAlgorithm(location)
             }
