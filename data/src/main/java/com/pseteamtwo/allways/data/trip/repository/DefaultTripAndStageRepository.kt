@@ -489,8 +489,14 @@ class DefaultTripAndStageRepository @Inject constructor(
                     "already existent in the local database.")
         }
 
-        val startGpsPoint = createGpsPoint(startLocation)
-        val endGpsPoint = createGpsPoint(formerStartLocation)
+        val newStartLocationWithNewStartTime = Location(startLocation)
+        newStartLocationWithNewStartTime.time = startDateTime.convertToMillis()
+        val startGpsPoint = createGpsPoint(newStartLocationWithNewStartTime)
+
+        val newEndLocationWithNewEndTime = Location(formerStartLocation)
+        newEndLocationWithNewEndTime.time = endDateTime.convertToMillis()
+        val endGpsPoint = createGpsPoint(newEndLocationWithNewEndTime)
+
         val newStartStage = createStageOfExistingGpsPoints(listOf(startGpsPoint, endGpsPoint), mode)
         stageLocalDataSource.update(newStartStage.copy(tripId = tripId))
     }
@@ -537,8 +543,14 @@ class DefaultTripAndStageRepository @Inject constructor(
                     "already existent in the local database.")
         }
 
-        val startGpsPoint = createGpsPoint(formerEndLocation)
-        val endGpsPoint = createGpsPoint(endLocation)
+        val newStartLocationWithNewStartTime = Location(formerEndLocation)
+        newStartLocationWithNewStartTime.time = startDateTime.convertToMillis()
+        val startGpsPoint = createGpsPoint(newStartLocationWithNewStartTime)
+
+        val newEndLocationWithNewEndTime = Location(endLocation)
+        newEndLocationWithNewEndTime.time = endDateTime.convertToMillis()
+        val endGpsPoint = createGpsPoint(newEndLocationWithNewEndTime)
+
         val newStartStage = createStageOfExistingGpsPoints(listOf(startGpsPoint, endGpsPoint), mode)
         stageLocalDataSource.update(newStartStage.copy(tripId = tripId))
     }

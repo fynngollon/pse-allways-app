@@ -153,6 +153,31 @@ class DefaultTripAndStageRepositoryTest {
         true,
         listOf(stage3)
     )
+    private val userTripForAddStageBeforeTrip = Trip(
+        1,
+        Purpose.WORK,
+        true,
+        listOf(stage2, stage3)
+    )
+    private val longerUserTrip1ForAddStageBeforeTrip = Trip(
+        1,
+        Purpose.WORK,
+        true,
+        listOf(
+            stage1.copy(id = 3, gpsPoints = listOf(
+                stage1.gpsPoints[0].copy(id = 5),
+                stage1.gpsPoints[1].copy(id = 6))
+            ),
+            stage2.copy(id = 1, gpsPoints = listOf(
+                stage2.gpsPoints[0].copy(id = 1),
+                stage2.gpsPoints[1].copy(id = 2))
+            ),
+            stage2.copy(id = 2, gpsPoints = listOf(
+                stage3.gpsPoints[0].copy(id = 3),
+                stage3.gpsPoints[1].copy(id = 4))
+            )
+        )
+    )
     private val otherPurpose = Purpose.EDUCATION
 
 
@@ -418,6 +443,48 @@ class DefaultTripAndStageRepositoryTest {
             userTrip1.copy(purpose = Purpose.NONE, isConfirmed = false),
             loadedTrip.toExternal()
         )
+    }
+
+
+
+    @Test
+    fun addUserStageBeforeTripStart() = runTest {
+        repository.createTrip(
+            userTripForAddStageBeforeTrip.stages,
+            userTripForAddStageBeforeTrip.purpose
+        )
+
+        repository.addUserStageBeforeTripStart(
+            userTripForAddStageBeforeTrip.id,
+            stage1.mode,
+            stage1.startDateTime,
+            stage1.endDateTime,
+            stage1.startLocation.toLocation(time1)
+        )
+        val allTripsOnLocalDatabase = tripDao.getAllTripsWithStages()
+        assertEquals(1, allTripsOnLocalDatabase.size)
+        assertEquals(
+            longerUserTrip1ForAddStageBeforeTrip,
+            allTripsOnLocalDatabase.first().toExternal()
+        )
+    }
+
+
+
+    @Test
+    fun addUserStageAfterTripEnd() = runTest {
+        createTripTest()
+
+        repository.addUserStageAfterTripEnd(
+            userTrip1.id,
+            stage3.mode,
+            stage3.startDateTime,
+            stage3.endDateTime,
+            stage3.endLocation.toLocation(time6)
+        )
+        val allTripsOnLocalDatabase = tripDao.getAllTripsWithStages()
+        assertEquals(1, allTripsOnLocalDatabase.size)
+        assertEquals(longerUserTrip1, allTripsOnLocalDatabase.first().toExternal())
     }
 
 
