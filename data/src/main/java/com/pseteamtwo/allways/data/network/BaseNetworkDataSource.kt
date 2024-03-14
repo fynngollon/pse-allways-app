@@ -52,4 +52,30 @@ abstract class BaseNetworkDataSource {
             throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
         }
     }
+
+    @Throws(ServerConnectionFailedException::class)
+    fun createRemoteAccountConnection() : Connection {
+        val url = "jdbc:mysql://192.168.53.194:3306/allways-app-accounts"
+        val username = "RemoteUser"
+        val password = "Allways#App"
+
+        try {
+            return DriverManager.getConnection(url, username, password)
+        } catch (e: Exception) {
+            throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
+        }
+    }
+
+    @Throws(ServerConnectionFailedException::class)
+    fun createRemoteDataConnection(): Connection {
+        val url = "jdbc:mysql://192.168.53.194:3306/allways-app"
+        val username = "RemoteUser"
+        val password = "Allways#App"
+
+        try {
+            return DriverManager.getConnection(url, username, password)
+        } catch (e: Exception) {
+            throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
+        }
+    }
 }
