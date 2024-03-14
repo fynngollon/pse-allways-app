@@ -79,6 +79,7 @@ class LocationService  : TrackingService() {
                 )
                 notificationManager.notify(1, updatedNotification.build())
                 Log.d("PSE_TRACKING", "Location: ($lat, $long)")
+                Log.d("PSE_TRACKING", AppPreferences(this).trackingRegularity.regularity.toString())
                 tripAndStageRepository.createGpsPoint(location)
             }
             .launchIn(serviceScope)
@@ -101,6 +102,9 @@ class LocationService  : TrackingService() {
             .setOngoing(true)
     }
 
+    private fun startTrackingAlgorithm() {
+
+    }
 
 
 }
