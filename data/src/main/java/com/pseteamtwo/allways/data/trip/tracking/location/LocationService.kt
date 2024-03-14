@@ -10,10 +10,12 @@ import com.google.android.gms.location.LocationServices
 import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.data.settings.AppPreferences
 import com.pseteamtwo.allways.data.trip.repository.TripAndStageRepository
+import com.pseteamtwo.allways.data.trip.tracking.DefaultTrackingAlgorithm
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_CHANNEL_ID
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_ID
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TEXT
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TITLE
+import com.pseteamtwo.allways.data.trip.tracking.TrackingAlgorithmManager
 import com.pseteamtwo.allways.data.trip.tracking.TrackingService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
@@ -35,9 +37,10 @@ import javax.inject.Inject
  */
 
 @AndroidEntryPoint
-class LocationService  : TrackingService() {
+class LocationService : TrackingService() {
 
     @Inject lateinit var tripAndStageRepository: TripAndStageRepository
+    @Inject lateinit var trackingAlgorithmManager: TrackingAlgorithmManager
 
     private lateinit var locationClient: LocationClient
 
@@ -81,6 +84,7 @@ class LocationService  : TrackingService() {
                 Log.d("PSE_TRACKING", "Location: ($lat, $long)")
                 Log.d("PSE_TRACKING", AppPreferences(this).trackingRegularity.toString())
                 tripAndStageRepository.createGpsPoint(location)
+                trackingAlgorithmManager.requestAlgorithm(location)
             }
             .launchIn(serviceScope)
 
@@ -100,10 +104,6 @@ class LocationService  : TrackingService() {
             )
             .setSmallIcon(R.mipmap.allways_app_icon)
             .setOngoing(true)
-    }
-
-    private fun startTrackingAlgorithm() {
-
     }
 
 
