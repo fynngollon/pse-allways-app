@@ -494,6 +494,24 @@ class DefaultTripAndStageRepositoryTest {
 
 
     @Test
+    fun connectTripsTest() = runTest {
+        repository.createTrip(userTrip1.stages, userTrip1.purpose)
+        repository.createTrip(separatedUserTrip.stages, separatedUserTrip.purpose)
+        var allTripsOnLocalDatabase = tripDao.getAllTripsWithStages()
+        assertEquals(2, allTripsOnLocalDatabase.size)
+
+        repository.connectTrips(listOf(userTrip1.id, separatedUserTrip.id))
+        allTripsOnLocalDatabase = tripDao.getAllTripsWithStages()
+        assertEquals(1, allTripsOnLocalDatabase.size)
+        assertEquals(
+            longerUserTrip1.copy(id = 3, purpose = Purpose.NONE, isConfirmed = false),
+            allTripsOnLocalDatabase.first().toExternal()
+        )
+    }
+
+
+
+    @Test
     fun getTripsOfDateTest() = runTest {
         createTripTest()
         val startDate = LocalDate.of(1970, 1, 1)
