@@ -9,6 +9,9 @@ import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
 import com.pseteamtwo.allways.data.account.source.local.AccountDao
 import com.pseteamtwo.allways.data.account.source.local.AccountDatabase
 import com.pseteamtwo.allways.data.account.source.network.DefaultAccountNetworkDataSource
+import com.pseteamtwo.allways.data.exception.NoTimeContinuityException
+import com.pseteamtwo.allways.data.exception.TeleportationException
+import com.pseteamtwo.allways.data.exception.TimeTravelException
 import com.pseteamtwo.allways.data.trip.GpsPoint
 import com.pseteamtwo.allways.data.trip.Mode
 import com.pseteamtwo.allways.data.trip.Purpose
@@ -22,9 +25,11 @@ import com.pseteamtwo.allways.data.trip.source.local.TripDao
 import com.pseteamtwo.allways.data.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.data.trip.source.network.DefaultTripNetworkDataSource
 import com.pseteamtwo.allways.data.trip.toLocation
-import com.pseteamtwo.allways.data.trip.repository.DefaultTripAndStageRepository
+import com.pseteamtwo.allways.data.trip.toExternal
+import com.pseteamtwo.allways.data.trip.toLocal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -33,11 +38,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.osmdroid.util.GeoPoint
+import org.threeten.bp.LocalDateTime
 
 /**
 * Instrumented test, which will execute on an Android device.
 *
-* This test tests [com.pseteamtwo.allways.trip.repository.DefaultTripAndStageRepository].
+* This test tests [com.pseteamtwo.allways.data.trip.repository.DefaultTripAndStageRepository].
 */
 @RunWith(AndroidJUnit4::class)
 class DefaultTripAndStageRepositoryTest {
@@ -52,6 +58,9 @@ class DefaultTripAndStageRepositoryTest {
     private val time2: Long = 10
     private val time3: Long = 20
     private val time4: Long = 50
+    private val futureTime: LocalDateTime = LocalDateTime.of(2050, 1, 1, 0, 0)
+    //this start time has to be less than [time2]
+    private val illegalStartTime1: Long = 5
 
     private val stage1 = Stage(
         1,
@@ -66,6 +75,50 @@ class DefaultTripAndStageRepositoryTest {
         Mode.MOTORCYCLE,
         listOf(
             GpsPoint(3, geoPoint3, time3.convertToLocalDateTime()),
+            GpsPoint(4, geoPoint4, time4.convertToLocalDateTime())
+        )
+    )
+
+    private val illegalStageModeNone = stage2.copy(mode = Mode.NONE)
+    private val illegalStageWithTimeInFuture = Stage(
+        2,
+        Mode.LONG_DISTANCE_TRAIN,
+        listOf(
+            GpsPoint(3, geoPoint3, time3.convertToLocalDateTime()),
+            GpsPoint(4, geoPoint4, futureTime)
+        )
+    )
+    private val illegalStageWithNoDuration = Stage(
+        2,
+        Mode.BICYCLE,
+        listOf(
+            GpsPoint(3, geoPoint3, time3.convertToLocalDateTime()),
+            GpsPoint(4, geoPoint4, time3.convertToLocalDateTime())
+        )
+    )
+    private val illegalStageWithNoDistance = Stage(
+        2,
+        Mode.BICYCLE,
+        listOf(
+            GpsPoint(3, geoPoint3, time3.convertToLocalDateTime()),
+            GpsPoint(4, geoPoint3, time4.convertToLocalDateTime())
+        )
+    )
+    //this stage has an invalid startGpsPoint because its temporally before the endPoint of [stage1]
+    private val illegalStageNoTimeContinuity = Stage(
+        2,
+        Mode.CAR_DRIVER,
+        listOf(
+            GpsPoint(3, geoPoint3, illegalStartTime1.convertToLocalDateTime()),
+            GpsPoint(4, geoPoint4, time4.convertToLocalDateTime())
+        )
+    )
+    //this stage has an invalid startGpsPoint because its locally not at endPoint of [stage1]
+    private val illegalStageTeleportation = Stage(
+        2,
+        Mode.CAR_DRIVER,
+        listOf(
+            GpsPoint(3, geoPoint1, time3.convertToLocalDateTime()),
             GpsPoint(4, geoPoint4, time4.convertToLocalDateTime())
         )
     )
@@ -141,6 +194,7 @@ class DefaultTripAndStageRepositoryTest {
     }
 
 
+
     @Test
     fun createTripStagesGpsPointsTest() = runTest {
         val gps1 = repository.createGpsPoint(geoPoint1.toLocation(time1))
@@ -162,9 +216,32 @@ class DefaultTripAndStageRepositoryTest {
         assertEquals(1, trips.size)
         assertEquals(2, stages.size)
         assertEquals(4, gpsPoints.size)
+        val insertedTrip = tripDao.getTripWithStages(userTrip1.id)!!
+        assertEquals(userTrip1.copy(isConfirmed = false), insertedTrip.toExternal())
     }
+    @Test(expected = IllegalArgumentException::class)
+    fun createTripOfStageNotInDatabase() = runTest {
+        //create a trip consisting of a stage which is not inside the local database already
+        repository.createTripOfExistingStages(listOf(stage1).toLocal(null), userTrip1.purpose)
+    }
+    @Test
+    fun createTripOfStageWithAlreadyAssignedTrip() = runTest {
+        repository.createTrip(userTrip1.stages, userTrip1.purpose)
 
-
+        val exception = try {
+            repository.createTripOfExistingStages(
+                listOf(stage1).toLocal(userTrip1.id),
+                userTrip1.purpose
+            )
+            null
+        } catch(e: IllegalArgumentException) {
+            e
+        }
+        assertEquals(
+            "Any given stage is already assigned to another trip.",
+            exception?.message
+        )
+    }
 
     @Test
     fun createTripTest() = runTest {
@@ -173,4 +250,122 @@ class DefaultTripAndStageRepositoryTest {
         val savedUserTrip = repository.observeAllTrips().first().first()
         assertEquals(userTrip1, savedUserTrip)
     }
+    @Test
+    fun createTripIllegalPurpose() = runTest {
+        val exception = try {
+            repository.createTrip(userTrip1.stages, Purpose.NONE)
+            null
+        } catch(e: IllegalArgumentException) {
+            e
+        }
+        assertEquals(
+            "Provided purpose cannot be NONE.",
+            exception?.message
+        )
+    }
+    @Test
+    fun createTripIllegalSecondStageMode() = runTest {
+        val exception = try {
+            repository.createTrip(listOf(stage1, illegalStageModeNone), userTrip1.purpose)
+            null
+        } catch(e: IllegalArgumentException) {
+            e
+        }
+        assertEquals(
+            "Provided stages are invalid.",
+            exception?.message
+        )
+    }
+    @Test
+    fun createTripIllegalTimeInFuture() = runTest {
+        val exception = try {
+            repository.createTrip(
+                listOf(stage1, illegalStageWithTimeInFuture), userTrip1.purpose
+            )
+            null
+        } catch(e: TimeTravelException) {
+            e
+        }
+        assertEquals(
+            "At least 1 stage contains gpsPoints with times in the future which is invalid.",
+            exception?.message
+        )
+    }
+    @Test
+    fun createTripIllegalDuration() = runTest {
+        val exception = try {
+            repository.createTrip(
+                listOf(stage1, illegalStageWithNoDuration), userTrip1.purpose
+            )
+            null
+        } catch(e: IllegalArgumentException) {
+            e
+        }
+        assertEquals(
+            "At least 1 stage has a duration of 0.",
+            exception?.message
+        )
+    }
+    @Test
+    fun createTripIllegalDistance() = runTest {
+        val exception = try {
+            repository.createTrip(
+                listOf(stage1, illegalStageWithNoDistance), userTrip1.purpose
+            )
+            null
+        } catch(e: IllegalArgumentException) {
+            e
+        }
+        assertEquals(
+            "At least 1 stage has a distance of 0.",
+            exception?.message
+        )
+    }
+    @Test
+    fun createTripIllegalTimeContinuityBetweenStages() = runTest {
+        val exception = try {
+            repository.createTrip(
+                listOf(stage1, illegalStageNoTimeContinuity), userTrip1.purpose
+            )
+            null
+        } catch(e: NoTimeContinuityException) {
+            e
+        }
+        assertEquals(
+            "No time continuity between stages.",
+            exception?.message
+        )
+    }
+    @Test
+    fun createTripIllegalTeleportationBetweenStages() = runTest {
+        val exception = try {
+            repository.createTrip(
+                listOf(stage1, illegalStageTeleportation), userTrip1.purpose
+            )
+            null
+        } catch(e: TeleportationException) {
+            e
+        }
+        assertEquals(
+            "Not the same location between stages.",
+            exception?.message
+        )
+    }
+    @Test
+    fun createTripInterferingWithOtherTripsAlreadyExistentInDatabase() = runTest {
+        //this test needs a trip already inside the local database
+        repository.createTrip(userTrip1.stages, userTrip1.purpose)
+
+        val exception = try {
+            repository.createTrip(userTrip1.stages, Purpose.OTHER)
+            null
+        } catch (e: TimeTravelException) {
+            e
+        }
+        assertEquals(
+            "Entered trip interferes with other trips already existent in the local database.",
+            exception?.message
+        )
+    }
+
 }

@@ -3,6 +3,7 @@ package com.pseteamtwo.allways.data.network
 import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.SQLException
 
 /**
  * This Class if for creating a connection to a MySql server.
@@ -62,7 +63,8 @@ abstract class BaseNetworkDataSource {
         try {
             return DriverManager.getConnection(url, username, password)
         } catch (e: Exception) {
-            throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
+            throw SQLException("", e)
+            //throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
         }
     }
 
