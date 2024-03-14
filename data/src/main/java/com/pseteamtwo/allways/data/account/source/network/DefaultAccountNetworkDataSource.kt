@@ -18,7 +18,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // Connect to the MySQL database
-            val connection = createAccountConnection()
+            val connection = createRemoteAccountConnection()
 
             connection.use {
                 // Prepare and execute SQL statement
@@ -61,7 +61,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createAccountConnection() // Replace with your MySQL connection logic
+            val connection = createRemoteAccountConnection() // Replace with your MySQL connection logic
 
             connection.use {
                 // 2. Prepare and execute SQL statement
@@ -162,7 +162,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createAccountConnection() // Replace with your MySQL connection logic
+            val connection = createRemoteAccountConnection() // Replace with your MySQL connection logic
 
             connection.use {
                 // 2. Prepare and execute SQL statement
@@ -187,7 +187,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createAccountConnection() // Replace with your MySQL connection logic
+            val connection = createRemoteAccountConnection() // Replace with your MySQL connection logic
 
             connection.use {
                 // 2. Prepare and execute SQL statement
@@ -221,7 +221,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createAccountConnection() // Replace with your MySQL connection logic
+            val connection = createRemoteAccountConnection() // Replace with your MySQL connection logic
 
             connection.use {
                 // 2. Prepare and execute SQL statement

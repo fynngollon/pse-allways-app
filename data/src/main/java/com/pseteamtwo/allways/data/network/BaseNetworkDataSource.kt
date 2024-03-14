@@ -3,6 +3,7 @@ package com.pseteamtwo.allways.data.network
 import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.SQLException
 
 /**
  * This Class if for creating a connection to a MySql server.
@@ -44,6 +45,33 @@ abstract class BaseNetworkDataSource {
     fun createDataConnection(): Connection {
         val url = "jdbc:mysql://127.0.0.1:3306/allways-app"
         val username = "AppUser"
+        val password = "Allways#App"
+
+        try {
+            return DriverManager.getConnection(url, username, password)
+        } catch (e: Exception) {
+            throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
+        }
+    }
+
+    @Throws(ServerConnectionFailedException::class)
+    fun createRemoteAccountConnection() : Connection {
+        val url = "jdbc:mysql://192.168.53.194:3306/allways-app-accounts"
+        val username = "RemoteUser"
+        val password = "Allways#App"
+
+        try {
+            return DriverManager.getConnection(url, username, password)
+        } catch (e: Exception) {
+            throw SQLException("", e)
+            //throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
+        }
+    }
+
+    @Throws(ServerConnectionFailedException::class)
+    fun createRemoteDataConnection(): Connection {
+        val url = "jdbc:mysql://192.168.53.194:3306/allways-app"
+        val username = "RemoteUser"
         val password = "Allways#App"
 
         try {

@@ -1,6 +1,9 @@
 package com.pseteamtwo.allways.account.source.network
 
-/**
+
+import com.pseteamtwo.allways.data.account.source.network.AccountNetworkDataSource
+import com.pseteamtwo.allways.data.account.source.network.DefaultAccountNetworkDataSource
+import com.pseteamtwo.allways.data.account.source.network.NetworkAccount
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -17,9 +20,9 @@ class DefaultAccountNetworkDataSourceTest {
         accountNetworkDataSource = DefaultAccountNetworkDataSource()
         networkAccount = NetworkAccount(
             "lol@gmail.com",
-            "kdb",
-            "kein plan",
-            "was mach ich hier"
+            "richyrich",
+            "123h142g4b1",
+            "123uf1346"
         )
     }
 
@@ -39,6 +42,17 @@ class DefaultAccountNetworkDataSourceTest {
         runBlocking {
             try {
                 accountNetworkDataSource.doesPseudonymExist(networkAccount.pseudonym)
+            } catch (e: SQLException) {
+                assert(false){ "SQL Exception" }
+            }
+        }
+    }
+
+    @Test
+    fun testSearchForEmail() {
+        runBlocking {
+            try {
+                accountNetworkDataSource.doesEmailExist(networkAccount.pseudonym)
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
@@ -67,5 +81,3 @@ class DefaultAccountNetworkDataSourceTest {
         }
     }
 }
-
- */
