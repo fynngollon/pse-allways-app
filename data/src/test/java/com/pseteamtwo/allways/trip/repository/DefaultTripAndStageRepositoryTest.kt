@@ -10,6 +10,7 @@ import com.pseteamtwo.allways.trip.source.network.StageNetworkDataSource
 import com.pseteamtwo.allways.trip.source.network.TripNetworkDataSource
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.TestScope
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,6 +29,7 @@ class DefaultTripAndStageRepositoryTest {
     @Mock private lateinit var gpsPointLocalDataSource: GpsPointDao
     @Mock private lateinit var accountRepository: AccountRepository
     @Mock private lateinit var testDispatcher: TestDispatcher
+    @Mock private lateinit var scope: TestScope
 
 
     @Before
@@ -41,7 +43,8 @@ class DefaultTripAndStageRepositoryTest {
             stageNetworkDataSource,
             gpsPointLocalDataSource,
             accountRepository,
-            testDispatcher
+            testDispatcher,
+            scope
         )
     }
 

@@ -19,7 +19,10 @@ class ListStringConverter {
      */
     @TypeConverter
     fun fromString(value: String): List<String> {
-        return value.toList()
+        if(value == "") {
+            return emptyList()
+        }
+        return value.split(",")
     }
 
     /**
@@ -31,10 +34,5 @@ class ListStringConverter {
     @TypeConverter
     fun fromList(list: List<String>): String {
         return list.joinToString(",")
-    }
-
-
-    private fun String.toList(): List<String> {
-        return split(",")
     }
 }

@@ -19,18 +19,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CalendarMonth
 
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 
 
 import androidx.compose.runtime.Composable
@@ -69,8 +77,11 @@ import com.pseteamtwo.allways.ui.trips.StageUiState
 import com.pseteamtwo.allways.data.trip.Mode
 
 import org.osmdroid.util.GeoPoint
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
 
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 
 /**
  * Composable function to display a stage.
@@ -179,24 +190,12 @@ fun StageCard(
                                 .fillMaxSize(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            TimeField(
-                                //initialDateTime = stageUiState.startDateTime,
+                            TimeRow(
+                                initialDateTime = stageUiState.startDateTime,
                                 initialHour = stageUiState.startHour,
                                 initialMinute = stageUiState.startMinute,
-                                //minDateTime = previousStageUiState?.endDateTime ?: LocalDateTime.MIN,
-                                //minHour = if(previousStageUiState?.endDate == stageUiState.startDate) previousStageUiState.endHour else 0,
-                                /*minMinute =
-                                if(previousStageUiState?.endDate == stageUiState.startDate) {
-                                    if (previousStageUiState.endHour == stageUiState.startHour) previousStageUiState.endMinute else 0
-                                } else 0,*/
-                                //maxDateTime = stageUiState.endDateTime,
-                                //maxHour = if(stageUiState.startDate == stageUiState.endDate) stageUiState.endHour else 23,
-                                /*maxMinute =
-                                if(stageUiState.startDate == stageUiState.endDate) {
-                                    if (stageUiState.startHour == stageUiState.endHour) stageUiState.endMinute else 59
-                                } else 59,*/
                                 onTimeChange = { hour: Int, minute: Int -> stageUiState.setStartTime(hour, minute)},
-                                //onDateChange = { date: LocalDate -> stageUiState.setStartDate(date)}
+                                onDateChange = { date: LocalDate -> stageUiState.setStartDate(date)}
                             )
                         }
                         Row(
@@ -271,24 +270,12 @@ fun StageCard(
                                 .fillMaxSize(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            TimeField(
-                                //initialDateTime = stageUiState.endDateTime,
+                            TimeRow(
+                                initialDateTime = stageUiState.endDateTime,
                                 initialHour = stageUiState.endDateTime.hour,
                                 initialMinute = stageUiState.endDateTime.minute,
-                                //minDateTime = stageUiState.startDateTime,
-                                //minHour = if(stageUiState.startDate == stageUiState.endDate) stageUiState.startHour else 0,
-                                /*minMinute =
-                                    if(stageUiState.startDate == stageUiState.endDate) {
-                                        if (stageUiState.startHour == stageUiState.endHour) stageUiState.startMinute else 0
-                                    } else 0,*/
-                                //maxDateTime = nextStageUiState?.startDateTime ?: LocalDateTime.MAX,
-                                //maxHour = if(stageUiState.endDate == nextStageUiState?.startDate) nextStageUiState.startHour else 23,
-                                /*maxMinute =
-                                    if(stageUiState.endDate == nextStageUiState?.startDate) {
-                                        if(stageUiState.endHour == nextStageUiState.startHour) nextStageUiState.startMinute else 59
-                                    } else 59,*/
                                 onTimeChange = { hour: Int, minute: Int -> stageUiState.setEndTime(hour, minute)},
-                                //onDateChange = { date: LocalDate -> stageUiState.setEndDate(date)}
+                                onDateChange = { date: LocalDate -> stageUiState.setEndDate(date)}
                             )
 
                         }
@@ -356,23 +343,16 @@ fun StageCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimeField(
+fun TimeRow(
     modifier: Modifier = Modifier,
-    //initialDateTime: LocalDateTime,
+    initialDateTime: LocalDateTime,
     initialHour: Int,
     initialMinute: Int,
-    //minDateTime: LocalDateTime,
-    //minHour: Int,
-    //minMinute: Int,
-    //maxDateTime: LocalDateTime,
-    //maxHour: Int,
-    //maxMinute: Int,
     onTimeChange: (Int, Int) -> Unit,
-    //onDateChange: (LocalDate) -> Unit
+    onDateChange: (LocalDate) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyBoardController = LocalSoftwareKeyboardController.current
-
 
     var hourTextFieldValue by remember {
         mutableStateOf(
@@ -392,13 +372,20 @@ fun TimeField(
         )
     }
 
-    /*var showDatePicker by rememberSaveable {
-        mutableStateOf(false)
-    }*/
+    val zoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
 
-    /*val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    )*/
+    val initialDateTimeMillis = initialDateTime
+        .toInstant(zoneOffset)
+        .toEpochMilli()
+
+    var showDatePicker by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = initialDateTimeMillis,
+        selectableDates = AllDatesUntilToday
+    )
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -414,20 +401,6 @@ fun TimeField(
             value = hourTextFieldValue,
             onValueChange = {
                 if(Regex("0?[0-9]|1[0-9]|2[0-3]|").matches(it.text)) {
-                    /*if (it.text.isEmpty() || it.text == "0") {
-                        hourTextFieldValue = TextFieldValue(
-                            text = it.text,
-                            selection = TextRange(it.text.length)
-                        )
-                    } else {
-                        val hour = it.text.toInt()
-                        if (minHour <= hour && hour <= maxHour) {
-                            hourTextFieldValue = TextFieldValue(
-                                text = it.text,
-                                selection = TextRange(it.text.length)
-                            )
-                        }
-                    }*/
                     hourTextFieldValue = TextFieldValue(
                         text = it.text,
                         selection = TextRange(it.text.length)
@@ -455,26 +428,6 @@ fun TimeField(
                 onDone = {
                     focusManager.clearFocus()
                     keyBoardController?.hide()
-                    /*if (hourTextFieldValue.text.isEmpty()) {
-                        hourTextFieldValue = TextFieldValue(
-                            text = String.format("%02d", lastValidHour),
-                            selection = TextRange(2)
-                        )
-                    } else {
-                        val hour = hourTextFieldValue.text.toInt()
-                        if ( minHour <= hour && hour <= maxHour) {
-                            onTimeChange(
-                                hourTextFieldValue.text.toInt(),
-                                minuteTextFieldValue.text.toInt()
-                            )
-                            lastValidHour = hour
-                        } else {
-                            hourTextFieldValue = TextFieldValue(
-                                text = String.format("%02d", lastValidHour),
-                                selection = TextRange(2)
-                            )
-                        }
-                    }*/
                 }
             ),
             decorationBox = {innerTextField ->
@@ -502,20 +455,6 @@ fun TimeField(
             value = minuteTextFieldValue,
             onValueChange = {
                 if(Regex("0?[0-9]|[1-5][0-9]|").matches(it.text)) {
-                    /*if (it.text.isEmpty()) {
-                        minuteTextFieldValue = TextFieldValue(
-                            text = it.text,
-                            selection = TextRange(it.text.length)
-                        )
-                    } else {
-                        val minute = it.text.toInt()
-                        if( minMinute <= minute && minute <= maxMinute) {
-                            minuteTextFieldValue = TextFieldValue(
-                                text = it.text,
-                                selection = TextRange(it.text.length)
-                            )
-                        }
-                    }*/
                     minuteTextFieldValue = TextFieldValue(
                         text = it.text,
                         selection = TextRange(it.text.length)
@@ -533,7 +472,6 @@ fun TimeField(
             modifier = modifier
                 .height(20.dp)
                 .width(30.dp),
-                //.weight(1f),
             enabled = true,
             textStyle = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center),
             keyboardOptions = KeyboardOptions(
@@ -544,26 +482,6 @@ fun TimeField(
                 onDone = {
                     focusManager.clearFocus()
                     keyBoardController?.hide()
-                    /*if (hourTextFieldValue.text.isEmpty()) {
-                        hourTextFieldValue = TextFieldValue(
-                            text = String.format("%02d", lastValidMinute),
-                            selection = TextRange(2)
-                        )
-                    } else {
-                        val minute = minuteTextFieldValue.text.toInt()
-                        if ( minMinute < minute && minute < maxMinute) {
-                            onTimeChange(
-                                hourTextFieldValue.text.toInt(),
-                                minuteTextFieldValue.text.toInt()
-                            )
-                            lastValidMinute = minute
-                        } else {
-                            minuteTextFieldValue = TextFieldValue(
-                                text = String.format("%02d", lastValidMinute),
-                                selection = TextRange(2)
-                            )
-                        }
-                    }*/
                 }
             ),
             decorationBox = {innerTextField ->
@@ -577,38 +495,75 @@ fun TimeField(
                 ){
                     innerTextField()
                 }
-
             }
-
         )
         Spacer(modifier = modifier.width(4.dp))
         Text(
             text = "Uhr",
-            //modifier = modifier.weight(1f)
         )
-        /*Spacer(modifier = modifier.width(4.dp))
+        Spacer(modifier = modifier.width(4.dp))
         IconButton(
             onClick = { showDatePicker = true },
         ) {
             Icon(imageVector = Icons.Rounded.CalendarMonth, contentDescription = "Datum auswählen")
-        }*/
-        /*if (showDatePicker) {
+        }
+        if (showDatePicker) {
             DatePickerDialog(
-                onDismissRequest = { showDatePicker = false },
+                onDismissRequest = {
+                    datePickerState.selectedDateMillis = initialDateTimeMillis
+                    showDatePicker = false
+                },
                 confirmButton = {
-                    val selectedDate = Instant
-                        .ofEpochMilli(datePickerState.selectedDateMillis!!)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-                    if (minDateTime.toLocalDate() < selectedDate && selectedDate < maxDateTime.toLocalDate()) {
-                        onDateChange(selectedDate)
-                        showDatePicker = false
+                    Button(
+                        onClick = {
+                            onDateChange(
+                                LocalDateTime.ofEpochSecond(
+                                    (datePickerState.selectedDateMillis?.div(1000)) ?: 0,
+                                    0,
+                                    zoneOffset).toLocalDate())
+                            showDatePicker = false
+                        }
+                    ) {
+                        Text(text = "Ok")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            datePickerState.selectedDateMillis = initialDateTimeMillis
+                            showDatePicker = false
+                        }
+                    ) {
+                        Text(text = "Abbrechen")
                     }
                 }
             ) {
-                DatePicker(state = datePickerState)
+                DatePicker(
+                    state = datePickerState,
+                    title = {
+                        Row(
+                            modifier = modifier.height(40.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Spacer(modifier = modifier.width(16.dp))
+                            Text(text = "Datum auswählen")
+                        }
+                    },
+                    showModeToggle = true
+                )
             }
-        }*/
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+object AllDatesUntilToday: SelectableDates {
+    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+        return utcTimeMillis <= System.currentTimeMillis()
+    }
+
+    override fun isSelectableYear(year: Int): Boolean {
+        return year <= LocalDate.now().year
     }
 }
 

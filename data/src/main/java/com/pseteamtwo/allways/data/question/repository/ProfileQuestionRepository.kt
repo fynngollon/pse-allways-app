@@ -32,9 +32,16 @@ class ProfileQuestionRepository @Inject constructor(
     accountRepository: AccountRepository,
     @DefaultDispatcher dispatcher: CoroutineDispatcher,
     //@ApplicationScope scope: CoroutineScope,
-): DefaultQuestionRepository<ProfileQuestionDao,
-        ProfileQuestionNetworkDataSource, ProfileQuestionnaireNetworkDataSource>(
-    profileQuestionDao, profileQuestionNetworkDataSource, profileQuestionnaireNetworkDataSource,
-    accountRepository, dispatcher, //scope
+): DefaultQuestionRepository<
+        ProfileQuestionDao,
+        ProfileQuestionNetworkDataSource,
+        ProfileQuestionnaireNetworkDataSource>
+    (
+    profileQuestionDao,
+    profileQuestionNetworkDataSource,
+    profileQuestionnaireNetworkDataSource,
+    accountRepository,
+    dispatcher,
+    //scope
 ) {
 }

@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
  * through a String.
  */
 @Serializable
-enum class Language(val languageCode: String) {
+enum class Language(private val languageCode: String) {
     /**
      * The language german.
      */
@@ -22,4 +22,31 @@ enum class Language(val languageCode: String) {
      * The language english.
      */
     ENGLISH("en");
+
+    companion object {
+        /**
+         * Returns the language specified by its [languageCode].
+         * Returns [GERMAN] as a default value.
+         *
+         * @param languageString The string by which the according language should be determined
+         * through its [languageCode].
+         * @return The specified language, if present (else [GERMAN]).
+         */
+        fun getLanguageFromString(languageString: String): Language {
+            Language.entries.forEach { language ->
+                if(language.languageCode == languageString)
+                    return language
+            }
+            return GERMAN
+        }
+    }
+
+    /**
+     * Returns the string representation of a language object in form of its [languageCode].
+     *
+     * @return The [languageCode] of the language.
+     */
+    override fun toString(): String {
+        return this.languageCode
+    }
 }

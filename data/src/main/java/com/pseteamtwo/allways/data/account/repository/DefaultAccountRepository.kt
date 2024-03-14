@@ -1,5 +1,6 @@
-package com.pseteamtwo.allways.data.account.repository
+package com.pseteamtwo.allways.account.repository
 
+import com.pseteamtwo.allways.data.account.Account
 import com.pseteamtwo.allways.data.account.source.local.AccountDao
 import com.pseteamtwo.allways.data.account.source.local.LocalAccount
 import com.pseteamtwo.allways.data.account.source.network.AccountNetworkDataSource
@@ -8,6 +9,8 @@ import com.pseteamtwo.allways.data.account.toNetwork
 import com.pseteamtwo.allways.data.di.DefaultDispatcher
 import com.pseteamtwo.allways.data.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.data.exception.AccountNotFoundException
+import com.pseteamtwo.allways.data.exception.InvalidEmailFormatException
+import com.pseteamtwo.allways.data.exception.InvalidPasswordFormatException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -15,6 +18,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.security.MessageDigest
 import java.util.UUID
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,14 +44,45 @@ class DefaultAccountRepository @Inject constructor(
     //@ApplicationScope private val scope: CoroutineScope,
 ) : AccountRepository {
 
-    override fun observe(): Flow<com.pseteamtwo.allways.data.account.Account> {
+    companion object{
+        private val EMAIL_REGEX: Pattern =
+            Pattern.compile(
+                "^[A-Z0-9. _-]+@[A-Z0-9. -]+\\.[A-Z]{2,4}$",
+                Pattern.CASE_INSENSITIVE
+            )
+        //Minimum four characters, at least one uppercase letter, one lowercase letter, one
+        //number and one special character:
+        private val PASSWORD_REGEX: Pattern =
+            Pattern.compile(
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{4,}$"
+            )
+    }
+
+    override fun observe(): Flow<Account> {
         return accountLocalDataSource.observe().map { it.toExternal() }
     }
 
     override suspend fun createAccount(email: String, password: String) {
         // checks if the user is already logged in to an account
         assert (accountLocalDataSource.getAll().isEmpty()) {
-            "Another account is already saved in database"
+            "Another account is already saved in database."
+        }
+
+        //checks if the given email satisfies the [EMAIL_REGEX] pattern
+        val emailMatcher: Matcher = EMAIL_REGEX.matcher(email)
+        if(!emailMatcher.matches()) {
+            throw InvalidEmailFormatException("The given email is of invalid format.")
+        }
+        //checks if the given password satisfies the [PASSWORD_REGEX] pattern
+        val passwordMatcher: Matcher = PASSWORD_REGEX.matcher(password)
+        if(!passwordMatcher.matches()) {
+            throw InvalidPasswordFormatException(
+                "The given password has to contain at least\n" +
+                        "one uppercase letter,\n" +
+                        "one lowercase letter,\n" +
+                        "one number,\n" +
+                        "one special character."
+            )
         }
 
         // checks if email exists in network database

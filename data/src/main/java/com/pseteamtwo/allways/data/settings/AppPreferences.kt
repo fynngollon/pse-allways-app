@@ -64,7 +64,7 @@ class AppPreferences @Inject constructor(
         }
 
     private fun getDefaultLanguage(): Language {
-        return Language.GERMAN
+        return Language.getLanguageFromString("de")
     }
 
 
@@ -106,16 +106,23 @@ class AppPreferences @Inject constructor(
             val jsonString =
                 sharedPreferences.getString(
                     KEY_TRACKING_REGULARITY,
-                    Json.encodeToString(TrackingRegularity.MEDIUM)
+                    Json.encodeToString(getDefaultTrackingRegularity())
                 ) ?: ""
             return Json.decodeFromString<TrackingRegularity>(jsonString)
         }
         set(trackingRegularity) {
+            if(trackingRegularity == TrackingRegularity.NEVER) {
+                isTrackingEnabled = false
+            }
             sharedPreferences.edit().putString(
                 KEY_TRACKING_REGULARITY,
                 Json.encodeToString(trackingRegularity)
             ).apply()
         }
+
+    private fun getDefaultTrackingRegularity(): TrackingRegularity {
+        return TrackingRegularity.MEDIUM
+    }
 
     private fun getBatteryLevel(): Double {
         val batteryManager = context.getSystemService(BatteryManager::class.java)!!
@@ -126,7 +133,7 @@ class AppPreferences @Inject constructor(
             return 0.0
         }
 
-        return (level / scale.toDouble()) * 100.0
+        return (level.toDouble() / scale) * 10000.0
     }
 
 
@@ -161,7 +168,7 @@ class AppPreferences @Inject constructor(
             val jsonString =
                 sharedPreferences.getString(
                     KEY_BATTERY_DEPENDENCY,
-                    Json.encodeToString(Pair(25, TrackingRegularity.RARELY))
+                    Json.encodeToString(getDefaultBatteryDependency())
                 ) ?: ""
             return Json.decodeFromString<Pair<Int, TrackingRegularity>>(jsonString)
         }
@@ -172,4 +179,7 @@ class AppPreferences @Inject constructor(
             ).apply()
         }
 
+    private fun getDefaultBatteryDependency(): Pair<Int, TrackingRegularity> {
+        return Pair(25, TrackingRegularity.RARELY)
+    }
 }
