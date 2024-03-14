@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.settings
+package com.pseteamtwo.allways.data.settings
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4

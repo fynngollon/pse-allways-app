@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.account.repository
+package com.pseteamtwo.allways.data.account.repository
 
 import com.pseteamtwo.allways.data.account.Account
 import com.pseteamtwo.allways.data.account.source.local.AccountDao

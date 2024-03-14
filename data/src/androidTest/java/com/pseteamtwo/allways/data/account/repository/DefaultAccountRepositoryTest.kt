@@ -1,17 +1,17 @@
-package com.pseteamtwo.allways.account.repository
+package com.pseteamtwo.allways.data.account.repository
 
-/*
+
 import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.pseteamtwo.allways.account.source.local.AccountDao
-import com.pseteamtwo.allways.account.source.local.AccountDatabase
-import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
-import com.pseteamtwo.allways.account.source.network.DefaultAccountNetworkDataSource
-import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
-import com.pseteamtwo.allways.exception.AccountNotFoundException
-import com.pseteamtwo.allways.exception.InvalidEmailFormatException
-import com.pseteamtwo.allways.exception.InvalidPasswordFormatException
+import com.pseteamtwo.allways.data.account.source.local.AccountDao
+import com.pseteamtwo.allways.data.account.source.local.AccountDatabase
+import com.pseteamtwo.allways.data.account.source.network.AccountNetworkDataSource
+import com.pseteamtwo.allways.data.account.source.network.DefaultAccountNetworkDataSource
+import com.pseteamtwo.allways.data.exception.AccountAlreadyExistsException
+import com.pseteamtwo.allways.data.exception.AccountNotFoundException
+import com.pseteamtwo.allways.data.exception.InvalidEmailFormatException
+import com.pseteamtwo.allways.data.exception.InvalidPasswordFormatException
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +28,7 @@ import org.junit.Test
  * testing because otherwise all tests will likely fail
  * because of [com.pseteamtwo.allways.exception.ServerConnectionFailedException].
  *
- * This test tests [com.pseteamtwo.allways.account.repository.DefaultAccountRepository].
+ * This test tests [com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository].
  */
 class DefaultAccountRepositoryTest {
 
@@ -133,5 +133,3 @@ class DefaultAccountRepositoryTest {
         assertEquals(true, repository.validateLogin(email, password))
     }
 }
-
- */

@@ -1,9 +1,9 @@
-package com.pseteamtwo.allways.question.source.local
-/*
+package com.pseteamtwo.allways.data.question.source.local
+
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.question.QuestionType
+import com.pseteamtwo.allways.data.question.QuestionType
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.flow.first
@@ -125,5 +125,3 @@ class QuestionDaoTest {
         assertEquals(1, newLoaded.size)
     }
 }
-
- */

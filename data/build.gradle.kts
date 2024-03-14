@@ -74,7 +74,6 @@ dependencies {
 
     // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
-    implementation("androidx.test.ext:junit-ktx:1.1.5")
     ksp("androidx.room:room-compiler:2.6.1")
     //annotationProcessor("androidx.room:room-compiler:2.6.1")
 
@@ -94,9 +93,10 @@ dependencies {
     //implementation(kotlin("stdlib-jdk8"))
 
     // Open-Street-Map
-    //implementation("org.osmdroid:osmdroid-android:6.1.18")
-    //implementation("org.osmdroid:osmdroid-wms:6.1.18")
-    //implementation("org.osmdroid:osmdroid-mapsforge:6.1.18")
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    implementation("org.osmdroid:osmdroid-wms:6.1.18")
+    implementation("org.osmdroid:osmdroid-mapsforge:6.1.18")
+    //TODO THIS DOESN'T WORK
     //implementation("org.osmdroid:osmdroid-geopackage:6.1.18")
     implementation("com.github.MKergall:osmbonuspack:6.9.0")
 
@@ -136,6 +136,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
 
     // From UI
     implementation("androidx.compose.material:material-icons-extended:1.6.3")
@@ -144,14 +145,8 @@ dependencies {
     implementation("co.yml:ycharts:2.1.0")
 
     implementation("com.patrykandpatrick.vico:compose:1.14.0")
-
-    // For `compose`. Creates a `ChartStyle` based on an M2 Material Theme.
     implementation("com.patrykandpatrick.vico:compose-m2:1.14.0")
-
-    // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.
     implementation("com.patrykandpatrick.vico:compose-m3:1.14.0")
-
-    // Houses the core logic for charts and other elements. Included in all other modules.
     implementation("com.patrykandpatrick.vico:core:1.14.0")
 
 }

@@ -2,7 +2,7 @@ package com.pseteamtwo.allways.trip.repository
 /**
 import android.location.Location
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.account.repository.AccountRepository
+import com.pseteamtwo.allways.data.account.repository.AccountRepository
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.trip.source.local.StageDao
 import com.pseteamtwo.allways.trip.source.local.TripDao

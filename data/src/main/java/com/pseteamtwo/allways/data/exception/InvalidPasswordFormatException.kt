@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.exception
+package com.pseteamtwo.allways.data.exception
 
 /**
  * Thrown if the password specified by the user is not of valid format meaning it is empty or does

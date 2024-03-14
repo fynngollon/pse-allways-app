@@ -1,14 +1,13 @@
-package com.pseteamtwo.allways.trip.source.local
+package com.pseteamtwo.allways.data.trip.source.local
 
-/*
 import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.trip.Mode
-import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trip.toExternal
-import com.pseteamtwo.allways.trip.toLocation
+import com.pseteamtwo.allways.data.trip.Mode
+import com.pseteamtwo.allways.data.trip.Purpose
+import com.pseteamtwo.allways.data.trip.toExternal
+import com.pseteamtwo.allways.data.trip.toLocation
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.flow.first
@@ -89,5 +88,3 @@ class TripDaoTest {
         Log.d("LogTest", loadedTripWithStages.toExternal().toString())
     }
 }
-
- */

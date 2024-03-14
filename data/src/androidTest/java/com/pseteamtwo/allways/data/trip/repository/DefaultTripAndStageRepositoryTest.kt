@@ -1,27 +1,28 @@
-package com.pseteamtwo.allways.trip.repository
+package com.pseteamtwo.allways.data.trip.repository
 
-/*
+
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.account.repository.AccountRepository
-import com.pseteamtwo.allways.account.repository.DefaultAccountRepository
-import com.pseteamtwo.allways.account.source.local.AccountDao
-import com.pseteamtwo.allways.account.source.local.AccountDatabase
-import com.pseteamtwo.allways.account.source.network.DefaultAccountNetworkDataSource
-import com.pseteamtwo.allways.trip.GpsPoint
-import com.pseteamtwo.allways.trip.Mode
-import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trip.Stage
-import com.pseteamtwo.allways.trip.Trip
-import com.pseteamtwo.allways.trip.convertToLocalDateTime
-import com.pseteamtwo.allways.trip.source.local.GpsPointDao
-import com.pseteamtwo.allways.trip.source.local.StageDao
-import com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase
-import com.pseteamtwo.allways.trip.source.local.TripDao
-import com.pseteamtwo.allways.trip.source.network.DefaultStageNetworkDataSource
-import com.pseteamtwo.allways.trip.source.network.DefaultTripNetworkDataSource
-import com.pseteamtwo.allways.trip.toLocation
+import com.pseteamtwo.allways.data.account.repository.AccountRepository
+import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
+import com.pseteamtwo.allways.data.account.source.local.AccountDao
+import com.pseteamtwo.allways.data.account.source.local.AccountDatabase
+import com.pseteamtwo.allways.data.account.source.network.DefaultAccountNetworkDataSource
+import com.pseteamtwo.allways.data.trip.GpsPoint
+import com.pseteamtwo.allways.data.trip.Mode
+import com.pseteamtwo.allways.data.trip.Purpose
+import com.pseteamtwo.allways.data.trip.Stage
+import com.pseteamtwo.allways.data.trip.Trip
+import com.pseteamtwo.allways.data.trip.convertToLocalDateTime
+import com.pseteamtwo.allways.data.trip.source.local.GpsPointDao
+import com.pseteamtwo.allways.data.trip.source.local.StageDao
+import com.pseteamtwo.allways.data.trip.source.local.TripAndStageDatabase
+import com.pseteamtwo.allways.data.trip.source.local.TripDao
+import com.pseteamtwo.allways.data.trip.source.network.DefaultStageNetworkDataSource
+import com.pseteamtwo.allways.data.trip.source.network.DefaultTripNetworkDataSource
+import com.pseteamtwo.allways.data.trip.toLocation
+import com.pseteamtwo.allways.data.trip.repository.DefaultTripAndStageRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
@@ -173,5 +174,3 @@ class DefaultTripAndStageRepositoryTest {
         assertEquals(userTrip1, savedUserTrip)
     }
 }
-
- */

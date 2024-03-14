@@ -1,6 +1,5 @@
-package com.pseteamtwo.allways.trip.source.local
+package com.pseteamtwo.allways.data.trip.source.local
 
-/*
 import android.location.Location
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -68,5 +67,3 @@ class GpsPointDaoTest {
         return location
     }
 }
-
- */

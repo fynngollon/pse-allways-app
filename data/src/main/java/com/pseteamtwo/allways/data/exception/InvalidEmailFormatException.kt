@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.exception
+package com.pseteamtwo.allways.data.exception
 
 /**
  * Thrown if the email specified by the user is not of valid format.

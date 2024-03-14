@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.trip.repository
+package com.pseteamtwo.allways.data.trip.repository
 
 import android.location.Location
 import com.pseteamtwo.allways.data.account.repository.AccountRepository
