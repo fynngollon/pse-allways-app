@@ -550,44 +550,31 @@ class DefaultTripAndStageRepository @Inject constructor(
 
     override suspend fun separateStageFromTrip(stageId: Long) {
         val localStage = stageLocalDataSource.get(stageId)
-        val stageWithGpsPoints = stageLocalDataSource.getStageWithGpsPoints(stageId)
+            ?: throw IllegalArgumentException("Stage with ID $stageId not in local database.")
 
-        // does stage exist
-        if (localStage == null) {
-            assert(false) { "Stage with ID $stageId not found in database" }
-            return
-        }
         //is stage assigned to a trip
         if (localStage.tripId == null) {
-            assert(false) { "Stage does not belong to any trip" }
-            return
+            throw IllegalArgumentException("Stage does not belong to any trip.")
         }
 
-        // update trip
-        val localTripOfStage = localStage.tripId?.let { tripLocalDataSource.get(it) }
-        //is trip existent
-        if (localTripOfStage == null) {
-            assert(false) { "Stage has a trip with id ${localStage.tripId} assigned " +
-                    "but this trip does not exist" }
-            return
-        }
+        val tripOfStage = tripLocalDataSource.getTripWithStages(localStage.tripId!!)
+            ?: throw IllegalArgumentException("Stage has a trip with id ${localStage.tripId}" +
+                    " assigned but this trip does not exist.")
+        val stagesOfTrip = tripOfStage.sortedStages
 
-        val stagesOfTrip =
-            tripLocalDataSource.getTripWithStages(localTripOfStage.id)!!.sortedStages
-
-        if (stagesOfTrip.first() != stageWithGpsPoints
-            && stagesOfTrip.last() != stageWithGpsPoints) {
-            throw TimeTravelException()
+        if (localStage != stagesOfTrip.first().stage && localStage != stagesOfTrip.last().stage) {
+            throw IllegalArgumentException("Cannot separate stage which is not the beginning or" +
+                    " ending stage of the trip in this version of the app.")
         }
 
         // remove tripId from stage
         stageLocalDataSource.update(localStage.copy(tripId = null))
 
         // create trip and change stage
-        createTrip(
-            listOf(stageLocalDataSource.getStageWithGpsPoints(localStage.id)!!.toExternal()),
-            localTripOfStage.purpose
-        )
+        createTripOfExistingStages(
+            listOf(localStage.copy(tripId = null)),
+            tripOfStage.trip.purpose,
+            true)
     }
 
 
@@ -600,12 +587,8 @@ class DefaultTripAndStageRepository @Inject constructor(
 
     override suspend fun deleteStage(stageId: Long) {
         val localStage = stageLocalDataSource.get(stageId)
-        val stageWithGpsPoints = stageLocalDataSource.getStageWithGpsPoints(stageId)
+            ?: throw IllegalArgumentException("Stage with ID $stageId not in local database.")
 
-        //given stage should be inside the local database
-        if (localStage == null) {
-            throw IllegalArgumentException("Stage with ID $stageId not in local database.")
-        }
         //stage should be assigned to a trip because this method is to be called from the ui-layer
         if (localStage.tripId == null) {
             throw IllegalArgumentException("Stage does not belong to any trip.")
@@ -619,8 +602,8 @@ class DefaultTripAndStageRepository @Inject constructor(
         if (stagesOfTrip.size == 1) {
             //trip only consisted of that stage so delete the whole trip
             deleteTrip(tripOfStage.trip.id)
-        } else if(stageWithGpsPoints == stagesOfTrip.first()
-            || stageWithGpsPoints == stagesOfTrip.last()) {
+        } else if(localStage == stagesOfTrip.first().stage
+            || localStage == stagesOfTrip.last().stage) {
                 stageLocalDataSource.delete(stageId)
         } else {
             //stage is in between other stages inside the trip which should not occur

@@ -53,11 +53,15 @@ class DefaultTripAndStageRepositoryTest {
     private val geoPoint2 = GeoPoint(0.000, 0.002)
     private val geoPoint3 = GeoPoint(0.000, 0.002)
     private val geoPoint4 = GeoPoint(0.000, 0.003)
+    private val geoPoint5 = GeoPoint(0.000, 0.003)
+    private val geoPoint6 = GeoPoint(0.000, 0.004)
 
     private val time1: Long = 0
     private val time2: Long = 10
     private val time3: Long = 20
     private val time4: Long = 50
+    private val time5: Long = 60
+    private val time6: Long = 80
     private val futureTime: LocalDateTime = LocalDateTime.of(2050, 1, 1, 0, 0)
     //this start time has to be less than [time2]
     private val illegalStartTime1: Long = 5
@@ -76,6 +80,14 @@ class DefaultTripAndStageRepositoryTest {
         listOf(
             GpsPoint(3, geoPoint3, time3.convertToLocalDateTime()),
             GpsPoint(4, geoPoint4, time4.convertToLocalDateTime())
+        )
+    )
+    private val stage3 = Stage(
+        3,
+        Mode.MOTORCYCLE,
+        listOf(
+            GpsPoint(5, geoPoint5, time5.convertToLocalDateTime()),
+            GpsPoint(6, geoPoint6, time6.convertToLocalDateTime())
         )
     )
 
@@ -128,6 +140,18 @@ class DefaultTripAndStageRepositoryTest {
         Purpose.WORK,
         true,
         listOf(stage1, stage2)
+    )
+    private val longerUserTrip1 = Trip(
+        1,
+        Purpose.WORK,
+        true,
+        listOf(stage1, stage2, stage3)
+    )
+    private val separatedUserTrip = Trip(
+        2,
+        Purpose.WORK,
+        true,
+        listOf(stage3)
     )
     private val otherPurpose = Purpose.EDUCATION
 
@@ -399,6 +423,35 @@ class DefaultTripAndStageRepositoryTest {
 
 
     @Test
+    fun separateStageFromTripTest() = runTest {
+        repository.createTrip(longerUserTrip1.stages, longerUserTrip1.purpose)
+
+        repository.separateStageFromTrip(longerUserTrip1.stages.last().id)
+        val allTripsOnLocalDatabase = tripDao.getAllTripsWithStages()
+        assertEquals(2, allTripsOnLocalDatabase.size)
+        assertEquals(userTrip1, allTripsOnLocalDatabase[0].toExternal())
+        assertEquals(separatedUserTrip, allTripsOnLocalDatabase[1].toExternal())
+    }
+    @Test
+    fun separateMiddleStage() = runTest {
+        repository.createTrip(longerUserTrip1.stages, longerUserTrip1.purpose)
+
+        val exception = try {
+            repository.separateStageFromTrip(longerUserTrip1.stages[1].id)
+            null
+        } catch (e: IllegalArgumentException) {
+            e
+        }
+        assertEquals(
+            "Cannot separate stage which is not the beginning or" +
+                    " ending stage of the trip in this version of the app.",
+            exception?.message
+        )
+    }
+
+
+
+    @Test
     fun deleteTripTest() = runTest {
         createTripTest()
         assertEquals(1, repository.observeAllTrips().first().size)
@@ -411,7 +464,7 @@ class DefaultTripAndStageRepositoryTest {
 
 
     @Test
-    fun deleteStageTest() = runTest{
+    fun deleteStageTest() = runTest {
         createTripTest()
 
         repository.deleteStage(userTrip1.stages.first().id)
@@ -420,6 +473,22 @@ class DefaultTripAndStageRepositoryTest {
         val onlyStageOnLocalDatabase =
             stageDao.getStageWithGpsPoints(allStagesOnLocalDatabase.first().id)!!
         assertEquals(stage2, onlyStageOnLocalDatabase.toExternal())
+    }
+    @Test
+    fun deleteMiddleStage() = runTest {
+        repository.createTrip(longerUserTrip1.stages, longerUserTrip1.purpose)
+
+        val exception = try {
+            repository.deleteStage(longerUserTrip1.stages[1].id)
+            null
+        } catch (e: IllegalArgumentException) {
+            e
+        }
+        assertEquals(
+            "Cannot delete stage which is not the beginning or" +
+                    " ending stage of the trip in this version of the app.",
+            exception?.message
+        )
     }
 
 
@@ -448,5 +517,12 @@ class DefaultTripAndStageRepositoryTest {
         val loadedTrips = repository.getTripsOfTimespan(startOfTimespan, endOfTimespan)
         assertEquals(1, loadedTrips.size)
         assertEquals(userTrip1, loadedTrips.first())
+    }
+
+
+
+    @Test
+    fun saveTripsAndStagesToNetwork() {
+        TODO("Not yet implemented")
     }
 }
