@@ -147,7 +147,7 @@ class AppPreferences @Inject constructor(
         get() =
             sharedPreferences.getBoolean(
                 KEY_BATTERY_DEPENDENCY_ENABLED,
-                true)
+                false)
         set(isBatteryDependencyEnabled) =
             sharedPreferences.edit().putBoolean(
                 KEY_BATTERY_DEPENDENCY_ENABLED,
