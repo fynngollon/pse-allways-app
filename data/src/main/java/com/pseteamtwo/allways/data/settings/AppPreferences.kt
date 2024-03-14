@@ -3,6 +3,7 @@ package com.pseteamtwo.allways.data.settings
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.BatteryManager
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -97,7 +98,7 @@ class AppPreferences @Inject constructor(
             //update trackingRegularity depending on current battery charge of the device
             //and on the setting of batteryDependency
             if(isBatteryDependencyEnabled) {
-                val batteryLevel = getBatteryLevel() //TODO("could cause high battery usage")
+                val batteryLevel = getBatteryLevel()
                 if(batteryLevel <= batteryDependency.first) {
                     this.trackingRegularity = batteryDependency.second
                 }
@@ -124,16 +125,14 @@ class AppPreferences @Inject constructor(
         return TrackingRegularity.MEDIUM
     }
 
-    private fun getBatteryLevel(): Double {
+    //TODO("could cause high battery usage")
+    private fun getBatteryLevel(): Int {
         val batteryManager = context.getSystemService(BatteryManager::class.java)!!
         val level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-        val scale = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
-
-        if (level < 0 || scale <= 0) {
-            return 0.0
+        if (level < 0) {
+            return 0
         }
-
-        return (level.toDouble() / scale) * 10000.0
+        return level
     }
 
 
