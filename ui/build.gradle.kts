@@ -26,6 +26,9 @@ android {
         multiDexEnabled = true
     }
 
+
+
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -77,6 +80,12 @@ dependencies {
     implementation(project(":data"))
 
     implementation ("com.github.MKergall:osmbonuspack:6.9.0")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    androidTestImplementation(project(":data"))
+    androidTestImplementation(project(":data"))
+    androidTestImplementation(project(":data"))
+    androidTestImplementation(project(":data"))
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
@@ -102,6 +111,15 @@ dependencies {
     implementation("co.yml:ycharts:2.1.0")
     implementation("com.patrykandpatrick.vico:compose:1.14.0")
 
+
+    //For testing
+
+    // Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.3")
+    // Needed for createAndroidComposeRule, but not createComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.3")
+
+
     // For `compose`. Creates a `ChartStyle` based on an M2 Material Theme.
     implementation("com.patrykandpatrick.vico:compose-m2:1.14.0")
 
@@ -119,7 +137,23 @@ dependencies {
     ksp("androidx.hilt:hilt-compiler:1.2.0")
 
 
+// Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test-android:1.6.3")
+// Needed for createAndroidComposeRule, but not createComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.3")
 
+    testImplementation("org.mockito:mockito-core:5.7.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation ("androidx.test.ext:junit-ktx:1.1.5")
+
+    testImplementation ("org.robolectric:robolectric:4.4")
+
+    //Local databases
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    ksp("androidx.room:room-compiler:2.6.1")
 
 
     // For the view system.

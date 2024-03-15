@@ -335,17 +335,18 @@ fun Pie(labels: List<String>, values: List<Long>, title: String) {
             for(i in range(0, labels.size)) {
 
                 Row(modifier = Modifier.padding(top = 5.dp)) {
-                    Box(modifier = Modifier
-                        .padding(start = 13.dp)
-                        .size(10.dp, 10.dp)
-                        .background(colors[i % colors.size])
-                    )
+                    if(values[i] > 0) {
+                        Box(modifier = Modifier
+                            .padding(start = 13.dp)
+                            .size(10.dp, 10.dp)
+                            .background(colors[i % colors.size])
+                        )
 
 
-                    Text(text = labels[i], fontSize = 12.sp)
+                        Text(text = labels[i], fontSize = 12.sp)
+                    }
+
                 }
-
-
             }
         }
         Row(modifier = Modifier.padding(start = 40.dp, top = 1.dp)) {

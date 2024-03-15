@@ -31,6 +31,8 @@ fun LoginScreen(navController: NavController) {
     var loginFailed = login.loginFailed
     var serverConnectionFailed = login.serverConnectionFailed
     var accountAlreadyExists = login.accountAlreadyExists
+    var invalidEmail = login.invalidEmail
+    var invalidPassword = login.invalidPassword
     var email by remember{mutableStateOf("")}
     var password by remember {
         mutableStateOf("")
@@ -98,6 +100,50 @@ fun LoginScreen(navController: NavController) {
             }
         }
     }
+
+
+    if(invalidEmail) {
+        val onDismissRequest = {loginViewModel.setAccountAlreadyExists(false)}
+        Dialog(onDismissRequest = onDismissRequest) {
+            Card {
+                Column {
+                    Row(modifier = Modifier.padding(20.dp)) {
+                        Text(text =  "The given password has to contain at least\n" +
+                                "one uppercase letter,\n" +
+                                "one lowercase letter,\n" +
+                                "one number,\n" +
+                                "one special character.")
+                    }
+                    Row(modifier = Modifier.padding(20.dp)) {
+                        Button(onClick =  onDismissRequest) {
+                            Text(text = "OK")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    if(invalidPassword) {
+        val onDismissRequest = {loginViewModel.setAccountAlreadyExists(false)}
+        Dialog(onDismissRequest = onDismissRequest) {
+            Card {
+                Column {
+                    Row(modifier = Modifier.padding(20.dp)) {
+                        Text(text =  "The given email is of invalid format.")
+                    }
+                    Row(modifier = Modifier.padding(20.dp)) {
+                        Button(onClick =  onDismissRequest) {
+                            Text(text = "OK")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     
     
 
@@ -128,6 +174,12 @@ fun LoginScreen(navController: NavController) {
                 }
             }
 
+        }
+
+        Row (modifier = Modifier.padding(start = 20.dp, top = 15.dp)){
+            Button(onClick = {loginViewModel.useWithoutAccount()}) {
+                Text(text = "Ohne Account benutzen")
+            }
         }
 
     }

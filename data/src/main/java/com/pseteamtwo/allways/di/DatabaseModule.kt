@@ -9,7 +9,6 @@ import com.pseteamtwo.allways.account.source.local.AccountDatabase
 import com.pseteamtwo.allways.account.source.network.AccountNetworkDataSource
 import com.pseteamtwo.allways.account.source.network.DefaultAccountNetworkDataSource
 import com.pseteamtwo.allways.question.repository.HouseholdQuestionRepository
-import com.pseteamtwo.allways.question.repository.ProfileQuestionRepository
 import com.pseteamtwo.allways.question.repository.QuestionRepository
 import com.pseteamtwo.allways.question.source.local.HouseholdQuestionDao
 import com.pseteamtwo.allways.question.source.local.HouseholdQuestionDatabase
@@ -21,6 +20,7 @@ import com.pseteamtwo.allways.question.source.network.ProfileQuestionNetworkData
 import com.pseteamtwo.allways.question.source.network.ProfileQuestionnaireNetworkDataSource
 import com.pseteamtwo.allways.question.source.network.QuestionNetworkDataSource
 import com.pseteamtwo.allways.statistics.DefaultStatisticsRepository
+import com.pseteamtwo.allways.statistics.StatisticsRepository
 import com.pseteamtwo.allways.trip.repository.DefaultTripAndStageRepository
 import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
 import com.pseteamtwo.allways.trip.source.local.GpsPointDao
@@ -37,6 +37,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -66,9 +67,28 @@ object DatabaseModule {
     @Provides
     fun provideDefaultStatisticsRepository(
         tripAndStageRepository: TripAndStageRepository
-    ): DefaultStatisticsRepository {
+    ): StatisticsRepository {
         return DefaultStatisticsRepository(tripAndStageRepository)
     }
+
+
+    @Singleton
+    @Provides
+    fun provideDefaultHouseholdQuestionRepository(
+        householdQuestionDao: HouseholdQuestionDao,
+        householdQuestionNetworkDataSource: HouseholdQuestionNetworkDataSource,
+        householdQuestionnaireNetworkDataSource: HouseholdQuestionnaireNetworkDataSource,
+        accountRepository: AccountRepository,
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+    ) : QuestionRepository {
+        return HouseholdQuestionRepository(householdQuestionDao,
+            householdQuestionNetworkDataSource,
+            householdQuestionnaireNetworkDataSource,
+            accountRepository,
+            dispatcher
+        )
+    }
+
 
     @Singleton
     @Provides
@@ -128,7 +148,7 @@ abstract class RepositoryModule {
     abstract fun bindAccountRepository(repository: DefaultAccountRepository): AccountRepository
 
 
-    @Singleton
+   /* @Singleton
     @Binds
     abstract fun bindProfileQuestionRepository(
         repository: ProfileQuestionRepository): QuestionRepository
@@ -138,7 +158,7 @@ abstract class RepositoryModule {
     abstract fun bindHouseholdQuestionRepository(
         repository: HouseholdQuestionRepository): QuestionRepository
 
-
+*/
     @Singleton
     @Binds
     abstract fun bindTripRepository(repository: DefaultTripAndStageRepository):
