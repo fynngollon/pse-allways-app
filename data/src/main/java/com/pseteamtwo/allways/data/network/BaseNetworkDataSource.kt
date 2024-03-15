@@ -30,7 +30,7 @@ abstract class BaseNetworkDataSource {
         try {
             return DriverManager.getConnection(url, username, password)
         } catch (e: Exception) {
-            throw SQLException("", e)
+            throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
         }
     }
 
