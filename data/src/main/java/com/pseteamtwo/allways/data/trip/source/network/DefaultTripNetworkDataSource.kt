@@ -4,6 +4,7 @@ import android.util.Log
 import com.pseteamtwo.allways.data.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.data.trip.Purpose
 import kotlinx.coroutines.sync.Mutex
+import java.sql.SQLException
 
 /**
  * This class implements the [TripNetworkDataSource].
@@ -50,7 +51,7 @@ class DefaultTripNetworkDataSource : TripNetworkDataSource, BaseNetworkDataSourc
                 return trips
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // Handle database errors (e.g., connection issues)
             throw Exception("Failed to load all trips", e)
         } finally {
@@ -95,7 +96,7 @@ class DefaultTripNetworkDataSource : TripNetworkDataSource, BaseNetworkDataSourc
                     // Execute the batch insert and handle overall execution errors
                     try {
                         statement.executeBatch()
-                    } catch (e: Exception) {
+                    } catch (e: SQLException) {
                         // Handle batch execution errors (e.g., network issues, connection problems)
                         throw Exception("Failed to save trips: ${e.message}", e)
                     }
@@ -103,7 +104,7 @@ class DefaultTripNetworkDataSource : TripNetworkDataSource, BaseNetworkDataSourc
             } finally {
                 accessMutex.unlock() // Release lock after operation
             }
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // Handle overall database connection issues or unexpected errors
             throw Exception("Critical error saving trips: ${e.message}", e)
         }
@@ -127,7 +128,7 @@ class DefaultTripNetworkDataSource : TripNetworkDataSource, BaseNetworkDataSourc
                 return 1
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             throw Exception("Failed to delete trip with id: $id", e)
         } finally {
             accessMutex.unlock() // Release lock after operation
