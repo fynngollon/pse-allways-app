@@ -15,6 +15,7 @@ abstract class BaseNetworkDataSource {
                 " database or it could not be established."
     }
 
+    /*
     /**
      * Create account connection creates a connection to the account database.
      *
@@ -51,8 +52,14 @@ abstract class BaseNetworkDataSource {
         } catch (e: Exception) {
             throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
         }
-    }
+    }*/
 
+    /**
+     * Create account connection creates a connection to the account database.
+     *
+     * @return The made connection to prepare statements on.
+     * @throws ServerConnectionFailedException If the connection could not be established.
+     */
     @Throws(ServerConnectionFailedException::class)
     fun createRemoteAccountConnection() : Connection {
         val url = "jdbc:mysql://192.168.53.194:3306/allways-app-accounts"
@@ -63,10 +70,15 @@ abstract class BaseNetworkDataSource {
             return DriverManager.getConnection(url, username, password)
         } catch (e: Exception) {
             throw SQLException("", e)
-            //throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE) TODO
         }
     }
 
+    /**
+     * Create data connection creates a connection to the data database.
+     *
+     * @return The made connection to prepare statements on.
+     * @throws ServerConnectionFailedException If the connection could not be established.
+     */
     @Throws(ServerConnectionFailedException::class)
     fun createRemoteDataConnection(): Connection {
         val url = "jdbc:mysql://192.168.53.194:3306/allways-app"

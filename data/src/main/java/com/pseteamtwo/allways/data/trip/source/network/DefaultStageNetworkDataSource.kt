@@ -18,7 +18,7 @@ class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSou
 
         try {
             // Connect to the MySQL database
-            val connection = createDataConnection()
+            val connection = createRemoteDataConnection()
 
             connection.use {
                 // Prepare and execute SQL statement to retrieve all stages
@@ -63,7 +63,7 @@ class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSou
 
         try {
             // Connect to the MySQL database
-            val connection = createDataConnection()
+            val connection = createRemoteDataConnection()
 
             try {
                 connection.use {
@@ -114,7 +114,7 @@ class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSou
 
         try {
             // Connect to the MySQL database
-            val connection = createDataConnection()
+            val connection = createRemoteDataConnection()
 
             connection.use {
                 // Prepare deletion statement with parameterized id

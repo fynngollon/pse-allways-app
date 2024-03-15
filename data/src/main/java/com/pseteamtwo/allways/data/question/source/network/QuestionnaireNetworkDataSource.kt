@@ -26,27 +26,6 @@ abstract class QuestionnaireNetworkDataSource: BaseNetworkDataSource() {
     @Throws(ServerConnectionFailedException::class)
     abstract suspend fun loadQuestionnaire(): List<NetworkQuestion>
 
-    //Throws JsonSyntaxException
-    /*protected fun convertJsonToQuestions(jsonQuestionnaire: String): List<NetworkQuestion> {
-        val file = File(questionnaireFilePath)
-        assert(file.exists() && file.isFile) { "The file is not valid or does not exist." }
-
-        var networkQuestions = listOf<NetworkQuestion>()
-        val jsonString = file.readText()
-        val gson = GsonBuilder()
-            .registerTypeAdapter(QuestionType::class.java, QuestionTypeDeserializer())
-            .create()
-
-        //Attempts to parse
-        networkQuestions = gson.fromJson(jsonString, Array<NetworkQuestion>::class.java).toList()
-
-        if (!areAllNetworkQuestionsCorrect(networkQuestions)) {
-            throw IncorrectJsonFileException()
-        }
-
-        return networkQuestions
-    }*/
-
     /**
      * Convert json to questions converts a Json-file into a list of NetworkQuestions by using a
      * decoder from the kotlinx-serialization library.
@@ -94,12 +73,3 @@ abstract class QuestionnaireNetworkDataSource: BaseNetworkDataSource() {
         }
     }
 }
-
-/*class QuestionTypeDeserializer : JsonDeserializer<QuestionType> {
-    override fun deserialize(
-        json: JsonElement?,
-        typeOfT: Type?,
-        context: JsonDeserializationContext?
-    ): QuestionType {
-        return QuestionType.valueOf(json?.asString?.uppercase(Locale.ROOT) ?: "TEXT")
-    }*/
