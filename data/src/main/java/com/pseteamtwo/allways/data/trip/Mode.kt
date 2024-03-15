@@ -13,7 +13,7 @@ enum class Mode(val modeType: String) {
     /**
      * Represents that no Mode has been set for [Stage] yet.
      */
-    NONE("Nicht eingetragen"),
+    NONE("(Nicht eingetragen)"),
 
     /**
      * [Stage] got traveled by walking.
@@ -33,7 +33,7 @@ enum class Mode(val modeType: String) {
     /**
      * The means of transportation of [Stage] is an E-Bike.
      */
-    BICYCLE("Fahrrade"),
+    BICYCLE("Fahrrad"),
 
     /**
      * The means of transportation of [Stage] is a motorcycle.
