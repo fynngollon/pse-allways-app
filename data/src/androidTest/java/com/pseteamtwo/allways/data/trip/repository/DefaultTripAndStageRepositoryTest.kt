@@ -50,16 +50,24 @@ class DefaultTripAndStageRepositoryTest {
 
     //Test data
     private val geoPoint1 = GeoPoint(0.000, 0.001)
+    private val updatedGeoPoint1 = GeoPoint(0.000, 0.0001)
     private val geoPoint2 = GeoPoint(0.000, 0.002)
+    private val updatedGeoPoint2 = GeoPoint(0.000, 0.0015)
     private val geoPoint3 = GeoPoint(0.000, 0.002)
+    private val updatedGeoPoint3 = GeoPoint(0.000, 0.0015)
     private val geoPoint4 = GeoPoint(0.000, 0.003)
+    private val updatedGeoPoint4 = GeoPoint(0.000, 0.0036)
     private val geoPoint5 = GeoPoint(0.000, 0.003)
     private val geoPoint6 = GeoPoint(0.000, 0.004)
 
     private val time1: Long = 0
+    private val updatedTime1: Long = 1
     private val time2: Long = 10
+    private val updatedTime2: Long = 9
     private val time3: Long = 20
+    private val updatedTime3: Long = 42
     private val time4: Long = 50
+    private val updatedTime4: Long = 61
     private val time5: Long = 60
     private val time6: Long = 80
     private val futureTime: LocalDateTime = LocalDateTime.of(2050, 1, 1, 0, 0)
@@ -74,12 +82,28 @@ class DefaultTripAndStageRepositoryTest {
             GpsPoint(2, geoPoint2, time2.convertToLocalDateTime())
         )
     )
+    private val updatedStage1 = Stage(
+        1,
+        Mode.RUNNING,
+        listOf(
+            GpsPoint(5, updatedGeoPoint1, updatedTime1.convertToLocalDateTime()),
+            GpsPoint(6, updatedGeoPoint2, updatedTime2.convertToLocalDateTime())
+        )
+    )
     private val stage2 = Stage(
         2,
         Mode.MOTORCYCLE,
         listOf(
             GpsPoint(3, geoPoint3, time3.convertToLocalDateTime()),
             GpsPoint(4, geoPoint4, time4.convertToLocalDateTime())
+        )
+    )
+    private val updatedStage2 = Stage(
+        2,
+        Mode.OTHER,
+        listOf(
+            GpsPoint(7, updatedGeoPoint3, updatedTime3.convertToLocalDateTime()),
+            GpsPoint(8, updatedGeoPoint4, updatedTime4.convertToLocalDateTime())
         )
     )
     private val stage3 = Stage(
@@ -141,6 +165,12 @@ class DefaultTripAndStageRepositoryTest {
         true,
         listOf(stage1, stage2)
     )
+    private val updatedUserTrip1 = Trip(
+        1,
+        Purpose.WORK,
+        true,
+        listOf(updatedStage1, updatedStage2)
+    )
     private val longerUserTrip1 = Trip(
         1,
         Purpose.WORK,
@@ -179,6 +209,9 @@ class DefaultTripAndStageRepositoryTest {
         )
     )
     private val otherPurpose = Purpose.EDUCATION
+
+    private val email = "killua.zoldyck@hxh.com"
+    private val password = "Godspeed!99"
 
 
 
@@ -448,8 +481,70 @@ class DefaultTripAndStageRepositoryTest {
 
 
     @Test
-    fun updateStagesTest() = runTest {
-        TODO("Not yet implemented")
+    fun updateStagesOfTripTest() = runTest {
+        createTripTest()
+        repository.updateStagesOfTrip(
+            userTrip1.id,
+            listOf(stage1.id, stage2.id),
+            listOf(updatedStage1.mode, updatedStage2.mode),
+            listOf(updatedStage1.startDateTime, updatedStage2.startDateTime),
+            listOf(updatedStage1.endDateTime, updatedStage2.endDateTime),
+            listOf(updatedStage1.startLocation, updatedStage2.startLocation),
+            listOf(updatedStage1.endLocation, updatedStage2.endLocation)
+        )
+
+        val allTripsOnLocalDatabase = tripDao.getAllTripsWithStages()
+        assertEquals(1, allTripsOnLocalDatabase.size)
+        assertEquals(updatedUserTrip1, allTripsOnLocalDatabase.first().toExternal())
+    }
+    @Test
+    fun updateStagesOfTripInvalidParameters() = runTest {
+        createTripTest()
+
+        val exception = try {
+            repository.updateStagesOfTrip(
+                userTrip1.id,
+                listOf(stage1.id, stage2.id),
+                listOf(updatedStage1.mode, updatedStage2.mode),
+                listOf(updatedStage1.startDateTime, updatedStage2.startDateTime),
+                listOf(updatedStage1.endDateTime, updatedStage2.endDateTime),
+                listOf(updatedStage1.startLocation, updatedStage2.startLocation),
+                listOf(updatedStage1.endLocation) //missing second end location
+            )
+            null
+        } catch (e: IllegalArgumentException) {
+            e
+        }
+        assertEquals(
+            "Provided function parameters are invalid.",
+            exception?.message
+        )
+    }
+    @Test
+    fun updateStagesOfTripInvalidTimeContinuity() = runTest {
+        createTripTest()
+        //this trip is consistent with the trip of [createTripTest] but not with the
+        // updated parameters
+        repository.createTrip(separatedUserTrip.stages, separatedUserTrip.purpose)
+
+        val exception = try {
+            repository.updateStagesOfTrip(
+                userTrip1.id,
+                listOf(stage1.id, stage2.id),
+                listOf(updatedStage1.mode, updatedStage2.mode),
+                listOf(updatedStage1.startDateTime, updatedStage2.startDateTime),
+                listOf(updatedStage1.endDateTime, updatedStage2.endDateTime),
+                listOf(updatedStage1.startLocation, updatedStage2.startLocation),
+                listOf(updatedStage1.endLocation, updatedStage2.endLocation)
+            )
+            null
+        } catch (e: TimeTravelException) {
+            e
+        }
+        assertEquals(
+            "Entered times are not valid regarding all other trips in the local database.",
+            exception?.message
+        )
     }
 
 
@@ -613,8 +708,13 @@ class DefaultTripAndStageRepositoryTest {
 
 
 
+    //this test requires a connection to the network database, otherwise
+    // it will fail or run endlessly
     @Test
-    fun saveTripsAndStagesToNetwork() {
-        TODO("Not yet implemented")
+    fun saveTripsAndStagesToNetwork() = runTest {
+        createTripTest()
+        accountRepository.createAccount(email, password)
+
+        repository.saveTripsAndStagesToNetwork(listOf(userTrip1.id))
     }
 }
