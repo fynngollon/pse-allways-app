@@ -18,7 +18,7 @@ class StatisticsViewModelTest {
 
 
 
-    private lateinit var fakeRepository: FakeStatisticsRepository
+    private lateinit var fakeRepository: com.pseteamtwo.allways.statistics.FakeStatisticsRepository
     private lateinit var viewModel: StatisticsViewModel
 
    /* @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,7 +34,7 @@ class StatisticsViewModelTest {
     // Ensure that we use a new database for each test.
     @Before
     fun setUp() {
-        fakeRepository = FakeStatisticsRepository()
+        fakeRepository = com.pseteamtwo.allways.statistics.FakeStatisticsRepository()
         viewModel = StatisticsViewModel(fakeRepository)
     }
 

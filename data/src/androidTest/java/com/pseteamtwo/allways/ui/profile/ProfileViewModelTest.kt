@@ -1,6 +1,7 @@
-package com.pseteamtwo.allways.profile
+package com.pseteamtwo.allways.ui.profile
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.pseteamtwo.allways.profile.ProfileViewModel
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -10,14 +11,14 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ProfileViewModelTest {
 
-    private lateinit var fakeHouseHoldQuestionRepository: FakeQuestionRepository
-    private lateinit var fakeProfileQuestionRepository: FakeQuestionRepository
+    private lateinit var fakeHouseHoldQuestionRepository: com.pseteamtwo.allways.ui.profile.FakeQuestionRepository
+    private lateinit var fakeProfileQuestionRepository: com.pseteamtwo.allways.ui.profile.FakeQuestionRepository
     private lateinit var viewModel: ProfileViewModel
 
     @Before
     fun setUp() {
-        fakeProfileQuestionRepository = FakeQuestionRepository()
-        fakeHouseHoldQuestionRepository = FakeQuestionRepository()
+        fakeProfileQuestionRepository = com.pseteamtwo.allways.ui.profile.FakeQuestionRepository()
+        fakeHouseHoldQuestionRepository = com.pseteamtwo.allways.ui.profile.FakeQuestionRepository()
         viewModel = ProfileViewModel(fakeProfileQuestionRepository, fakeHouseHoldQuestionRepository)
     }
 

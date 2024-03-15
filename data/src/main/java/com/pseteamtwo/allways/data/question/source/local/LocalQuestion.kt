@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.pseteamtwo.allways.data.question.QuestionType
-import com.pseteamtwo.allways.data.typeconverter.ListStringConverter
+import com.pseteamtwo.allways.ui.typeconverter.ListStringConverter
 
 /**
  * A question the user can fill in to provide information about himself.
