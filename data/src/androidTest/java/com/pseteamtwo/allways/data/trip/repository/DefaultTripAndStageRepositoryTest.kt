@@ -29,6 +29,8 @@ import com.pseteamtwo.allways.data.trip.toExternal
 import com.pseteamtwo.allways.data.trip.toLocal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -39,6 +41,7 @@ import org.junit.runner.RunWith
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import kotlin.random.Random
 
 /**
 * Instrumented test, which will execute on an Android device.
@@ -213,6 +216,9 @@ class DefaultTripAndStageRepositoryTest {
     private val email = "killua.zoldyck@hxh.com"
     private val password = "Godspeed!99"
 
+    private lateinit var tooManyTrips: List<Trip>
+    private val numberOfTripsToCreate: Int = 100
+
 
 
     //Test dependencies
@@ -274,6 +280,79 @@ class DefaultTripAndStageRepositoryTest {
             testScope
         )
 
+
+        val initialGeoPointLatitude: Double = 0.0
+        val initialGeoPointLongitude: Double = 0.0
+        val initialTime: Long = 0
+        val tooManyStages: MutableList<Stage> = mutableListOf()
+
+        var previousGeoPointLatitude: Double = initialGeoPointLatitude + Random.nextDouble(0.0001, 0.0002)
+        var previousGeoPointLongitude: Double = initialGeoPointLongitude + Random.nextDouble(0.0001, 0.0002)
+        var currentTime: Long = initialTime + Random.nextInt(1, 100)
+
+        val stageToAdd1 = Stage(
+            0,
+            Mode.entries.random().takeIf { it != Mode.NONE }?: Mode.WALK,
+            listOf(
+                GpsPoint(0, GeoPoint(initialGeoPointLatitude, initialGeoPointLongitude), initialTime.convertToLocalDateTime()),
+                GpsPoint(0, GeoPoint(previousGeoPointLatitude, previousGeoPointLongitude), currentTime.convertToLocalDateTime())
+            )
+        )
+        tooManyStages.add(stageToAdd1)
+
+        for(i in 1 until numberOfTripsToCreate) {
+            val newRandomGeoPointLatitude = previousGeoPointLatitude + Random.nextDouble(0.0001, 0.0002)
+            val newRandomGeoPointLongitude = previousGeoPointLatitude + Random.nextDouble(0.0001, 0.0002)
+
+            val randomTime1 = currentTime + Random.nextInt(1, 100)
+            currentTime = randomTime1
+            val randomTime2 = currentTime + Random.nextInt(1, 300)
+            currentTime = randomTime2
+
+            tooManyStages.add(Stage(
+                0,
+                Mode.entries.random().takeIf { it != Mode.NONE }?: Mode.WALK,
+                listOf(
+                    GpsPoint(0, GeoPoint(previousGeoPointLatitude, previousGeoPointLongitude), randomTime1.convertToLocalDateTime()),
+                    GpsPoint(0, GeoPoint(newRandomGeoPointLatitude, newRandomGeoPointLongitude), randomTime2.convertToLocalDateTime())
+                )
+            ))
+
+            previousGeoPointLatitude = newRandomGeoPointLatitude
+            previousGeoPointLongitude = newRandomGeoPointLongitude
+        }
+        tooManyStages.toList()
+
+        val tooManyTripsList = mutableListOf<Trip>()
+        for(i in tooManyStages.indices) {
+            tooManyTripsList.add(Trip(
+                0,
+                Purpose.entries.random().takeIf { it != Purpose.NONE }?: Purpose.OTHER,
+                true,
+                listOf(tooManyStages[i])
+            ))
+        }
+        tooManyTrips = tooManyTripsList.toList()
+    }
+
+
+
+    //average times determined by testing on emulator of android-studio:
+    // 100 trips -> ~3sec
+    // 500 trips -> ~30sec
+    // 1000 trips -> ~3min
+    // 3000 trips -> ~10min
+    // 10000 trips -> >30min
+    //(for running on an own device, the according times are around twice the value because the
+    // emulator doesn't need that to wait for other processes of the phone)
+    @Test
+    fun robustnessTestCreateAnInsaneAmountOfTrips() = runBlocking {
+        for(i in tooManyTrips.indices) {
+            repository.createTrip(tooManyTrips[i].stages, tooManyTrips[i].purpose)
+        }
+
+        val allTripsOnLocalDatabase = tripDao.getAllTripsWithStages()
+        assertEquals(numberOfTripsToCreate, allTripsOnLocalDatabase.size)
     }
 
 
@@ -711,10 +790,13 @@ class DefaultTripAndStageRepositoryTest {
     //this test requires a connection to the network database, otherwise
     // it will fail or run endlessly
     @Test
-    fun saveTripsAndStagesToNetwork() = runTest {
-        createTripTest()
-        accountRepository.createAccount(email, password)
+    fun saveTripsAndStagesToNetwork() {
+        testScope.launch {
+            createTripTest()
+            accountRepository.createAccount(email, password)
 
-        repository.saveTripsAndStagesToNetwork(listOf(userTrip1.id))
+            repository.saveTripsAndStagesToNetwork(listOf(userTrip1.id))
+        }
+        assert(false)
     }
 }
