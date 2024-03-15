@@ -81,9 +81,8 @@ class DefaultTrackingAlgorithm @Inject constructor(
     /**
      * Receives a list of [LocalGpsPoint]s and predicts trips based on the speed and time.
      * A potential trip starts when a tracked location speed exceeds the [STILL_MOTION_THRESHOLD]
-     * threshold, the trip continues for at least [MIN_DURATION_OF_TRIP] minutes, has a distance
-     * of at least [MIN_DISTANCE_OF_TRIP] meters and lastly has movement out of a radius of
-     * [DIAMETER_OF_GEOFENCE]. These criteria ensure that the trip is long enough
+     * threshold, has a distance of at least [MIN_DISTANCE_OF_TRIP] meters and lastly has movement
+     * out of a radius of [DIAMETER_OF_GEOFENCE]. These criteria ensure that the trip is long enough
      * and wasn't just within a building. Lastly, this function creates the trips it predicts
      * in the local database with [Purpose.NONE]. Internally this function calls the [predictStages]
      * function to predict the stages of the trip.
@@ -416,7 +415,7 @@ class DefaultTrackingAlgorithm @Inject constructor(
         /**
          * The last percentile for defining the peek speed.
          */
-        const val PERCENTILE_FOR_PEEK_SPEED = 0.1 // in percentage
+        const val PERCENTILE_FOR_PEEK_SPEED = 0.4 // in percentage
 
         /**
          * A threshold for what speed is considered as non moving.
