@@ -326,17 +326,16 @@ class DefaultTripAndStageRepository @Inject constructor(
         endLocations: List<GeoPoint>
     ) {
         val tripToUpdate = tripLocalDataSource.getTripWithStages(tripId)
-        if(tripToUpdate == null) {
-            assert(false) { "Trip with provided id does not exist in database" }
-        }
-        val sizeOfStages = tripToUpdate!!.stages.size
+            ?: throw IllegalArgumentException("Trip with provided id does not exist in database.")
+
+        val sizeOfStages = tripToUpdate.stages.size
         if(sizeOfStages != stageIds.size || sizeOfStages != modes.size
             || sizeOfStages != startDateTimes.size || sizeOfStages != endDateTimes.size
             || sizeOfStages != startLocations.size ||sizeOfStages != endLocations.size) {
-            assert(false) { "Provided function parameters are invalid" }
+            throw IllegalArgumentException("Provided function parameters are invalid.")
         }
         if(tripToUpdate.sortedStages.map { it.stage.id } != stageIds) {
-            assert(false) { "Provided stageIds are invalid for the provided tripId" }
+            throw IllegalArgumentException("Provided stageIds are invalid for the provided tripId.")
         }
 
         //ensure that entered user data does not interfere with physical logic of time and space
@@ -405,12 +404,7 @@ class DefaultTripAndStageRepository @Inject constructor(
     ) {
         val localStage = withContext(dispatcher) {
             stageLocalDataSource.get(stageId)
-        }
-
-        if (localStage == null) {
-            assert(false) { "Stage with ID $stageId not found in database" }
-            return
-        }
+        } ?: throw IllegalArgumentException("Stage with ID $stageId not found in database.")
 
         localStage.mode = mode
 
