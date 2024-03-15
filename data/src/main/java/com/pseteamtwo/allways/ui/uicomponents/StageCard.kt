@@ -585,8 +585,6 @@ fun StageCardPreview() {
             endLocation = GeoPoint(49.001061, 8.413361),
             startLocationName = "Test",
             endLocationName = "Test",
-            getPreviousStageUiState = {null},
-            getNextStageUiState = {null},
             setMode = {mode: Mode -> },
             setStartDate = {},
             setEndDate = {},

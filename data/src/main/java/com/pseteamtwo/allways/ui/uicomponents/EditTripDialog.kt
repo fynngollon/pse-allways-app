@@ -95,6 +95,8 @@ fun EditTripDialog(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    var date: LocalDate? = null
+
     val stageUiStates = tripUiState.stageUiStates
     Dialog(
         onDismissRequest = {onDismissRequest()},
@@ -207,30 +209,29 @@ fun EditTripDialog(
                     }
                 }
 
-                if (tripUiState.tripId != 0L) {
-                    item {
-                        Row(
+                item {
+                    Row(
+                        modifier = modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        IconButton(
+                            onClick = {
+                                tripUiState.addStageUiStateBefore()
+                            },
                             modifier = modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
                         ) {
-                            IconButton(
-                                onClick = {
-                                    tripUiState.addStageUiStateBefore()
-                                },
-                                modifier = modifier
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Add, contentDescription = "Weg hinzufügen",
-                                )
-                            }
+                            Icon(
+                                imageVector = Icons.Rounded.Add, contentDescription = "Etappe hinzufügen",
+                            )
                         }
                     }
                 }
 
-
-                var date: LocalDate? = null
-                items(stageUiStates) {
+                items(
+                    stageUiStates,
+                    key = { item: StageUiState ->  item.id}
+                ) {
                     stageUiState: StageUiState ->
                     val currentDate = stageUiState.startDateTime.toLocalDate()
                     if(date != currentDate) {
@@ -284,25 +285,23 @@ fun EditTripDialog(
                     }
                 }
 
-                if (tripUiState.tripId != 0L) {
-                    item {
-                        Spacer(modifier = modifier.height(16.dp))
-                        Row(
+                item {
+                    Spacer(modifier = modifier.height(16.dp))
+                    Row(
+                        modifier = modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        IconButton(
+                            onClick = {
+                                tripUiState.addStageUiStateAfter()
+                            },
                             modifier = modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
+                            ,
                         ) {
-                            IconButton(
-                                onClick = {
-                                    tripUiState.addStageUiStateAfter()
-                                },
-                                modifier = modifier
-                                ,
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Add, contentDescription = "Weg hinzufügen",
-                                )
-                            }
+                            Icon(
+                                imageVector = Icons.Rounded.Add, contentDescription = "Etappe hinzufügen",
+                            )
                         }
                     }
                 }
@@ -342,10 +341,10 @@ fun EditTripDialog(
 
                 }
             }
-            SnackbarHost(
-                hostState = snackbarHostState,
-            )
         }
+        SnackbarHost(
+            hostState = snackbarHostState,
+        )
     }
 }
 
@@ -373,8 +372,6 @@ fun EditTripDialogPreview() {
                     endLocation = GeoPoint(49.001061, 8.413361),
                     startLocationName = "Test",
                     endLocationName = "Test",
-                    getPreviousStageUiState = {null},
-                    getNextStageUiState = {null},
                     setMode = {mode: Mode -> },
                     setStartDate = {},
                     setEndDate = {},
@@ -399,8 +396,6 @@ fun EditTripDialogPreview() {
                     endLocation = GeoPoint(49.001061, 8.413361),
                     startLocationName = "Test",
                     endLocationName = "Test",
-                    getPreviousStageUiState = {null},
-                    getNextStageUiState = {null},
                     setMode = {mode: Mode -> },
                     setStartDate = {},
                     setEndDate = {},
