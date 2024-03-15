@@ -99,7 +99,10 @@ fun TripsScreen(
                     userScrollEnabled = true
                 ) {
                     var date: LocalDate? = null
-                    items(tripUiStates) {
+                    items(
+                        tripUiStates,
+                        key = { item: TripUiState -> item.id}
+                    ) {
                             tripUiState: TripUiState ->
                         if(date != tripUiState.startDateTime.toLocalDate()) {
                             Text(

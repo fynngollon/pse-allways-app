@@ -29,8 +29,6 @@ import org.threeten.bp.LocalDateTime
  * @property endLocation the location of the respective stage's end.
  * @property startLocationName the name of the respective stage's start location.
  * @property endLocationName the name of the respective stage's end location.
- * @property getPreviousStageUiState the function for getting the stage UI state before this one.
- * @property getNextStageUiState the function for getting the stage UI state after this one.
  * @property setMode the function for updating this stage Ui state's mode in the [TripsViewModel]it
  * belongs to.
  * @property setStartDate the function for updating this stage Ui state's start date in the
@@ -67,8 +65,6 @@ data class StageUiState(
     val endLocation: GeoPoint,
     val startLocationName: String,
     val endLocationName: String,
-    val getPreviousStageUiState: () -> StageUiState?,
-    val getNextStageUiState: () -> StageUiState?,
     val setMode: (Mode) -> Unit,
     val setStartDate: (LocalDate) -> Unit,
     val setEndDate: (LocalDate) -> Unit,
@@ -100,6 +96,6 @@ data class StageUiState(
         get() = endDateTime.minute
 
     override fun compareTo(other: StageUiState): Int {
-        return -startDateTime.compareTo(other.startDateTime)
+        return startDateTime.compareTo(other.startDateTime)
     }
 }

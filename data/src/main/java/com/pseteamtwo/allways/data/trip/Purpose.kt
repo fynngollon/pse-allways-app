@@ -14,57 +14,57 @@ import kotlinx.serialization.Serializable
  * Can be null and is initially set to null until detailed description is provided.
  */
 @Serializable
-enum class Purpose(var purposeDetail: String? = null) {
+enum class Purpose(val purposeType: String, var purposeDetail: String? = null) {
     //TODO("implementation of use of purposeDetail")
 
     /**
      * Represents that no Purpose has been set for [Trip] yet.
      */
-    NONE,
+    NONE("(Nicht eingetragen)"),
 
     /**
      * [Trip] got traveled to go to work.
      */
-    WORK,
+    WORK("Arbeit"),
 
     /**
      * [Trip] is a business trip.
      */
-    BUSINESS_TRIP,
+    BUSINESS_TRIP("Geschäftsreise"),
 
     /**
      * [Trip] got traveled to go to an educational institution like school, university
      * or to an skill enhancement.
      */
-    EDUCATION,
+    EDUCATION("Schule/Studium/Fortbildung"),
 
     /**
      * [Trip] got traveled to go shopping.
      */
-    SHOPPING,
+    SHOPPING("Einkaufen"),
 
     /**
      * [Trip] got traveled for leisure or vacation reasons.
      */
-    LEISURE,
+    LEISURE("Freizeit"),
 
     /**
      * [Trip] got traveled for transportation reasons.
      */
-    TRANSPORTATION,
+    TRANSPORTATION("Etw./Jmd. transportieren"),
 
     /**
      * [Trip] got traveled to do other errands.
      */
-    OTHER_ERRANDS,
+    OTHER_ERRANDS("Andere Erledigungen"),
 
     /**
      * [Trip] got traveled to go home.
      */
-    HOME,
+    HOME("Nach Hause gehen"),
 
     /**
      * [Trip] got traveled to do something this enumeration does not contain.
      */
-    OTHER;
+    OTHER("Andere");
 }
