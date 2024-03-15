@@ -19,6 +19,7 @@ import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_
 import com.pseteamtwo.allways.data.trip.tracking.TrackingAlgorithmManager
 import com.pseteamtwo.allways.data.trip.tracking.TrackingService
 import com.pseteamtwo.allways.data.trip.tracking.calculateSpeedBetweenLocations
+import com.pseteamtwo.allways.data.trip.tracking.hasLocationPermission
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -67,6 +68,10 @@ class LocationService : TrackingService() {
      */
     @SuppressLint("NotificationPermission")
     override fun start() {
+        if (!hasLocationPermission()) {
+            AppPreferences(this).isTrackingEnabled = false
+        }
+
         if (!AppPreferences(this).isTrackingEnabled) {
             stop()
             return
