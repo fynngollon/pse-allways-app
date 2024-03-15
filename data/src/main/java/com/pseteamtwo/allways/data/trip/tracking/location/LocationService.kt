@@ -83,7 +83,7 @@ class LocationService : TrackingService() {
                 val long = location.longitude.toString()
                 if (lastLocation != null) {
                     val speed = calculateSpeedBetweenLocations(lastLocation!!, location)
-                    location.speed = speed
+                    location.speed = if (speed.isNaN() || !speed.isInfinite()) 0.0F else speed
                 }
                 lastLocation = location
 
@@ -94,7 +94,7 @@ class LocationService : TrackingService() {
                 Log.d("PSE_TRACKING", "-------------------------------------------------")
                 Log.d("PSE_TRACKING", "Location: ($lat, $long)")
                 Log.d("PSE_TRACKING", "Speed: ${location.speed}")
-                Log.d("PSE_TRACKING", tripAndStageRepository.observeAllTrips().first().size.toString())
+                Log.d("PSE_TRACKING", "Trips: ${tripAndStageRepository.observeAllTrips().first().size}")
                 tripAndStageRepository.createGpsPoint(location)
                 trackingAlgorithmManager.requestAlgorithm(location)
             }
