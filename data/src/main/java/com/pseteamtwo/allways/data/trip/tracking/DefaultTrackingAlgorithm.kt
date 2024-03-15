@@ -137,11 +137,13 @@ class DefaultTrackingAlgorithm @Inject constructor(
             }
 
             // Checks if trip duration is long enough
+            /*
             val tripDuration = strippedPotentialTrip.last().location.time -
                     strippedPotentialTrip.first().location.time
             if (tripDuration < MIN_DURATION_OF_TRIP) {
                 return@forEach
             }
+             */
 
             // Checks if trip distance is long enough
             val tripDistance = calculateDistance(strippedPotentialTrip.map { it.location })
