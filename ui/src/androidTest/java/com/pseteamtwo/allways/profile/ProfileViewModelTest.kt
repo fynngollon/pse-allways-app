@@ -26,4 +26,10 @@ class ProfileViewModelTest {
         viewModel.updateProfileAnswer("1", "updated answer")
         assertEquals(viewModel.profileUiState.value.profileQuestions[0].answer, "updated answer")
     }
+
+    @Test
+    fun testUpdateHouseholdAnswer() = runTest {
+        viewModel.updateHouseholdAnswer("1", "updated answer")
+        assertEquals(viewModel.profileUiState.value.householdQuestions[0].answer, "updated answer")
+    }
 }

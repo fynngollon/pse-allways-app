@@ -31,4 +31,9 @@ class ExampleInstrumentedTest {
     fun testExample() {
         composeRule.onNodeWithText("Einloggen").assertIsDisplayed()
     }
+
+    @Test
+    fun testSetLoginFailed() {
+
+    }
 }
