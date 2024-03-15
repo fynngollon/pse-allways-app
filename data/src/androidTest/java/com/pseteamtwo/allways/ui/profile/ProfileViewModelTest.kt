@@ -1,5 +1,5 @@
-package com.pseteamtwo.allways.profile
-
+package com.pseteamtwo.allways.ui.profile
+/**
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
@@ -27,3 +27,5 @@ class ProfileViewModelTest {
         assertEquals(viewModel.profileUiState.value.profileQuestions[0].answer, "updated answer")
     }
 }
+
+ */

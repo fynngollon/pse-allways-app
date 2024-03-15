@@ -1,11 +1,13 @@
-package com.pseteamtwo.allways.profile
+package com.pseteamtwo.allways.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pseteamtwo.allways.exception.QuestionIdNotFoundException
-import com.pseteamtwo.allways.exception.ServerConnectionFailedException
-import com.pseteamtwo.allways.question.repository.QuestionRepository
-import com.pseteamtwo.allways.statistics.StatisticsScreen
+import com.pseteamtwo.allways.data.exception.QuestionIdNotFoundException
+import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
+import com.pseteamtwo.allways.data.question.repository.HouseholdQuestionRepository
+import com.pseteamtwo.allways.data.question.repository.ProfileQuestionRepository
+import com.pseteamtwo.allways.data.question.repository.QuestionRepository
+import com.pseteamtwo.allways.ui.statistics.StatisticsScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,8 +23,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileQuestionRepository: QuestionRepository,
-    private val householdQuestionRepository: QuestionRepository) : ViewModel() {
+    private val profileQuestionRepository: ProfileQuestionRepository,
+    private val householdQuestionRepository: HouseholdQuestionRepository) : ViewModel() {
 
     private var _profileUiState: MutableStateFlow<ProfileUiState> = MutableStateFlow(ProfileUiState(loading = true))
     val profileUiState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()

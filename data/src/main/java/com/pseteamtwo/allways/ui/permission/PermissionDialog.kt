@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.data.trip.tracking.permission
+package com.pseteamtwo.allways.ui.permission
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

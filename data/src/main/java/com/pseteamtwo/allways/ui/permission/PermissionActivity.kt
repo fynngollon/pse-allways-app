@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.data.trip.tracking.permission
+package com.pseteamtwo.allways.ui.permission
 
 import android.Manifest
 import android.app.Activity

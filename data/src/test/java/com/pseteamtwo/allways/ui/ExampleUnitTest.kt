@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways
+package com.pseteamtwo.allways.ui
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.runner.RunWith

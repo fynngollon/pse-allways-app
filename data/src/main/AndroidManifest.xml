@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".data.trip.tracking.permission.PermissionActivity"
+            android:name=".ui.permission.PermissionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.pseteamtwo.allways.data.trip.tracking.permission.PermissionActivity" />

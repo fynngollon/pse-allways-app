@@ -1,6 +1,7 @@
-package com.pseteamtwo.allways.statistics
+package com.pseteamtwo.allways.ui.statistics
 
-import com.pseteamtwo.allways.trip.Mode
+import com.pseteamtwo.allways.data.statistics.StatisticsRepository
+import com.pseteamtwo.allways.data.trip.Mode
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import java.util.EnumMap

@@ -1,11 +1,14 @@
-package com.pseteamtwo.allways.statistics
+package com.pseteamtwo.allways.ui.statistics
 
 import android.location.Location
-import com.pseteamtwo.allways.trip.Mode
-import com.pseteamtwo.allways.trip.Purpose
-import com.pseteamtwo.allways.trip.Stage
-import com.pseteamtwo.allways.trip.Trip
-import com.pseteamtwo.allways.trip.repository.TripAndStageRepository
+import com.pseteamtwo.allways.data.trip.Mode
+import com.pseteamtwo.allways.data.trip.Purpose
+import com.pseteamtwo.allways.data.trip.Stage
+import com.pseteamtwo.allways.data.trip.Trip
+import com.pseteamtwo.allways.data.trip.repository.TripAndStageRepository
+import com.pseteamtwo.allways.data.trip.source.local.LocalGpsPoint
+import com.pseteamtwo.allways.data.trip.source.local.LocalStage
+import com.pseteamtwo.allways.data.trip.source.local.LocalTrip
 import kotlinx.coroutines.flow.Flow
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
@@ -21,6 +24,25 @@ class FakeDefaultTripAndStageRepository : TripAndStageRepository {
     }
 
     override suspend fun createTrip(stages: List<Stage>, purpose: Purpose) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createTripOfExistingStages(
+        localStages: List<LocalStage>,
+        purpose: Purpose,
+        isCreatedByUser: Boolean
+    ): LocalTrip {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createStageOfExistingGpsPoints(
+        localGpsPoints: List<LocalGpsPoint>,
+        mode: Mode
+    ): LocalStage {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createGpsPoint(location: Location): LocalGpsPoint {
         TODO("Not yet implemented")
     }
 

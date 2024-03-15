@@ -1,8 +1,8 @@
-package com.pseteamtwo.allways.statistics
+package com.pseteamtwo.allways.ui.statistics
 
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pseteamtwo.allways.trip.Mode
+import com.pseteamtwo.allways.data.trip.Mode
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.delay
@@ -21,13 +21,13 @@ class StatisticsViewModelTest {
     private lateinit var fakeRepository: FakeStatisticsRepository
     private lateinit var viewModel: StatisticsViewModel
 
-   /* @OptIn(ExperimentalCoroutinesApi::class)
-    private var testDispatcher = UnconfinedTestDispatcher()
-    private var testScope = TestScope(testDispatcher)
+    /* @OptIn(ExperimentalCoroutinesApi::class)
+     private var testDispatcher = UnconfinedTestDispatcher()
+     private var testScope = TestScope(testDispatcher)
 
-    //Class under test
-    private lateinit var repository: DefaultStatisticsRepository
-*/
+     //Class under test
+     private lateinit var repository: DefaultStatisticsRepository
+ */
 
     // using an in-memory database because the information stored here disappears when the
     // process is killed
@@ -56,7 +56,7 @@ class StatisticsViewModelTest {
     }
 
     @Test
-     fun testAddCompleteModalSplitChart() = runTest{
+    fun testAddCompleteModalSplitChart() = runTest{
 
 
         var labels: MutableList<String> = mutableListOf<String>(Mode.WALK.modeType, Mode.REGIONAL_BUS.modeType, Mode.OTHER.modeType)

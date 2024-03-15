@@ -1,8 +1,10 @@
-package com.pseteamtwo.allways.statistics
+package com.pseteamtwo.allways.ui.statistics
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pseteamtwo.allways.data.statistics.StatisticsRepository
+import com.pseteamtwo.allways.data.trip.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -120,7 +122,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             val completeModalSplitLabels: MutableList<String> = mutableListOf()
             val completeModalSplitValues: MutableList<Long> = mutableListOf()
 
-            for(mode in com.pseteamtwo.allways.trip.Mode.values()) {
+            for(mode in Mode.entries) {
                 if(completeModalSplit.containsKey(mode)) {
                     completeModalSplitLabels.add(mode.modeType)
                     completeModalSplit[mode]?.let { completeModalSplitValues.add(it.toLong()/10) }
@@ -193,7 +195,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             val oneDayModalSplitLabels: MutableList<String> = mutableListOf()
             val oneDayModalSplitValues: MutableList<Long> = mutableListOf()
 
-            for(mode in com.pseteamtwo.allways.trip.Mode.values()) {
+            for(mode in Mode.entries) {
                 if(oneDayModalSplit.containsKey(mode)) {
                     Log.d("Tag", "true")
                     oneDayModalSplitLabels.add(mode.modeType)

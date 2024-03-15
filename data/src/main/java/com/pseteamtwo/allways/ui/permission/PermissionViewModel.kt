@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.data.trip.tracking.permission
+package com.pseteamtwo.allways.ui.permission
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
