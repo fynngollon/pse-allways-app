@@ -9,7 +9,7 @@ import org.threeten.bp.ZoneId
  * The [ZoneId] which is currently used by the app for all conversions and comparisons with
  * [LocalDateTime] and the epoch time (since 1970-01-01T 00:00:00Z) in milliseconds.
  */
-internal val zoneIdOfApp: ZoneId = ZoneId.systemDefault()
+internal val zoneIdOfApp: ZoneId = ZoneId.of("GMT+1")
 
 
 /**
@@ -55,6 +55,6 @@ internal fun isTimeInFuture(timeInMillis: Long): Boolean {
  * @return If the time is in the future, returns true; else false.
  */
 internal fun isTimeInFuture(localDateTime: LocalDateTime): Boolean {
-    val currentTime: LocalDateTime = LocalDateTime.now(ZoneId.systemDefault())
+    val currentTime: LocalDateTime = LocalDateTime.now(zoneIdOfApp)
     return localDateTime.isAfter(currentTime)
 }

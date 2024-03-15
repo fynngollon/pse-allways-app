@@ -6,6 +6,11 @@ import android.app.NotificationManager
 import android.content.Context
 import dagger.hilt.android.HiltAndroidApp
 
+/**
+ * A notification that is active while the user location is being tracked.
+ * With the help of this notification the [com.pseteamtwo.allways.data.trip.tracking.TrackingService]
+ * is
+ */
 @HiltAndroidApp
 class TrackingNotification : Application() {
 
@@ -18,17 +23,7 @@ class TrackingNotification : Application() {
             NotificationManager.IMPORTANCE_LOW
         )
 
-        /*
-        val channelActivityRecognition = NotificationChannel(
-            ACTIVITY_RECOGNITION_CHANNEL_ID,
-            ACTIVITY_RECOGNITION_NOTIFICATION_NAME,
-            NotificationManager.IMPORTANCE_LOW
-        )
-         */
-
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channelLocationTracking)
-        //notificationManager.createNotificationChannel(channelActivityRecognition)
-
     }
 }

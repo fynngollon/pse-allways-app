@@ -35,6 +35,7 @@ interface TripAndStageRepository {
      */
     suspend fun observeAllTrips(): Flow<List<Trip>>
 
+
     /**
      * Retrieves all [Stage]s belonging to the specified [Trip] from the local stage database.
      *
@@ -42,6 +43,7 @@ interface TripAndStageRepository {
      * @return All [Stage]s belonging to the specified [Trip].
      */
     suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>>
+
 
     /**
      * Creates a new [Trip] with the provided parameters.
@@ -66,18 +68,50 @@ interface TripAndStageRepository {
     )
     suspend fun createTrip(stages: List<Stage>, purpose: Purpose)
 
+
+    /**
+     * Creates a new [LocalTrip].
+     * Therefore creates a unique id for the new trip and saves it into the local trip database.
+     * The provided [LocalStage]s have to be in the database already with no trips assigned
+     * to them.
+     *
+     * @param localStages The list of [LocalStage]s which the new trip consists of.
+     * @param purpose The [Purpose] of the new trip.
+     * @return The created [LocalTrip].
+     */
     suspend fun createTripOfExistingStages(
         localStages: List<LocalStage>,
         purpose: Purpose,
         isCreatedByUser: Boolean = false
     ): LocalTrip
 
+
+    /**
+     * Creates a new [LocalStage].
+     * Therefore creates a unique id for the new stage and saves it into the local stage database.
+     * The provided [LocalGpsPoint]s have to be in the database already with no stages assigned
+     * to them.
+     *
+     * @param localGpsPoints The list of [LocalGpsPoint]s which the new stage consists of.
+     * @param mode The [Mode] of the new stage.
+     * @return The created [LocalStage].
+     */
     suspend fun createStageOfExistingGpsPoints(
         localGpsPoints: List<LocalGpsPoint>,
         mode: Mode
     ): LocalStage
 
+
+    /**
+     * Creates a new [LocalGpsPoint] with the provided [Location].
+     * Therefore creates a unique id for the new gpsPoint and saves it
+     * into the local gpsPoint database.
+     *
+     * @param location The [Location] which the new gpsPoint consists of.
+     * @return The created gpsPoint.
+     */
     suspend fun createGpsPoint(location: Location): LocalGpsPoint
+
 
     /**
      * Updates the purpose of the specified [Trip].
@@ -86,6 +120,7 @@ interface TripAndStageRepository {
      * @param purpose The new purpose.
      */
     suspend fun updateTripPurpose(tripId: Long, purpose: Purpose)
+
 
     /**
      * Updates every property of the specified [Stage]s except [Stage.id]s.
@@ -124,6 +159,7 @@ interface TripAndStageRepository {
         endLocations: List<GeoPoint>
     )
 
+
     /**
      * Adds a [Stage] given from the user (that means the user provides every property except
      * [Stage.id] and [Stage.endLocation]) to the specified [Trip] temporally
@@ -151,6 +187,7 @@ interface TripAndStageRepository {
         endDateTime: LocalDateTime,
         startLocation: Location
     )
+
 
     /**
      * Adds a [Stage] given from the user (that means the user provides every property except
@@ -180,6 +217,7 @@ interface TripAndStageRepository {
         endLocation: Location
     )
 
+
     /**
      * Separates the specified [Stage] from the [Trip] containing this stage.
      * As a stage should be part of only 1 trip, this trip should be distinct.
@@ -191,6 +229,7 @@ interface TripAndStageRepository {
      */
     suspend fun separateStageFromTrip(stageId: Long)
 
+
     /**
      * Deletes the specified [Trip] out of the local trip database.
      *
@@ -198,12 +237,14 @@ interface TripAndStageRepository {
      */
     suspend fun deleteTrip(tripId: Long)
 
+
     /**
      * Deletes the specified [Stage] out of the local stage database.
      *
      * @param stageId Identification number of the [Stage] to be deleted.
      */
     suspend fun deleteStage(stageId: Long)
+
 
     /**
      * Connects all specified [Trip]s to one single [Trip].
@@ -226,6 +267,7 @@ interface TripAndStageRepository {
     )
     suspend fun connectTrips(tripIds: List<Long>)
 
+
     /**
      * Returns all [Trip]s of the given [LocalDate]. This means all [Trip]s where
      * [Trip.startDateTime] is temporally on that specified [LocalDate].
@@ -234,6 +276,7 @@ interface TripAndStageRepository {
      * @return All [Trip]s of the given date.
      */
     suspend fun getTripsOfDate(date: LocalDate): List<Trip>
+
 
     /**
      * Returns all [Trip]s of the given time-span. This means all [Trip]s where

@@ -24,5 +24,15 @@ data class LoginUiState(
     /**
      * Boolean value showing if the account that was attempted to create already exists
      */
-    var accountAlreadyExists: Boolean
+    var accountAlreadyExists: Boolean,
+
+    /**
+     * Boolean value showing if the account that was attempted to create already exists
+     */
+    var invalidEmail: Boolean,
+
+    /**
+     * Boolean value showing if the account that was attempted to create already exists
+     */
+    var invalidPassword: Boolean
 )

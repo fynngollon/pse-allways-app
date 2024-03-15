@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pseteamtwo.allways.data.question.QuestionType
 
@@ -46,11 +47,10 @@ fun ProfileScreen(
     val questionItemModifier: Modifier = Modifier.padding(bottom = 25.dp, start = 20.dp, top = 10.dp)
     val cardTitleSize = 20
     val questionTitleSize = 18
-
     val profile by profileViewModel.profileUiState.collectAsState()
     val profileQuestions = profile.profileQuestions
-
     val householdQuestions = profile.householdQuestions
+    val serverConnectionFailed = profile.serverConnectionFailed
 
 
     LazyColumn(
@@ -93,6 +93,28 @@ fun ProfileScreen(
                             }
                         }) {
                         Text(text = "Änderungen speichern")
+                    }
+                }
+            }
+        }
+    }
+
+    if(serverConnectionFailed) {
+        val onDismissRequest = {profileViewModel.setServerConnectionFailed(false)}
+        Dialog(onDismissRequest = onDismissRequest) {
+            Card {
+                Column {
+                    Row(modifier = Modifier.padding(20.dp)) {
+                        Text(text =  "The given password has to contain at least\n" +
+                                "one uppercase letter,\n" +
+                                "one lowercase letter,\n" +
+                                "one number,\n" +
+                                "one special character.")
+                    }
+                    Row(modifier = Modifier.padding(20.dp)) {
+                        Button(onClick =  onDismissRequest) {
+                            Text(text = "OK")
+                        }
                     }
                 }
             }

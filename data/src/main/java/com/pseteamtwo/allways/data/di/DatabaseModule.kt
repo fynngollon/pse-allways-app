@@ -21,6 +21,7 @@ import com.pseteamtwo.allways.data.question.source.network.ProfileQuestionNetwor
 import com.pseteamtwo.allways.data.question.source.network.ProfileQuestionnaireNetworkDataSource
 import com.pseteamtwo.allways.data.question.source.network.QuestionNetworkDataSource
 import com.pseteamtwo.allways.data.statistics.DefaultStatisticsRepository
+import com.pseteamtwo.allways.data.statistics.StatisticsRepository
 import com.pseteamtwo.allways.data.trip.repository.DefaultTripAndStageRepository
 import com.pseteamtwo.allways.data.trip.repository.TripAndStageRepository
 import com.pseteamtwo.allways.data.trip.source.local.GpsPointDao
@@ -37,6 +38,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -60,14 +62,6 @@ object DatabaseModule {
     @Provides
     fun provideDefaultStageNetworkDataSource(): DefaultStageNetworkDataSource {
         return DefaultStageNetworkDataSource()
-    }
-
-    @Singleton
-    @Provides
-    fun provideDefaultStatisticsRepository(
-        tripAndStageRepository: TripAndStageRepository
-    ): DefaultStatisticsRepository {
-        return DefaultStatisticsRepository(tripAndStageRepository)
     }
 
     @Singleton
@@ -127,6 +121,10 @@ abstract class RepositoryModule {
     @Binds
     abstract fun bindAccountRepository(repository: DefaultAccountRepository): AccountRepository
 
+    @Singleton
+    @Binds
+    abstract fun bindStatisticsRepository(repository: DefaultStatisticsRepository):
+            StatisticsRepository
 
     @Singleton
     @Binds

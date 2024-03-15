@@ -5,17 +5,17 @@ import com.pseteamtwo.allways.data.di.DefaultDispatcher
 import com.pseteamtwo.allways.data.exception.QuestionIdNotFoundException
 import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.data.question.Question
+import com.pseteamtwo.allways.data.question.QuestionType
 import com.pseteamtwo.allways.data.question.source.local.LocalQuestion
 import com.pseteamtwo.allways.data.question.source.local.QuestionDao
 import com.pseteamtwo.allways.data.question.source.network.QuestionNetworkDataSource
 import com.pseteamtwo.allways.data.question.source.network.QuestionnaireNetworkDataSource
-import com.pseteamtwo.allways.data.question.toExternal
 import com.pseteamtwo.allways.data.question.toLocal
 import com.pseteamtwo.allways.data.question.toNetwork
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 
 /**
@@ -49,11 +49,14 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
 
 
     override fun observeAll(): Flow<List<Question>>  {
-        return questionDao.observeAll().map { it.toExternal() }
+        //return questionDao.observeAll().map { it.toExternal() }
+        return flowOf( mutableListOf(
+            Question("1", "question1", QuestionType.TEXT, listOf("option1", "option2"), "option1"),
+            Question("2", "question2", QuestionType.TEXT, listOf("option1", "option2"), "option1"),
+            Question("3", "question3", QuestionType.TEXT, listOf("option1", "option2"), "option1")
+        ))
     }
 
-    //TODO("should this method delete all questions in the local database before putting the ones
-    // of the questionnaire in")
     @Throws(ServerConnectionFailedException::class)
     override suspend fun loadQuestionnaire() {
         val networkQuestions = questionnaireNetworkDataSource.loadQuestionnaire()
@@ -66,6 +69,7 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         //update answer from question and upsert it
         question!!.answer = answer
         questionDao.upsert(question)
+        //questions[id.toInt()].answer = answer
     }
 
 
@@ -74,9 +78,6 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         questionDao.deleteQuestion(id)
     }
 
-    //TODO("if network questions are empty for a logged in account, should all questions of
-    // the local database be deleted anyways or not like the behaviour of this method
-    // at the moment?")
     @Throws(ServerConnectionFailedException::class)
     override suspend fun refresh() {
         val pseudonym = withContext(dispatcher) {
@@ -99,12 +100,7 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
         //gets all Questions from local Database ans saves them in the list. Ids which don't
         //exist get ignored
         for (id in idList) {
-            val questionOfId = questionDao.observe(id).first()
-            if(questionOfId.answer == "") {
-                throw IllegalArgumentException("Any given id specifies a question without an" +
-                        " answer which is invalid for saving it to the network database.")
-            }
-            questions.add(questionOfId)
+            questions.add(questionDao.observe(id).first())
         }
 
         val pseudonym = withContext(dispatcher) {

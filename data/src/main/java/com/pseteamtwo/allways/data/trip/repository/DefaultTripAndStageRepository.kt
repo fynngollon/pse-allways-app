@@ -99,11 +99,9 @@ class DefaultTripAndStageRepository @Inject constructor(
             throw IllegalArgumentException("Provided purpose cannot be NONE.")
         }
         //check if stages are correct:
-        //ids == 0, modes != NONE, gpsPoints.size == 2, timeContinuity in gpsPoints of each stage
+        //modes != NONE, gpsPoints.size == 2, timeContinuity in gpsPoints of each stage
         stages.forEach { stage ->
-            if(stage.mode == Mode.NONE || stage.gpsPoints.size != 2
-                //|| stage.id != 0L
-            ) {
+            if(stage.mode == Mode.NONE || stage.gpsPoints.size != 2) {
                 throw IllegalArgumentException("Provided stages are invalid.")
             }
             val timeOfFirstGpsPoint = stage.gpsPoints.first().time
@@ -112,11 +110,11 @@ class DefaultTripAndStageRepository @Inject constructor(
             val geoPointOfSecondGpsPoint = stage.gpsPoints.last().geoPoint
             if(isTimeInFuture(timeOfFirstGpsPoint) || isTimeInFuture(timeOfSecondGpsPoint)) {
                 throw TimeTravelException("At least 1 stage contains gpsPoints" +
-                        "with times in the future which is invalid.")
+                        " with times in the future which is invalid.")
             }
             if(timeOfFirstGpsPoint.isAfter(timeOfSecondGpsPoint)) {
                 throw NoTimeContinuityException("At least 1 stage contains gpsPoints" +
-                        "with invalid time continuity.")
+                        " with invalid time continuity.")
             }
             if(timeOfFirstGpsPoint.isEqual(timeOfSecondGpsPoint)) {
                 throw IllegalArgumentException("At least 1 stage has a duration of 0.")
@@ -141,7 +139,7 @@ class DefaultTripAndStageRepository @Inject constructor(
 
         if(isTimeConflictInTrips(stages.first().startDateTime, stages.last().endDateTime)) {
             throw TimeTravelException("Entered trip interferes with other trips" +
-                    "already existent in the local database.")
+                    " already existent in the local database.")
         }
         //At this point, consistency checks should be done and the trip to create can be created
 
@@ -174,16 +172,6 @@ class DefaultTripAndStageRepository @Inject constructor(
 
 
 
-    /**
-     * Creates a new [LocalTrip].
-     * Therefore creates a unique id for the new trip and saves it into the local trip database.
-     * The provided [LocalStage]s have to be in the database already with no trips assigned
-     * to them.
-     *
-     * @param localStages The list of [LocalStage]s which the new trip consists of.
-     * @param purpose The [Purpose] of the new trip.
-     * @return The created [LocalTrip].
-     */
     override suspend fun createTripOfExistingStages(
         localStages: List<LocalStage>,
         purpose: Purpose,
@@ -193,10 +181,11 @@ class DefaultTripAndStageRepository @Inject constructor(
         // stages are in local db and aren't assigned to a trip
         localStages.forEach {
             if(stageLocalDataSource.get(it.id) == null) {
-                assert(false) { "A stage is missing in the database" }
+                throw IllegalArgumentException("Any given stage is missing in the local database.")
             }
-            assert(stageLocalDataSource.get(it.id)?.tripId == null) {
-                "A stage is already assigned to another trip"
+            if(stageLocalDataSource.get(it.id)?.tripId != null) {
+                throw IllegalArgumentException("Any given stage is already assigned" +
+                        " to another trip.")
             }
         }
         //stages are continuous in physical logic of time and space
@@ -214,12 +203,13 @@ class DefaultTripAndStageRepository @Inject constructor(
             val nextStartLocation =
                 sortedStages[i+1].sortedGpsPoints.first().location
             if(!prevEndLocation.compareTo(nextStartLocation)) {
-                assert(false) { "Locations between trips to connect have to be same" }
+                throw IllegalArgumentException("Locations between stages to connect have" +
+                        " to be the same.")
             }
             val prevEndTime = prevEndLocation.time
             val nextStartTime = nextStartLocation.time
             if(prevEndTime > nextStartTime) {
-                assert(false) { "Times between trips do not allow time travel" }
+                throw IllegalArgumentException ("Times between stages do not allow time travel.")
             }
         }
 
@@ -240,16 +230,6 @@ class DefaultTripAndStageRepository @Inject constructor(
 
 
 
-    /**
-     * Creates a new [LocalStage].
-     * Therefore creates a unique id for the new stage and saves it into the local stage database.
-     * The provided [LocalGpsPoint]s have to be in the database already with no stages assigned
-     * to them.
-     *
-     * @param localGpsPoints The list of [LocalGpsPoint]s which the new stage consists of.
-     * @param mode The [Mode] of the new stage.
-     * @return The created [LocalStage].
-     */
     // this seems to be for the tracking algorithm
     // creates stages that don't belong to any trip!
     override suspend fun createStageOfExistingGpsPoints(
@@ -260,14 +240,14 @@ class DefaultTripAndStageRepository @Inject constructor(
         // gpsPoints are in local db and aren't assigned to a stage
         localGpsPoints.forEach {
             if(gpsPointLocalDataSource.get(it.id) == null) {
-                assert(false) { "A gpsPoint is missing in the database" }
+                throw IllegalArgumentException("A gpsPoint is missing in the database.")
             }
-            assert(gpsPointLocalDataSource.get(it.id)?.stageId == null) {
-                "A gpsPoint is already assigned to another stage"
+            if(gpsPointLocalDataSource.get(it.id)?.stageId != null) {
+                throw IllegalArgumentException("A gpsPoint is already assigned to another stage.")
             }
             if(isTimeInFuture(it.location.time)) {
-                assert(false) { "Time of gpsPoints to create a stage out of" +
-                        " may not be in the future" }
+                throw TimeTravelException("Time of gpsPoints to create a stage out of" +
+                        " may not be in the future.")
             }
         }
 
@@ -278,42 +258,19 @@ class DefaultTripAndStageRepository @Inject constructor(
         // inserts the local stage
         val stageId = stageLocalDataSource.insert(localStageWithoutUpdatedId)
 
-        // TODO check for no time continuity
-        //if (stageId == -1L) {
-        //    throw NoTimeContinuityException()
-        //}
-
         localGpsPoints.forEach {
             it.stageId = stageId
             gpsPointLocalDataSource.update(it)
         }
-
-        // val localStage = localStageWithoutUpdatedIds.copy(id = stageId)
-        // alt: val localStage = localStageWithoutUpdatedIds.copy(id = stageId, gpsPoints = localGpsPoints)
-        //TODO("this has to be deleted after ensuring right functionality")
-        val createdStage = Stage(stageId, mode, localGpsPoints.toExternal())
-        val createdStageOutOfDatabase = stageLocalDataSource.getStageWithGpsPoints(stageId)
-        assert(createdStageOutOfDatabase != null) {
-            "Created Stage could not be added to the database (or not in the right way)"
-        }
-        assertEquals(createdStage, createdStageOutOfDatabase?.toExternal())
 
         return localStageWithoutUpdatedId.copy(id = stageId)
     }
 
 
 
-    /**
-     * Creates a new [LocalGpsPoint] with the provided [Location].
-     * Therefore creates a unique id for the new gpsPoint and saves it
-     * into the local gpsPoint database.
-     *
-     * @param location The [Location] which the new gpsPoint consists of.
-     * @return The created gpsPoint.
-     */
     override suspend fun createGpsPoint(location: Location): LocalGpsPoint {
         if(isTimeInFuture(location.time)) {
-            assert(false) { "Time of gpsPoint to create may not be in the future" }
+            throw TimeTravelException("Time of gpsPoint to create may not be in the future.")
         }
 
         val localGpsPoint = LocalGpsPoint(
@@ -329,13 +286,7 @@ class DefaultTripAndStageRepository @Inject constructor(
     override suspend fun updateTripPurpose(tripId: Long, purpose: Purpose) {
         val localTrip = withContext(dispatcher) {
             tripLocalDataSource.get(tripId)
-        }
-
-        // check if trip is in db
-        if (localTrip == null) {
-            assert(false) { "Trip with ID $tripId not found in database" }
-            return
-        }
+        } ?: throw IllegalArgumentException("Trip with ID $tripId not in local database.")
 
         localTrip.purpose = purpose
         tripLocalDataSource.update(localTrip)
@@ -363,17 +314,16 @@ class DefaultTripAndStageRepository @Inject constructor(
         endLocations: List<GeoPoint>
     ) {
         val tripToUpdate = tripLocalDataSource.getTripWithStages(tripId)
-        if(tripToUpdate == null) {
-            assert(false) { "Trip with provided id does not exist in database" }
-        }
-        val sizeOfStages = tripToUpdate!!.stages.size
+            ?: throw IllegalArgumentException("Trip with provided id does not exist in database.")
+
+        val sizeOfStages = tripToUpdate.stages.size
         if(sizeOfStages != stageIds.size || sizeOfStages != modes.size
             || sizeOfStages != startDateTimes.size || sizeOfStages != endDateTimes.size
             || sizeOfStages != startLocations.size ||sizeOfStages != endLocations.size) {
-            assert(false) { "Provided function parameters are invalid" }
+            throw IllegalArgumentException("Provided function parameters are invalid.")
         }
         if(tripToUpdate.sortedStages.map { it.stage.id } != stageIds) {
-            assert(false) { "Provided stageIds are invalid for the provided tripId" }
+            throw IllegalArgumentException("Provided stageIds are invalid for the provided tripId.")
         }
 
         //ensure that entered user data does not interfere with physical logic of time and space
@@ -400,7 +350,7 @@ class DefaultTripAndStageRepository @Inject constructor(
             if(endDateTimes[i].isAfter(startDateTimes[i+1])) {
                 throw NoTimeContinuityException("Stages do not follow time continuity.")
             }
-            if(endLocations[i] == startLocations[i+1]) {
+            if(endLocations[i] != startLocations[i+1]) {
                 throw TeleportationException("Stages have to be continuous" +
                         "in locations.")
             }
@@ -410,7 +360,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         //compared to all other trips in the local database
         if(isTimeConflictInTrips(startDateTimes.first(), endDateTimes.last(), tripId)) {
             throw TimeTravelException("Entered times are not valid regarding" +
-                    "all other trips in the local database")
+                    " all other trips in the local database.")
         }
         //At this point, consistency checks should be done and the trip can be updated
 
@@ -442,12 +392,7 @@ class DefaultTripAndStageRepository @Inject constructor(
     ) {
         val localStage = withContext(dispatcher) {
             stageLocalDataSource.get(stageId)
-        }
-
-        if (localStage == null) {
-            assert(false) { "Stage with ID $stageId not found in database" }
-            return
-        }
+        } ?: throw IllegalArgumentException("Stage with ID $stageId not found in database.")
 
         localStage.mode = mode
 
@@ -476,9 +421,6 @@ class DefaultTripAndStageRepository @Inject constructor(
             gpsPointsOfLocalStage.forEach { localGpsPoint ->
                 gpsPointLocalDataSource.delete(localGpsPoint.id)
             }
-            //create new start and end gpsPoint (inserted into database and assigned to localStage)
-            createGpsPoint(startLocation.toLocation(startTimeMillis))
-            createGpsPoint(endLocation.toLocation(endTimeMillis))
         }
         //update mode of localStage in database
         stageLocalDataSource.update(localStage)
@@ -526,8 +468,14 @@ class DefaultTripAndStageRepository @Inject constructor(
                     "already existent in the local database.")
         }
 
-        val startGpsPoint = createGpsPoint(startLocation)
-        val endGpsPoint = createGpsPoint(formerStartLocation)
+        val newStartLocationWithNewStartTime = Location(startLocation)
+        newStartLocationWithNewStartTime.time = startDateTime.convertToMillis()
+        val startGpsPoint = createGpsPoint(newStartLocationWithNewStartTime)
+
+        val newEndLocationWithNewEndTime = Location(formerStartLocation)
+        newEndLocationWithNewEndTime.time = endDateTime.convertToMillis()
+        val endGpsPoint = createGpsPoint(newEndLocationWithNewEndTime)
+
         val newStartStage = createStageOfExistingGpsPoints(listOf(startGpsPoint, endGpsPoint), mode)
         stageLocalDataSource.update(newStartStage.copy(tripId = tripId))
     }
@@ -574,8 +522,14 @@ class DefaultTripAndStageRepository @Inject constructor(
                     "already existent in the local database.")
         }
 
-        val startGpsPoint = createGpsPoint(formerEndLocation)
-        val endGpsPoint = createGpsPoint(endLocation)
+        val newStartLocationWithNewStartTime = Location(formerEndLocation)
+        newStartLocationWithNewStartTime.time = startDateTime.convertToMillis()
+        val startGpsPoint = createGpsPoint(newStartLocationWithNewStartTime)
+
+        val newEndLocationWithNewEndTime = Location(endLocation)
+        newEndLocationWithNewEndTime.time = endDateTime.convertToMillis()
+        val endGpsPoint = createGpsPoint(newEndLocationWithNewEndTime)
+
         val newStartStage = createStageOfExistingGpsPoints(listOf(startGpsPoint, endGpsPoint), mode)
         stageLocalDataSource.update(newStartStage.copy(tripId = tripId))
     }
@@ -584,44 +538,31 @@ class DefaultTripAndStageRepository @Inject constructor(
 
     override suspend fun separateStageFromTrip(stageId: Long) {
         val localStage = stageLocalDataSource.get(stageId)
-        val stageWithGpsPoints = stageLocalDataSource.getStageWithGpsPoints(stageId)
+            ?: throw IllegalArgumentException("Stage with ID $stageId not in local database.")
 
-        // does stage exist
-        if (localStage == null) {
-            assert(false) { "Stage with ID $stageId not found in database" }
-            return
-        }
         //is stage assigned to a trip
         if (localStage.tripId == null) {
-            assert(false) { "Stage does not belong to any trip" }
-            return
+            throw IllegalArgumentException("Stage does not belong to any trip.")
         }
 
-        // update trip
-        val localTripOfStage = localStage.tripId?.let { tripLocalDataSource.get(it) }
-        //is trip existent
-        if (localTripOfStage == null) {
-            assert(false) { "Stage has a trip with id ${localStage.tripId} assigned " +
-                    "but this trip does not exist" }
-            return
-        }
+        val tripOfStage = tripLocalDataSource.getTripWithStages(localStage.tripId!!)
+            ?: throw IllegalArgumentException("Stage has a trip with id ${localStage.tripId}" +
+                    " assigned but this trip does not exist.")
+        val stagesOfTrip = tripOfStage.sortedStages
 
-        val stagesOfTrip =
-            tripLocalDataSource.getTripWithStages(localTripOfStage.id)!!.sortedStages
-
-        if (stagesOfTrip.first() != stageWithGpsPoints
-            && stagesOfTrip.last() != stageWithGpsPoints) {
-            throw TimeTravelException()
+        if (localStage != stagesOfTrip.first().stage && localStage != stagesOfTrip.last().stage) {
+            throw IllegalArgumentException("Cannot separate stage which is not the beginning or" +
+                    " ending stage of the trip in this version of the app.")
         }
 
         // remove tripId from stage
         stageLocalDataSource.update(localStage.copy(tripId = null))
 
         // create trip and change stage
-        createTrip(
-            listOf(stageLocalDataSource.getStageWithGpsPoints(localStage.id)!!.toExternal()),
-            localTripOfStage.purpose
-        )
+        createTripOfExistingStages(
+            listOf(localStage.copy(tripId = null)),
+            tripOfStage.trip.purpose,
+            true)
     }
 
 
@@ -634,41 +575,28 @@ class DefaultTripAndStageRepository @Inject constructor(
 
     override suspend fun deleteStage(stageId: Long) {
         val localStage = stageLocalDataSource.get(stageId)
-        val stageWithGpsPoints = stageLocalDataSource.getStageWithGpsPoints(stageId)
+            ?: throw IllegalArgumentException("Stage with ID $stageId not in local database.")
 
-        // does stage exist
-        if (localStage == null) {
-            assert(false) { "Stage with ID $stageId not found in database" }
-            return
-        }
-        //is stage assigned to a trip
+        //stage should be assigned to a trip because this method is to be called from the ui-layer
         if (localStage.tripId == null) {
-            assert(false) { "Stage does not belong to any trip" }
-            return
+            throw IllegalArgumentException("Stage does not belong to any trip.")
         }
 
-        val localTripOfStage = localStage.tripId?.let { tripLocalDataSource.get(it) }
-        //is trip existent
-        if (localTripOfStage == null) {
-            assert(false) { "Stage has a trip with id ${localStage.tripId} assigned " +
-                    "but this trip does not exist" }
-            return
-        }
-
-        val stagesOfTrip =
-            tripLocalDataSource.getTripWithStages(localTripOfStage.id)!!.sortedStages
+        val tripOfStage = tripLocalDataSource.getTripWithStages(localStage.tripId!!)
+            ?: throw IllegalArgumentException("Stage has a trip with id ${localStage.tripId}" +
+                    " assigned but this trip does not exist.")
+        val stagesOfTrip = tripOfStage.sortedStages
 
         if (stagesOfTrip.size == 1) {
             //trip only consisted of that stage so delete the whole trip
-            deleteTrip(localTripOfStage.id)
-        } else if(stageWithGpsPoints != stagesOfTrip.first()
-            && stageWithGpsPoints != stagesOfTrip.last()) {
+            deleteTrip(tripOfStage.trip.id)
+        } else if(localStage == stagesOfTrip.first().stage
+            || localStage == stagesOfTrip.last().stage) {
                 stageLocalDataSource.delete(stageId)
         } else {
-            //stage is in between other stages inside the trip
-            //TODO("solution for this case not yet implemented")
-            assert(false) { "Cannot delete stage which is not the beginning or ending" +
-                    "stage of the trip in this version of the app" }
+            //stage is in between other stages inside the trip which should not occur
+            throw IllegalArgumentException("Cannot delete stage which is not the beginning or" +
+                    " ending stage of the trip in this version of the app.")
         }
     }
 
@@ -685,15 +613,13 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
 
         // checks if the trips are subsequent
-        val allTrips = withContext(dispatcher) {
-            observeAllTrips().first()
-        }
+        val allTrips = tripLocalDataSource.getAllTripsWithStages().toExternal()
         if (!isSubsequentWithoutInterruptions(
                 allTrips,
                 localTripsWithStages.toList().toExternal()
             )) {
             throw TimeTravelException("There is a trip not to be connected between the trips to" +
-                    "be connected.")
+                    " be connected.")
         }
 
         val localStagesWithGpsPoints = mutableListOf<LocalStageWithGpsPoints>()
@@ -711,13 +637,13 @@ class DefaultTripAndStageRepository @Inject constructor(
             val nextStartLocation =
                 localTripsWithStages[i+1].sortedStages.first().sortedGpsPoints.first().location
             if(!prevEndLocation.compareTo(nextStartLocation)) {
-                throw TeleportationException("Locations between trips to connect have to be same")
+                throw TeleportationException("Locations between trips to connect have to be same.")
             }
 
             val prevEndTime = prevEndLocation.time
             val nextStartTime = nextStartLocation.time
             if(prevEndTime > nextStartTime) {
-                throw TimeTravelException("Times between trips do not allow time travel")
+                throw TimeTravelException("Times between trips do not allow time travel.")
             }
         }
         localStagesWithGpsPoints.forEach { localStageWithGpsPoints ->
@@ -725,7 +651,7 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
 
         //create new connected trip
-        createTrip(localStagesWithGpsPoints.toExternal(), Purpose.NONE)
+        createTripOfExistingStages(localStagesWithGpsPoints.map {it.stage}, Purpose.NONE)
         tripIds.forEach { tripLocalDataSource.delete(it) }
     }
 
@@ -746,7 +672,8 @@ class DefaultTripAndStageRepository @Inject constructor(
         }
 
         return allTrips.filter { trip ->
-            trip.startDateTime.isAfter(startTime) && trip.startDateTime.isBefore(endTime)
+            (trip.startDateTime.isAfter(startTime) || trip.startDateTime.isEqual(startTime))
+                    && trip.startDateTime.isBefore(endTime)
         }
     }
 
@@ -756,19 +683,15 @@ class DefaultTripAndStageRepository @Inject constructor(
         val tripsToUpload = mutableListOf<LocalTripWithStages>()
 
         tripIds.forEach {
-            val localTripWithStagesNullable = withContext(dispatcher) {
+            val localTripWithStages = withContext(dispatcher) {
                 tripLocalDataSource.getTripWithStages(it)
-            }
+            } ?: throw IllegalArgumentException("Trip ID $it does not exist in local database.")
 
-            assert(localTripWithStagesNullable != null) {
-                "Trip ID $it does not exist in local database"
-            }
-
-            val localTripWithStages = localTripWithStagesNullable as LocalTripWithStages
             tripsToUpload.add(localTripWithStages)
 
-            assert(localTripWithStages.trip.isConfirmed) {
-                "Trip with ${localTripWithStages.trip.id} is not confirmed"
+            if(!localTripWithStages.trip.isConfirmed) {
+                throw IllegalArgumentException("Trip with ${localTripWithStages.trip.id}" +
+                        " is not confirmed.")
             }
         }
 
@@ -822,8 +745,8 @@ class DefaultTripAndStageRepository @Inject constructor(
                     in (tripStartTime + 1)..<tripEndTime)
             val endOverlap = (endTime.convertToMillis()
                     in (tripStartTime + 1)..<tripEndTime)
-            val fullyContained = (tripStartTime > startTime.convertToMillis()
-                    && tripEndTime < endTime.convertToMillis())
+            val fullyContained = (tripStartTime >= startTime.convertToMillis()
+                    && tripEndTime <= endTime.convertToMillis())
 
             startOverlap || endOverlap || fullyContained
         }

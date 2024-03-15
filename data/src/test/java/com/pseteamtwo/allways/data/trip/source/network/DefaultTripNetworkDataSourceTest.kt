@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.trip.source.network
+package com.pseteamtwo.allways.data.trip.source.network
 /**
 import com.pseteamtwo.allways.trip.Purpose
 import kotlinx.coroutines.runBlocking

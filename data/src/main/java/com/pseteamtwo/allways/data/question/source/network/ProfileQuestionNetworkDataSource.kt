@@ -17,7 +17,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
 
         try {
             // Connect to the MySQL database
-            val connection = createDataConnection()
+            val connection = createRemoteDataConnection()
 
             connection.use {
                 // Prepare and execute SQL statement to retrieve all questions
@@ -62,7 +62,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
 
         try {
             // Connect to the MySQL database
-            val connection = createDataConnection()
+            val connection = createRemoteDataConnection()
 
             connection.use {
                 // Prepare and execute SQL statement for each question
@@ -96,7 +96,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
 
         try {
             // Connect to the MySQL database
-            val connection = createDataConnection()
+            val connection = createRemoteDataConnection()
 
             connection.use {
                 // Prepare and execute SQL statement to delete the question

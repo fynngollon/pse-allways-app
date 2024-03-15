@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.trip.repository
+package com.pseteamtwo.allways.data.trip.repository
 /**
 import android.location.Location
 import androidx.test.ext.junit.runners.AndroidJUnit4

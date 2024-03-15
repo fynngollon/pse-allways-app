@@ -12,6 +12,7 @@ import com.pseteamtwo.allways.data.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.data.exception.AccountNotFoundException
 import com.pseteamtwo.allways.data.exception.InvalidEmailFormatException
 import com.pseteamtwo.allways.data.exception.InvalidPasswordFormatException
+import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,7 +27,7 @@ import org.junit.Test
  * Instrumented test, which will execute on an Android device.
  * These tests require an established connection to the network database in order to ensure right
  * testing because otherwise all tests will likely fail
- * because of [com.pseteamtwo.allways.exception.ServerConnectionFailedException].
+ * because of [com.pseteamtwo.allways.data.exception.ServerConnectionFailedException].
  *
  * This test tests [com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository].
  */
@@ -72,7 +73,6 @@ class DefaultAccountRepositoryTest {
             testDispatcher,
             //testScope
         )
-
     }
 
 

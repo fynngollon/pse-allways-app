@@ -14,7 +14,7 @@ class HouseholdQuestionnaireNetworkDataSource : QuestionnaireNetworkDataSource()
     override suspend fun loadQuestionnaire(): List<NetworkQuestion> {
         var jsonQuestionnaire = ""
         // Connect to the MySQL database
-        val connection = createAccountConnection()
+        val connection = createRemoteAccountConnection()
 
         connection.use {
             // Prepare and execute SQL statement to retrieve the question string

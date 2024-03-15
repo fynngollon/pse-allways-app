@@ -65,4 +65,12 @@ interface GpsPointDao {
      */
     @Query("DELETE FROM gps_points WHERE id = :gpsPointId")
     suspend fun delete(gpsPointId: Long): Int
+
+    /**
+     * Deletes all gpsPoints which are not assigned to a stage (where stageId is null).
+     *
+     * @return How many gpsPoints have been deleted.
+     */
+    @Query("DELETE FROM gps_points WHERE stageId IS NULL")
+    suspend fun deleteAllNotAssignedToStage(): Int
 }

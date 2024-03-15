@@ -2,8 +2,11 @@ package com.pseteamtwo.allways.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pseteamtwo.allways.data.exception.QuestionIdNotFoundException
+import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.data.question.repository.HouseholdQuestionRepository
 import com.pseteamtwo.allways.data.question.repository.ProfileQuestionRepository
+import com.pseteamtwo.allways.data.question.repository.QuestionRepository
 import com.pseteamtwo.allways.ui.statistics.StatisticsScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -91,7 +94,11 @@ class ProfileViewModel @Inject constructor(
      */
     fun updateProfileAnswer(id: String, answer: String) {
         viewModelScope.launch {
-            profileQuestionRepository.updateAnswer(id, answer)
+            try {
+                profileQuestionRepository.updateAnswer(id, answer)
+            } catch (e: QuestionIdNotFoundException) {
+
+            }
         }
     }
 
@@ -104,7 +111,10 @@ class ProfileViewModel @Inject constructor(
      */
     fun updateHouseholdAnswer(id: String, answer: String) {
         viewModelScope.launch {
-            householdQuestionRepository.updateAnswer(id, answer)
+            try {
+                householdQuestionRepository.updateAnswer(id, answer)
+            }catch (e: QuestionIdNotFoundException) {
+            }
         }
     }
 
@@ -120,7 +130,11 @@ class ProfileViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            profileQuestionRepository.saveQuestionsToNetwork(profileQuestionsToSend)
+            try {
+                profileQuestionRepository.saveQuestionsToNetwork(profileQuestionsToSend)
+            }catch (e: ServerConnectionFailedException) {
+
+            }
         }
     }
 
@@ -136,9 +150,20 @@ class ProfileViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            householdQuestionRepository.saveQuestionsToNetwork(householdQuestionsToSend)
+            try {
+                householdQuestionRepository.saveQuestionsToNetwork(householdQuestionsToSend)
+            } catch (e: ServerConnectionFailedException) {
 
+            }
         }
+    }
+
+    /**
+     * function to set the boolean value ServerConnectionFailed.
+     * @param value the new value of the Boolean ServerConnectionFailed.
+     */
+    fun setServerConnectionFailed(value: Boolean) {
+        _profileUiState.value.copy(serverConnectionFailed = value)
     }
 }
 

@@ -18,7 +18,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // Connect to the MySQL database
-            val connection = createAccountConnection()
+            val connection = createRemoteAccountConnection()
 
             connection.use {
                 // Prepare and execute SQL statement
@@ -61,7 +61,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createAccountConnection() // Replace with your MySQL connection logic
+            val connection = createRemoteAccountConnection() // Replace with your MySQL connection logic
 
             connection.use {
                 // 2. Prepare and execute SQL statement
@@ -162,18 +162,36 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createAccountConnection() // Replace with your MySQL connection logic
+            val accountConnection = createRemoteAccountConnection()
+            val dataConnection = createRemoteDataConnection()
 
-            connection.use {
+            accountConnection.use {
                 // 2. Prepare and execute SQL statement
-                val statement = connection.prepareStatement(
+                val statement = accountConnection.prepareStatement(
                     "DELETE FROM `allways-app-accounts`.`tblaccounts` WHERE (`email` = ?);")
                 statement.setString(1, account.email)
                 statement.executeUpdate()
                 //3. Close the prepared statement
                 statement.close()
+
+                //delete the tables holding the data for the account.
+                dataConnection.use {
+                    // 2. Prepare and execute DROP TABLE statements
+                    val tripTable = "tbl${account.pseudonym}trips"
+                    val stageTable = "tbl${account.pseudonym}stages"
+                    val profileQuestionTable = "tbl${account.pseudonym}householdquestions"
+                    val householdQuestionTable = "tbl${account.pseudonym}profilequestions"
+                    val tableNames = listOf(tripTable, stageTable, profileQuestionTable,
+                        householdQuestionTable)
+
+                    for (tableName in tableNames) {
+                        val tableDropStatement = dataConnection.prepareStatement("DROP TABLE `$tableName`;")
+                        tableDropStatement.executeUpdate()
+                    }
+                }
             }
-            connection.close()
+
+            accountConnection.close()
         } catch (e: Exception) {
             // 5. Handle errors (e.g., database connection issues, deletion failure)
             throw Exception("Failed to delete account", e)
@@ -187,7 +205,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createAccountConnection() // Replace with your MySQL connection logic
+            val connection = createRemoteAccountConnection() // Replace with your MySQL connection logic
 
             connection.use {
                 // 2. Prepare and execute SQL statement
@@ -221,7 +239,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         try {
             // 1. Connect to the MySQL database
-            val connection = createAccountConnection() // Replace with your MySQL connection logic
+            val connection = createRemoteAccountConnection() // Replace with your MySQL connection logic
 
             connection.use {
                 // 2. Prepare and execute SQL statement
