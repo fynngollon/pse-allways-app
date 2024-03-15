@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.question.source.network
+package com.pseteamtwo.allways.data.question.source.network
 
 
 import com.pseteamtwo.allways.data.question.QuestionType

@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.account.source.network
+package com.pseteamtwo.allways.data.account.source.network
 
 
 import com.pseteamtwo.allways.data.account.source.network.AccountNetworkDataSource
