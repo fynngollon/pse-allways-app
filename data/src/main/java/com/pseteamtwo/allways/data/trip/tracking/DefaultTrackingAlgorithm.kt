@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -73,20 +74,7 @@ class DefaultTrackingAlgorithm @Inject constructor(
             Log.d("PSE_TRACKING", "TrackingAlgorithm: Predicted Trips: ${trips.size}")
 
             // Delete GPS points that are no longer needed
-            if (trips.isNotEmpty()) {
-                val oldestGpsPointOfTrip =
-                    tripDao.getTripWithStages(trips.first().id) as LocalTripWithStages
-
-                val gpsPointsToDelete = gpsPoints.subList(
-                    gpsPoints.indexOf(oldestGpsPointOfTrip.stages.first().gpsPoints.first()),
-                    gpsPoints.size
-                )
-                // TODO also delete recent gps points
-
-                gpsPointsToDelete.forEach {
-                    gpsPointDao.delete(it.id)
-                }
-            }
+            gpsPointDao.deleteAllNotAssignedToStage()
         }
     }
 

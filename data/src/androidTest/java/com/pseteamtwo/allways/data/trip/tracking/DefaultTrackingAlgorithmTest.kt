@@ -1,8 +1,10 @@
 package com.pseteamtwo.allways.data.trip.tracking
 
 import android.location.Location
+import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import co.yml.charts.common.extensions.isNotNull
 import com.pseteamtwo.allways.data.account.repository.AccountRepository
 import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
@@ -17,17 +19,26 @@ import com.pseteamtwo.allways.data.trip.source.local.TripDao
 import com.pseteamtwo.allways.data.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.data.trip.source.network.DefaultTripNetworkDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import net.pwall.json.schema.parser.Parser.Companion.isZero
 import org.junit.Assert.*
 
 import org.junit.Before
 import org.junit.Test
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runner.RunWith
+import org.junit.runners.model.Statement
 
+@RunWith(AndroidJUnit4::class)
 class DefaultTrackingAlgorithmTest {
 
     private val locations = createLocations(50)
@@ -36,7 +47,7 @@ class DefaultTrackingAlgorithmTest {
         val locations = mutableListOf<Location>()
         var longitude = 49.2400000
         var latitude = 8.0940000
-        var time = 1710440000000
+        var time = 1710000000000
         for (i in 0 until amount) {
             val location = Location("fused")
             location.longitude = longitude
@@ -44,8 +55,8 @@ class DefaultTrackingAlgorithmTest {
             location.time = time
             location.speed = if (i - 1 < 0) 0F else calculateSpeedBetweenLocations(location, locations[i - 1])
             locations.add(location)
-            longitude += 3000
-            latitude += 10000
+            longitude += 0.0003
+            latitude += 0.001
             time += 30000
         }
         return locations
@@ -128,11 +139,24 @@ class DefaultTrackingAlgorithmTest {
 
     }
 
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun predictSimpleTripWithOneStage() = runTest {
+    fun predictSimpleTripWithOneStage() = runBlocking {
+
         trackingAlgorithm.observeTrackingData()
 
-        assert(repository.observeAllTrips().first().isNotEmpty())
+        delay(1000)
+
+        val gpsPoints = withContext(testDispatcher) { gpsPointDao.observeAll().first() }
+        gpsPoints.forEach { println("ID: ${it.id}, stage: ${it.stageId}") }
+
+        val stages = withContext(testDispatcher) { stageDao.getAll() }
+        stages.forEach { println("ID: ${it.id}, trip: ${it.tripId}, mode: ${it.mode}") }
+
+        val trips = repository.observeAllTrips().first()
+        assert(trips.isNotEmpty()) { "Trip size is ${trips.size}" }
     }
+
 
 }

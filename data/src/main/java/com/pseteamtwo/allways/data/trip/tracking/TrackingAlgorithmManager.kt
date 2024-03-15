@@ -8,7 +8,7 @@ class TrackingAlgorithmManager @Inject constructor(
     private val trackingAlgorithm: DefaultTrackingAlgorithm
 ) {
 
-    private var timestampLastMotionless = 100L
+    private var timestampLastMotionless = 0L
 
     fun requestAlgorithm(lastLocation: Location) {
         Log.d("PSE_TRACKING", "TrackingAlgorithmManager: requesting to start algorithm")

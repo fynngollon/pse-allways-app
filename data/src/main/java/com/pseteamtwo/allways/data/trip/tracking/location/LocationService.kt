@@ -21,6 +21,7 @@ import com.pseteamtwo.allways.data.trip.tracking.TrackingService
 import com.pseteamtwo.allways.data.trip.tracking.calculateSpeedBetweenLocations
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -93,6 +94,7 @@ class LocationService : TrackingService() {
                 Log.d("PSE_TRACKING", "-------------------------------------------------")
                 Log.d("PSE_TRACKING", "Location: ($lat, $long)")
                 Log.d("PSE_TRACKING", "Speed: ${location.speed}")
+                Log.d("PSE_TRACKING", tripAndStageRepository.observeAllTrips().first().size.toString())
                 tripAndStageRepository.createGpsPoint(location)
                 trackingAlgorithmManager.requestAlgorithm(location)
             }
