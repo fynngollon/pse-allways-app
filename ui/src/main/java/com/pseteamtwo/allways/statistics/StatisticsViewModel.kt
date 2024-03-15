@@ -1,5 +1,6 @@
 package com.pseteamtwo.allways.statistics
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,7 @@ import javax.inject.Inject
  * [HomeScreen]
  */
 @HiltViewModel
-class StatisticsViewModel @Inject constructor(private val statisticsRepository: DefaultStatisticsRepository) : ViewModel() {
+class StatisticsViewModel @Inject constructor(private val statisticsRepository: StatisticsRepository) : ViewModel() {
 
     private var _statisticsUiState: MutableStateFlow<StatisticsUiState> = MutableStateFlow(StatisticsUiState())
     val statisticsUiState: StateFlow<StatisticsUiState> = _statisticsUiState.asStateFlow()
@@ -64,7 +65,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      *
      */
 
-    private suspend fun assembleStatisticsScreenUiState(){
+     suspend fun assembleStatisticsScreenUiState(){
         addCompleteDistanceChart()
         addCompleteDurationChart()
         addCompleteModalSplitChart()
@@ -75,7 +76,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
     /**
      * calls all the necessary functions to assemble the [homeStatisticsUiState] used for the [HomeScreen]
      */
-    private suspend fun assembleHomeScreenUiState(){
+     suspend fun assembleHomeScreenUiState(){
         addTodaysDistanceChartHome()
         addTodaysDurationChart()
         addTodaysModalSplitChartHome()
@@ -85,7 +86,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      * adds a chart showing the accumulated distances of all trips to the list of charts displayed on the [StatisticsScreen].
      * The chart is of type [SingleValue]
      */
-    private suspend fun addCompleteDistanceChart() {
+     suspend fun addCompleteDistanceChart() {
             chartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
                 "Distanz aller Wege zusammen",
                 listOf("Distanz"),
@@ -100,7 +101,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      * adds a chart showing the accumulated duration of all trips to the list of charts displayed on the [StatisticsScreen].
      * The chart is of type [SingleValue]
      */
-    private suspend fun addCompleteDurationChart() {
+     suspend fun addCompleteDurationChart() {
             chartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
                 "Dauer aller Wege zusammen",
                 listOf("Dauer"),
@@ -114,7 +115,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      * adds a chart showing the complete modal split of all trips to the list of charts displayed on the [StatisticsScreen].
      * The chart is of type [Pie]
      */
-    private suspend fun addCompleteModalSplitChart() {
+     suspend fun addCompleteModalSplitChart() {
             val completeModalSplit = statisticsRepository.getModalSplitOfAll(true)
             val completeModalSplitLabels: MutableList<String> = mutableListOf()
             val completeModalSplitValues: MutableList<Long> = mutableListOf()
@@ -144,7 +145,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      */
 
 
-    private suspend fun addDistancesOfLastWeekChart() {
+     suspend fun addDistancesOfLastWeekChart() {
             var currentDate = LocalDateTime.now().toLocalDate()
             val distanceLastWeekLabels: MutableList<String> = mutableListOf()
             val distanceLastWeekValues: MutableList<Long> = mutableListOf()
@@ -171,7 +172,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      * charts displayed on the [StatisticsScreen].
      * The chart is of type [SingleValue]
      */
-    private suspend fun addTodaysDistanceChartHome() {
+     suspend fun addTodaysDistanceChartHome() {
             homeChartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
                 "Heute zurückgelegte Distanz",
                 listOf("Distanz"),
@@ -187,13 +188,14 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      * The chart is of type [BarChart]
      */
 
-    private suspend fun addTodaysModalSplitChartHome() {
+     suspend fun addTodaysModalSplitChartHome() {
             val oneDayModalSplit = statisticsRepository.getModalSplitOfDate(true, LocalDate.now())
             val oneDayModalSplitLabels: MutableList<String> = mutableListOf()
             val oneDayModalSplitValues: MutableList<Long> = mutableListOf()
 
             for(mode in com.pseteamtwo.allways.trip.Mode.values()) {
                 if(oneDayModalSplit.containsKey(mode)) {
+                    Log.d("Tag", "true")
                     oneDayModalSplitLabels.add(mode.modeType)
                     oneDayModalSplit[mode]?.let { oneDayModalSplitValues.add(it.toLong()/10) }
                 }
@@ -208,7 +210,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             )
     }
 
-    private suspend fun addTodaysDurationChart() {
+    suspend fun addTodaysDurationChart() {
         homeChartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
             "Gesamtdauer der heutigen Wege",
             listOf("Dauer"),
@@ -216,7 +218,6 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             "Minuten"
             ))
     }
-
 
 }
 

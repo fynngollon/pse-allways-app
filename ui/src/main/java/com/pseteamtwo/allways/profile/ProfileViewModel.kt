@@ -2,8 +2,9 @@ package com.pseteamtwo.allways.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pseteamtwo.allways.question.repository.HouseholdQuestionRepository
-import com.pseteamtwo.allways.question.repository.ProfileQuestionRepository
+import com.pseteamtwo.allways.exception.QuestionIdNotFoundException
+import com.pseteamtwo.allways.exception.ServerConnectionFailedException
+import com.pseteamtwo.allways.question.repository.QuestionRepository
 import com.pseteamtwo.allways.statistics.StatisticsScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +21,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileQuestionRepository: ProfileQuestionRepository,
-    private val householdQuestionRepository: HouseholdQuestionRepository) : ViewModel() {
+    private val profileQuestionRepository: QuestionRepository,
+    private val householdQuestionRepository: QuestionRepository) : ViewModel() {
 
     private var _profileUiState: MutableStateFlow<ProfileUiState> = MutableStateFlow(ProfileUiState(loading = true))
     val profileUiState: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
@@ -91,7 +92,11 @@ class ProfileViewModel @Inject constructor(
      */
     fun updateProfileAnswer(id: String, answer: String) {
         viewModelScope.launch {
-            profileQuestionRepository.updateAnswer(id, answer)
+            try {
+                profileQuestionRepository.updateAnswer(id, answer)
+            } catch (e: QuestionIdNotFoundException) {
+
+            }
         }
     }
 
@@ -104,7 +109,10 @@ class ProfileViewModel @Inject constructor(
      */
     fun updateHouseholdAnswer(id: String, answer: String) {
         viewModelScope.launch {
-            householdQuestionRepository.updateAnswer(id, answer)
+            try {
+                householdQuestionRepository.updateAnswer(id, answer)
+            }catch (e: QuestionIdNotFoundException) {
+            }
         }
     }
 
@@ -120,7 +128,11 @@ class ProfileViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            profileQuestionRepository.saveQuestionsToNetwork(profileQuestionsToSend)
+            try {
+                profileQuestionRepository.saveQuestionsToNetwork(profileQuestionsToSend)
+            }catch (e: ServerConnectionFailedException) {
+
+            }
         }
     }
 
@@ -136,9 +148,20 @@ class ProfileViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            householdQuestionRepository.saveQuestionsToNetwork(householdQuestionsToSend)
+            try {
+                householdQuestionRepository.saveQuestionsToNetwork(householdQuestionsToSend)
+            } catch (e: ServerConnectionFailedException) {
 
+            }
         }
+    }
+
+    /**
+     * function to set the boolean value ServerConnectionFailed.
+     * @param value the new value of the Boolean ServerConnectionFailed.
+     */
+    fun setServerConnectionFailed(value: Boolean) {
+        _profileUiState.value.copy(serverConnectionFailed = value)
     }
 }
 

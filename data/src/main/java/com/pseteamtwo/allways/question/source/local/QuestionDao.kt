@@ -37,6 +37,15 @@ interface QuestionDao {
     fun observe(questionId: String): Flow<LocalQuestion>
 
     /**
+     * Get the question specified by the given id.
+     *
+     * @param questionId Identification string of the question to get from the database.
+     * @return The requested question, if present (if not, null).
+     */
+    @Query("SELECT * FROM questions WHERE id = :questionId")
+    suspend fun get(questionId: String): LocalQuestion?
+
+    /**
      * Does the same as [upsert] for every LocalQuestion in [localQuestions].
      *
      * @param localQuestions The list of questions to be inserted or updated.
