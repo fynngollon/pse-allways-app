@@ -88,7 +88,7 @@ class LocationService : TrackingService() {
                 val long = location.longitude.toString()
                 if (lastLocation != null) {
                     val speed = calculateSpeedBetweenLocations(lastLocation!!, location)
-                    location.speed = if (speed.isNaN() || !speed.isInfinite()) 0.0F else speed
+                    location.speed = if (speed.isNaN() || speed.isInfinite()) 0.0F else speed
                 }
                 lastLocation = location
 
