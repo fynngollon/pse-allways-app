@@ -18,4 +18,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "AllWays"
 include(":data")
-include(":ui")
