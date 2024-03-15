@@ -1,12 +1,12 @@
-package com.pseteamtwo.allways.ui.profile
+package com.pseteamtwo.allways.profile
 
-import com.pseteamtwo.allways.data.question.Question
-import com.pseteamtwo.allways.data.question.QuestionType
-import com.pseteamtwo.allways.data.question.repository.QuestionRepository
+import com.pseteamtwo.allways.question.Question
+import com.pseteamtwo.allways.question.QuestionType
+import com.pseteamtwo.allways.question.repository.QuestionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class FakeQuestionRepository : QuestionRepository {
+class FakeQuestionRepository : QuestionRepository{
 
      private val questions: MutableStateFlow<List<Question>> = MutableStateFlow(
         mutableListOf(

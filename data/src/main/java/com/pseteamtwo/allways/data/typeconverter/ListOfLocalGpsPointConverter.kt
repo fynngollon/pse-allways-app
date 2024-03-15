@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.ui.typeconverter
+package com.pseteamtwo.allways.data.typeconverter
 
 import androidx.room.TypeConverter
 import com.pseteamtwo.allways.data.trip.source.local.LocalGpsPoint
