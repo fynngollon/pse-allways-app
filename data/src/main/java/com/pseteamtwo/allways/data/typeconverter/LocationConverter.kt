@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.ui.typeconverter
+package com.pseteamtwo.allways.data.typeconverter
 
 import android.location.Location
 import androidx.room.TypeConverter

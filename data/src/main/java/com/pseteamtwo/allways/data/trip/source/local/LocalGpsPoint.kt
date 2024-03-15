@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.pseteamtwo.allways.ui.typeconverter.LocationConverter
+import com.pseteamtwo.allways.data.typeconverter.LocationConverter
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 

@@ -2,13 +2,12 @@ package com.pseteamtwo.allways.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
-import com.pseteamtwo.allways.data.exception.AccountAlreadyExistsException
-import com.pseteamtwo.allways.data.exception.AccountNotFoundException
-import com.pseteamtwo.allways.data.exception.InvalidEmailFormatException
-import com.pseteamtwo.allways.data.exception.InvalidPasswordFormatException
-import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
-import com.pseteamtwo.allways.ui.login.LoginUiState
+import com.pseteamtwo.allways.account.repository.DefaultAccountRepository
+import com.pseteamtwo.allways.exception.AccountAlreadyExistsException
+import com.pseteamtwo.allways.exception.AccountNotFoundException
+import com.pseteamtwo.allways.exception.InvalidEmailFormatException
+import com.pseteamtwo.allways.exception.InvalidPasswordFormatException
+import com.pseteamtwo.allways.exception.ServerConnectionFailedException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
