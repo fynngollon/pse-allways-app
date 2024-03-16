@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
  * between 2 trackings of the device's location.
  */
 @Serializable
-enum class TrackingRegularity(val regularity: Long, val regularity_id: Int) {
+enum class TrackingRegularity(val regularity: Long, private val regularityId: Int) {
     /**
      * This tracking regularity means that the tracking is disabled.
      */
@@ -47,7 +47,7 @@ enum class TrackingRegularity(val regularity: Long, val regularity_id: Int) {
     }
 
     @Composable
-    fun getStringForPurpose(): String {
-        return stringResource(id = this.regularity_id)
+    fun getStringForRegularity(): String {
+        return stringResource(id = this.regularityId)
     }
 }

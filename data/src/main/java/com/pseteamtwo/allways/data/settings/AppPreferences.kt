@@ -140,7 +140,8 @@ class AppPreferences @Inject constructor(
         return TrackingRegularity.MEDIUM
     }
 
-    //TODO("could cause high battery usage")
+    //This function could cause high battery usage referring to Android, but did not cause it
+    // in user-tests
     private fun getBatteryLevel(): Int {
         val batteryManager = context.getSystemService(BatteryManager::class.java)!!
         val level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)

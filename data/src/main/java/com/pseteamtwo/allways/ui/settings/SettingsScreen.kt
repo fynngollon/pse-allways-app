@@ -142,7 +142,7 @@ fun TrackingRegularitySelection(
                     if (regularity != TrackingRegularity.NEVER) {
                         DropdownMenuItem(
                             text = {
-                                Text(text = stringResource(id = regularity.regularity_id))
+                                Text(text = regularity.getStringForRegularity())
                             },
                             onClick = {
                                 isExpanded = false
