@@ -31,7 +31,7 @@ class ProfileQuestionNetworkDataSourceTest {
             QuestionType.TEXT,
             emptyList(),
             "Ja",
-            "kdb"
+            "richyrich"
         )
         questions = listOf(networkQuestion1, networkQuestion2)
     }
@@ -39,7 +39,7 @@ class ProfileQuestionNetworkDataSourceTest {
     fun loadQuestions() {
         runBlocking {
             try {
-               profileQuestionNetworkDataSource.loadQuestions("kdb")
+               profileQuestionNetworkDataSource.loadQuestions("richyrich")
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
@@ -50,7 +50,7 @@ class ProfileQuestionNetworkDataSourceTest {
     fun saveQuestions() {
         runBlocking {
             try {
-                profileQuestionNetworkDataSource.saveQuestions("kdb", questions)
+                profileQuestionNetworkDataSource.saveQuestions("richyrich", questions)
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
@@ -61,7 +61,7 @@ class ProfileQuestionNetworkDataSourceTest {
     fun deleteQuestion() {
         runBlocking {
             try {
-                profileQuestionNetworkDataSource.deleteQuestion("kdb", "lol")
+                profileQuestionNetworkDataSource.deleteQuestion("richyrich", "lol")
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }

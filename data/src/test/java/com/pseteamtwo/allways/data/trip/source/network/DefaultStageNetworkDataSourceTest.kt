@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.data.trip.source.network
-/**
-import com.pseteamtwo.allways.trip.Mode
+import com.pseteamtwo.allways.data.trip.Mode
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -47,7 +46,7 @@ class DefaultStageNetworkDataSourceTest {
     fun loadStages() {
         runBlocking {
             try {
-                defaultStageNetworkDataSource.loadStages("kdb")
+                defaultStageNetworkDataSource.loadStages("richyrich")
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
@@ -58,7 +57,7 @@ class DefaultStageNetworkDataSourceTest {
     fun saveStages() {
         runBlocking {
             try {
-                defaultStageNetworkDataSource.saveStages("kdb", stages)
+                defaultStageNetworkDataSource.saveStages("richyrich", stages)
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
@@ -69,11 +68,10 @@ class DefaultStageNetworkDataSourceTest {
     fun deleteStage() {
         runBlocking {
             try {
-                defaultStageNetworkDataSource.deleteStage("kdb", "123")
+                defaultStageNetworkDataSource.deleteStage("richyrich", "123")
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
         }
     }
 }
-        */

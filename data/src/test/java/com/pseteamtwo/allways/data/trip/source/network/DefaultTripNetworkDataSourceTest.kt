@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.data.trip.source.network
-/**
-import com.pseteamtwo.allways.trip.Purpose
+import com.pseteamtwo.allways.data.trip.Purpose
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -52,7 +51,7 @@ class DefaultTripNetworkDataSourceTest {
     fun loadTrips() {
         runBlocking {
             try {
-                defaultTripNetworkDataSource.loadTrips("kdb")
+                defaultTripNetworkDataSource.loadTrips("richyrich")
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
@@ -63,7 +62,7 @@ class DefaultTripNetworkDataSourceTest {
     fun saveTrips() {
         runBlocking {
             try {
-                defaultTripNetworkDataSource.saveTrips("kdb", trips)
+                defaultTripNetworkDataSource.saveTrips("richyrich", trips)
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
@@ -74,11 +73,10 @@ class DefaultTripNetworkDataSourceTest {
     fun deleteTrip() {
         runBlocking {
             try {
-                defaultTripNetworkDataSource.deleteTrip("kdb", "123")
+                defaultTripNetworkDataSource.deleteTrip("richyrich", "123")
             } catch (e: SQLException) {
                 assert(false){ "SQL Exception" }
             }
         }
     }
 }
-        */
