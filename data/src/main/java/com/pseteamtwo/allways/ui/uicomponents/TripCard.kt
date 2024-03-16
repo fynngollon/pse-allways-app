@@ -135,13 +135,6 @@ fun TripCard(
                                 verticalArrangement = Arrangement.Bottom,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-
-                                /*Icon(
-                                    painter = painterResource(id = R.drawable.directions_walk_fill0_wght400_grad0_opsz24),
-                                    contentDescription = "",
-                                    modifier = modifier.size(28.dp),
-                                    tint = Color.Black
-                                )*/
                             }
 
                             Text(

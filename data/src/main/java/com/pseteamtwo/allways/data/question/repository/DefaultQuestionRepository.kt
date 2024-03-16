@@ -5,7 +5,6 @@ import com.pseteamtwo.allways.data.di.DefaultDispatcher
 import com.pseteamtwo.allways.data.exception.QuestionIdNotFoundException
 import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
 import com.pseteamtwo.allways.data.question.Question
-import com.pseteamtwo.allways.data.question.QuestionType
 import com.pseteamtwo.allways.data.question.source.local.LocalQuestion
 import com.pseteamtwo.allways.data.question.source.local.QuestionDao
 import com.pseteamtwo.allways.data.question.source.network.QuestionNetworkDataSource
@@ -16,7 +15,6 @@ import com.pseteamtwo.allways.data.question.toNetwork
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -44,8 +42,7 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
     protected val questionNetworkDataSource:  S,
     protected val questionnaireNetworkDataSource: U,
     protected val accountRepository: AccountRepository,
-    @DefaultDispatcher protected val dispatcher: CoroutineDispatcher,
-    //@ApplicationScope protected val scope: CoroutineScope
+    @DefaultDispatcher protected val dispatcher: CoroutineDispatcher
 ) : QuestionRepository {
 
 

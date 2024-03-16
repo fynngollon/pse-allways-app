@@ -2,13 +2,11 @@ package com.pseteamtwo.allways.ui.trips
 
 
 
-import android.location.Address
 import android.location.Location
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
-import com.pseteamtwo.allways.ui.map.addressToString
 import com.pseteamtwo.allways.data.trip.GpsPoint
 
 import com.pseteamtwo.allways.data.trip.Mode
@@ -19,27 +17,16 @@ import com.pseteamtwo.allways.data.trip.repository.TripAndStageRepository
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-
-import org.osmdroid.bonuspack.location.GeocoderNominatim
-import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-
-import java.io.IOException
-import java.util.Locale
 
 import javax.inject.Inject
 
@@ -353,10 +340,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
     private fun createStageUiStates(tripUiStateId: Long) {
         val tripUiState = getTripUiState(tripUiStateId)
         viewModelScope.launch {
-            tripAndStageRepository.observeStagesOfTrip(tripUiState.tripId).collect {
-                stages ->
-               /* val tripUiStates = getTripUiStates()
-                val tripUiStateIndex = getTripUiStateIndex(tripUiStateId)*/
+            tripAndStageRepository.observeStagesOfTrip(tripUiState.tripId).collect { stages ->
                 val stageUiStates: MutableList<StageUiState> = mutableListOf()
                 for (i in stages.indices) {
                     val stage = stages[i]
@@ -772,26 +756,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
             }
         }
 
-        /*viewModelScope.launch {
-            try {
-                tripAndStageRepository.updateStagesOfTrip(
-                    tripId = tripUiState.tripId,
-                    stageIds = stageIds,
-                    modes = modes,
-                    startDateTimes = startDateTimes,
-                    endDateTimes = endDateTimes,
-                    startLocations = startLocations,
-                    endLocations = endLocations
-                )
-            // using Exception here because catching multiple exceptions like in Java
-            // ( e.g. catch(RuntimeException | IllegalArgumentException e) ) is not possible
-            // in Kotlin and I wanted to avoid multiple catch-blocks with the same code
-            } catch (exception: Exception) {
-                errorHasOccurred = true
-                errorMessage = exception.message!!
-            }
-        }*/
-
         tripUiState.stageUiStates.filter{ !it.isInDatabase }.forEach{
             viewModelScope.launch {
                 if(it.isToBeAddedBefore) {
@@ -947,108 +911,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         isFirstStageOfTrip = false,
                     )
                     + stageUiStates.slice(1..stageUiStates.lastIndex )
-                /*(stageUiStates.slice(1..stageUiStates.lastIndex )
-                    + firstStageUiState.copy(
-                        isFirstStageOfTrip = false,
-                    )
-                    + StageUiState(
-                            id = stageUiStateId,
-                            stageId = 0,
-                            mode = Mode.NONE,
-                            isInDatabase = false,
-                            isToBeAddedBefore = true,
-                            isFirstStageOfTrip = true,
-                            isLastStageOfTrip = false,
-                            startDateTime = dateTime.minusMinutes(2),
-                            endDateTime = dateTime.minusMinutes(1),
-                            startLocation = location,
-                            endLocation = location,
-                            startLocationName = startLocationName,
-                            endLocationName = endLocationName,
-                            setMode = {
-                                    mode: Mode ->
-                                setStageUiStageMode(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    mode = mode
-                                )
-                            },
-                            setStartDate = {
-                                    date: LocalDate ->
-                                setStageUiStageStartDate(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    date = date
-                                )
-                            },
-                            setEndDate = {
-                                    date: LocalDate ->
-                                setStageUiStageEndDate(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    date = date
-                                )
-                            },
-                            setStartTime = {
-                                    hour: Int, minute: Int ->
-                                setStageUiStateStartTime(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    hour = hour,
-                                    minute = minute
-                                )
-                            },
-                            setEndTime = {
-                                    hour: Int, minute: Int ->
-                                setStageUiStateEndTime(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    hour = hour,
-                                    minute = minute)
-                            },
-                            setStartLocation = {
-                                    geoPoint: GeoPoint ->
-                                setStageUiStateStartLocation(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    geoPoint = geoPoint
-                                )
-                            },
-                            setEndLocation = {
-                                    geoPoint: GeoPoint ->
-                                setStageUiStateEndLocation(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    geoPoint = geoPoint
-                                )
-                                setStageUiStateStartLocation(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = firstStageUiStateId,
-                                    geoPoint = geoPoint
-                                )
-                            },
-                            setStartLocationName = {
-                                    locationName: String ->
-                                setStageUiStateStartLocationName(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    startLocationName = locationName
-                                )
-                            },
-                            setEndLocationName = {
-                                    locationName: String ->
-                                setStageUiStateEndLocationName(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = stageUiStateId,
-                                    endLocationName = locationName
-                                )
-                                setStageUiStateStartLocationName(
-                                    tripUiStateId = tripUiStateId,
-                                    stageUiStateId = firstStageUiStateId,
-                                    startLocationName = locationName
-                                )
-                            },
-                        )).sorted()*/
             )
         )
     }

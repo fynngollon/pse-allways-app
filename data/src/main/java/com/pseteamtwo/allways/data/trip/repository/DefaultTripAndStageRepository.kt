@@ -717,10 +717,8 @@ class DefaultTripAndStageRepository @Inject constructor(
         excludedTripId: Long? = null
     ): Boolean {
         return tripLocalDataSource.getAllTripsWithStages().any { trip ->
-            if(excludedTripId != null) {
-                if (trip.trip.id == excludedTripId) {
-                    return@any false
-                }
+            if(excludedTripId != null && trip.trip.id == excludedTripId) {
+                return@any false
             }
             val tripStartTime = trip.sortedStages.first().sortedGpsPoints.first().location.time
             val tripEndTime = trip.sortedStages.last().sortedGpsPoints.last().location.time

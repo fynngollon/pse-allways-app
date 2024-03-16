@@ -49,7 +49,6 @@ class ProfileViewModel @Inject constructor(
                 }
 
                 _profileUiState.update {
-                    it ->
                     it.copy(
                         profileQuestions = profileQuestionUiStates,
                         loading = false,
@@ -76,7 +75,6 @@ class ProfileViewModel @Inject constructor(
                 }
 
                 _profileUiState.update {
-                        it ->
                     it.copy(
                         householdQuestions = householdQuestionUiStates,
                         loading = false,
@@ -97,7 +95,6 @@ class ProfileViewModel @Inject constructor(
             try {
                 profileQuestionRepository.updateAnswer(id, answer)
             } catch (e: QuestionIdNotFoundException) {
-
             }
         }
     }

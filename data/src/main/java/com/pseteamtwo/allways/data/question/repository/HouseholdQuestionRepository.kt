@@ -30,12 +30,11 @@ class HouseholdQuestionRepository @Inject constructor(
     householdQuestionNetworkDataSource: HouseholdQuestionNetworkDataSource,
     householdQuestionnaireNetworkDataSource: HouseholdQuestionnaireNetworkDataSource,
     accountRepository: AccountRepository,
-    @DefaultDispatcher dispatcher: CoroutineDispatcher,
-    //@ApplicationScope scope: CoroutineScope,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher
 ): DefaultQuestionRepository<HouseholdQuestionDao,
         HouseholdQuestionNetworkDataSource, HouseholdQuestionnaireNetworkDataSource>(
     householdQuestionDao, householdQuestionNetworkDataSource,
     householdQuestionnaireNetworkDataSource,
-    accountRepository, dispatcher, //scope
+    accountRepository, dispatcher
 ) {
 }

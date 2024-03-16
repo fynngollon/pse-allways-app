@@ -21,9 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -57,16 +54,11 @@ import java.util.stream.IntStream.range
  */
 @Composable
 fun StatisticsScreen(navController: NavController) {
-    //val statisticsViewModel: StatisticsViewModel = hiltViewModel()
     val statisticsViewModel: StatisticsViewModel = hiltViewModel()
     val statistics by statisticsViewModel.statisticsUiState.collectAsState()
     val chartUiStates = statistics.charts
     statisticsViewModel.updateStatistics()
 
-    var state: String by remember { mutableStateOf("test") }
-
-    val labels: List<String> = listOf("mon", "tue", "wnd", "thu", "fri")
-    val values: List<Int> = listOf(2, 2, 3, 1, 2)
     LazyColumn() {
 
         for (chartUiState in chartUiStates) {

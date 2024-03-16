@@ -18,7 +18,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 enum class Purpose(private val purposeType: Int, var purposeDetail: String? = null) {
-    //TODO("implementation of use of purposeDetail")
 
     /**
      * Represents that no Purpose has been set for [Trip] yet.

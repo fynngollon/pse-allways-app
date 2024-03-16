@@ -40,7 +40,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -65,22 +64,6 @@ object DatabaseModule {
     fun provideDefaultStageNetworkDataSource(): DefaultStageNetworkDataSource {
         return DefaultStageNetworkDataSource()
     }
-
-   /* @Singleton
-    @Provides
-    fun provideQuestionRepository(profileQuestionDao: ProfileQuestionDao,
-                                  profileQuestionNetworkDataSource: ProfileQuestionNetworkDataSource,
-                                  profileQuestionnaireNetworkDataSource: ProfileQuestionnaireNetworkDataSource,
-                                  accountRepository: AccountRepository,
-                                  @DefaultDispatcher dispatcher: CoroutineDispatcher,) : QuestionRepository {
-        return ProfileQuestionRepository(
-            profileQuestionDao,
-            profileQuestionNetworkDataSource,
-            profileQuestionnaireNetworkDataSource,
-            accountRepository,
-            dispatcher
-        )
-    }*/
 
     @Singleton
     @Provides

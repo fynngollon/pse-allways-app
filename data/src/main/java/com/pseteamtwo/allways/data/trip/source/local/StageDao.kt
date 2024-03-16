@@ -91,8 +91,4 @@ interface StageDao {
      */
     @Query("DELETE FROM stages WHERE id = :stageId")
     suspend fun delete(stageId: Long): Int
-
-    //@Transaction
-    //@Query("SELECT * FROM stages WHERE :startTime < (SELECT MAX(gpsPoints.) FROM gps_points WHERE stageId = stages.id) AND :checkEndTime > (SELECT MIN(location.time) FROM gps_points WHERE stageId = stages.id)")
-    //suspend fun getConflictingStages(startTime: Long, endTime: Long)
 }
