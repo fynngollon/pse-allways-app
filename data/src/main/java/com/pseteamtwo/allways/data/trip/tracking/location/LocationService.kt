@@ -1,28 +1,18 @@
 package com.pseteamtwo.allways.data.trip.tracking.location
 
 import android.annotation.SuppressLint
-import android.app.NotificationManager
-import android.content.Context
 import android.location.Location
-import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.LocationServices
 import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.data.settings.AppPreferences
 import com.pseteamtwo.allways.data.trip.repository.TripAndStageRepository
-import com.pseteamtwo.allways.data.trip.tracking.DefaultTrackingAlgorithm
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_CHANNEL_ID
 import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_ID
-import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TEXT
-import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_TITLE
 import com.pseteamtwo.allways.data.trip.tracking.TrackingAlgorithmManager
-import com.pseteamtwo.allways.data.trip.tracking.TrackingService
-import com.pseteamtwo.allways.data.trip.tracking.calculateSpeedBetweenLocations
 import com.pseteamtwo.allways.data.trip.tracking.hasLocationPermission
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -78,28 +68,17 @@ class LocationService : TrackingService() {
         }
 
         val notification = buildNotification()
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         locationClient
             .getLocationUpdates(AppPreferences(this).trackingRegularity.regularity)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
-                val lat = location.latitude.toString()
-                val long = location.longitude.toString()
                 if (lastLocation != null) {
                     val speed = calculateSpeedBetweenLocations(lastLocation!!, location)
                     location.speed = if (speed.isNaN() || speed.isInfinite()) 0.0F else speed
                 }
                 lastLocation = location
 
-                val updatedNotification = notification.setContentText(
-                    "Location: ($lat, $long)\nSpeed: ${location.speed}"
-                )
-                notificationManager.notify(1, updatedNotification.build())
-                Log.d("PSE_TRACKING", "-------------------------------------------------")
-                Log.d("PSE_TRACKING", "Location: ($lat, $long)")
-                Log.d("PSE_TRACKING", "Speed: ${location.speed}")
-                Log.d("PSE_TRACKING", "Trips: ${tripAndStageRepository.observeAllTrips().first().size}")
                 tripAndStageRepository.createGpsPoint(location)
                 trackingAlgorithmManager.requestAlgorithm(location)
             }
@@ -115,9 +94,9 @@ class LocationService : TrackingService() {
      */
     override fun buildNotification(): NotificationCompat.Builder {
         return NotificationCompat.Builder(this, LOCATION_TRACKING_CHANNEL_ID)
-            .setContentTitle(LOCATION_TRACKING_NOTIFICATION_TITLE)
+            .setContentTitle(getString(R.string.tracking_notification_title))
             .setContentText(
-                LOCATION_TRACKING_NOTIFICATION_TEXT
+                getString(R.string.tracking_notification_text)
             )
             .setSmallIcon(R.mipmap.allways_app_icon)
             .setOngoing(true)

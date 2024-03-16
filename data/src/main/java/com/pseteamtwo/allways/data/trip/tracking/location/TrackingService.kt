@@ -1,9 +1,11 @@
-package com.pseteamtwo.allways.data.trip.tracking
+package com.pseteamtwo.allways.data.trip.tracking.location
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.pseteamtwo.allways.data.trip.tracking.ACTION_START
+import com.pseteamtwo.allways.data.trip.tracking.ACTION_STOP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -31,7 +33,7 @@ abstract class TrackingService : Service() {
     internal abstract fun start()
 
     internal fun stop() {
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 

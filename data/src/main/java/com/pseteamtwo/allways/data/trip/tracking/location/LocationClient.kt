@@ -13,9 +13,4 @@ interface LocationClient {
      * @return a hot flow of [Location].
      */
     fun getLocationUpdates(interval: Long): Flow<Location>
-
-    /**
-     * An exception that can be thrown if an error occurs during location tracking.
-     */
-    class LocationException(message: String) : Exception()
 }

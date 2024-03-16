@@ -1,4 +1,4 @@
-package com.pseteamtwo.allways.data.trip.tracking
+package com.pseteamtwo.allways.data.trip.tracking.location
 
 import android.location.Location
 import kotlin.math.roundToInt

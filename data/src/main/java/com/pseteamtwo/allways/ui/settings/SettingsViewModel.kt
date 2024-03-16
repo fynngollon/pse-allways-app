@@ -1,9 +1,5 @@
 package com.pseteamtwo.allways.ui.settings
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import com.pseteamtwo.allways.data.settings.AppPreferences
 import com.pseteamtwo.allways.data.trip.tracking.hasLocationPermission

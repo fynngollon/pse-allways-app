@@ -6,7 +6,7 @@ import org.threeten.bp.LocalDateTime
 /**
  * Representation of a trip traveled by the user (to be also used outside this data module).
  *
- * A trip can be created by recording through [com.pseteamtwo.allways.trip.tracking] tracking
+ * A trip can be created by recording through [com.pseteamtwo.allways.data.trip.tracking] tracking
  * or by the user himself.
  *
  * @property id The unique identification number of the trip for saving, editing and retrieving

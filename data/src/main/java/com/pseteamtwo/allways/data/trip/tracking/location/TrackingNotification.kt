@@ -1,9 +1,11 @@
-package com.pseteamtwo.allways.data.trip.tracking
+package com.pseteamtwo.allways.data.trip.tracking.location
 
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_CHANNEL_ID
+import com.pseteamtwo.allways.data.trip.tracking.LOCATION_TRACKING_NOTIFICATION_NAME
 import dagger.hilt.android.HiltAndroidApp
 
 /**

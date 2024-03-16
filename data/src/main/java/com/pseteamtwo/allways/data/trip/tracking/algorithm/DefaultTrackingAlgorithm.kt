@@ -1,7 +1,6 @@
-package com.pseteamtwo.allways.data.trip.tracking
+package com.pseteamtwo.allways.data.trip.tracking.algorithm
 
 import android.location.Location
-import android.util.Log
 import com.pseteamtwo.allways.data.di.ApplicationScope
 import com.pseteamtwo.allways.data.di.DefaultDispatcher
 import com.pseteamtwo.allways.data.trip.Mode
@@ -11,15 +10,13 @@ import com.pseteamtwo.allways.data.trip.source.local.GpsPointDao
 import com.pseteamtwo.allways.data.trip.source.local.LocalGpsPoint
 import com.pseteamtwo.allways.data.trip.source.local.LocalStage
 import com.pseteamtwo.allways.data.trip.source.local.LocalTrip
-import com.pseteamtwo.allways.data.trip.source.local.LocalTripWithStages
-import com.pseteamtwo.allways.data.trip.source.local.TripDao
+import com.pseteamtwo.allways.data.trip.tracking.location.calculateDistance
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -39,7 +36,6 @@ import kotlin.math.roundToInt
 class DefaultTrackingAlgorithm @Inject constructor(
     private val tripAndStageRepository: DefaultTripAndStageRepository,
     private val gpsPointDao: GpsPointDao,
-    private val tripDao: TripDao,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     @ApplicationScope private val scope: CoroutineScope
 ) : TrackingAlgorithm {
@@ -56,7 +52,6 @@ class DefaultTrackingAlgorithm @Inject constructor(
         val gpsPointsInDatabase = mutableListOf<LocalGpsPoint>()
         val gpsPoints = mutableListOf<LocalGpsPoint>()
         var indexOfFirstTripMember: Int
-        Log.d("PSE_TRACKING", "TrackingAlgorithm: Observing")
 
         // Retrieve GPS points
         scope.launch(dispatcher) {
@@ -67,11 +62,8 @@ class DefaultTrackingAlgorithm @Inject constructor(
             if (indexOfFirstTripMember == -1) gpsPoints.addAll(gpsPointsInDatabase)
             else gpsPoints.addAll(gpsPointsInDatabase.subList(0, indexOfFirstTripMember))
 
-            Log.d("PSE_TRACKING", "TrackingAlgorithm: GPS Points in database: ${gpsPointsInDatabase.size}")
-            Log.d("PSE_TRACKING", "TrackingAlgorithm: GPS Points unused: ${gpsPoints.size}")
             // Predict trips
-            val trips = predictTrips(gpsPoints)
-            Log.d("PSE_TRACKING", "TrackingAlgorithm: Predicted Trips: ${trips.size}")
+            predictTrips(gpsPoints)
 
             // Delete GPS points that are no longer needed
             gpsPointDao.deleteAllNotAssignedToStage()
@@ -129,20 +121,11 @@ class DefaultTrackingAlgorithm @Inject constructor(
         val unsavedTrips = mutableListOf<List<LocalGpsPoint>>()
 
         // Iterates over all potential trips, strips them of trailing motionless GPS points
-        // and removes those whose duration or distance isn't long enough
+        // and removes those whose distance isn't long enough
         potentialTrips.forEach { potentialTrip ->
             val strippedPotentialTrip = potentialTrip.dropLastWhile {
                 it.location.speed < STILL_MOTION_THRESHOLD
             }
-
-            // Checks if trip duration is long enough
-            /*
-            val tripDuration = strippedPotentialTrip.last().location.time -
-                    strippedPotentialTrip.first().location.time
-            if (tripDuration < MIN_DURATION_OF_TRIP) {
-                return@forEach
-            }
-             */
 
             // Checks if trip distance is long enough
             val tripDistance = calculateDistance(strippedPotentialTrip.map { it.location })
@@ -186,16 +169,8 @@ class DefaultTrackingAlgorithm @Inject constructor(
      */
     private suspend fun predictStages(gpsPoints: List<LocalGpsPoint>): List<LocalStage> {
         val stages = mutableListOf<LocalStage>()
-        //val potentialStagesAfterGeofencing = mutableListOf<List<LocalGpsPoint>>()
         val unsavedStages = mutableListOf<List<LocalGpsPoint>>()
 
-        //potentialStagesAfterGeofencing.addAll(predictStagesByGeofencing(gpsPoints))
-
-        //potentialStagesAfterGeofencing.forEach {
-        //    unsavedStages.addAll(predictStagesBySpeedChange(it))
-        //}
-
-        // TODO geofencing would make sense to separate stages if not moved out of radius for 5min
         unsavedStages.addAll(predictStagesBySpeedChange(gpsPoints))
         unsavedStages.removeAll { stage ->
             !hasMovedOutOfRadius(stage.map { it.location })
@@ -206,39 +181,6 @@ class DefaultTrackingAlgorithm @Inject constructor(
         }
 
         return stages
-    }
-
-    /**
-     * Searches for periods where the movement keeps being in a radius, defined by
-     * [DIAMETER_OF_GEOFENCE], for at least 5 minutes. This is considered a stay in between stages
-     * and thus separates two stages.
-     *
-     * @param gpsPoints list of [LocalGpsPoint]s which represents a trip already.
-     * @return a list of [LocalGpsPoint]s that define potential stages to separate the trip into.
-     */
-    private suspend fun predictStagesByGeofencing(gpsPoints: List<LocalGpsPoint>): List<List<LocalGpsPoint>> {
-        val currentStage = mutableListOf<LocalGpsPoint>()
-        val potentialStages = mutableListOf<List<LocalGpsPoint>>()
-
-        for (i in gpsPoints.indices) {
-            currentStage.add(gpsPoints[i])
-
-            val durationOfStage = currentStage.last().location.time - currentStage.first().location.time
-            if (durationOfStage > MIN_DURATION_OF_STAGE && !hasMovedOutOfRadius(
-                    gpsPoints.subList(i, gpsPoints.size).map { it.location },
-                    FIVE_MINUTES_IN_MILLIS
-                )
-            ) {
-                // This should be a stay
-                val startGpsPointOfNewStage =
-                    tripAndStageRepository.createGpsPoint(currentStage.last().location)
-                potentialStages.add(currentStage.toMutableList())
-                currentStage.clear()
-                currentStage.add(startGpsPointOfNewStage)
-            }
-        }
-
-        return potentialStages
     }
 
     /**
@@ -268,7 +210,6 @@ class DefaultTrackingAlgorithm @Inject constructor(
 
                 if (nextLocation.time > windowEndTime) break
 
-                val distance = currentLocation.distanceTo(nextLocation)
                 if (currentLocation.distanceTo(nextLocation) > DIAMETER_OF_GEOFENCE) {
                     return true
                 }
@@ -428,11 +369,6 @@ class DefaultTrackingAlgorithm @Inject constructor(
         const val MAX_MOTIONLESS_IN_TRIP = 900000 // 15 minutes in milliseconds
 
         /**
-         * The minimum duration of a trip.
-         */
-        const val MIN_DURATION_OF_TRIP = 900000 // 15 minutes in milliseconds
-
-        /**
          * The minimum distance to a trip.
          */
         const val MIN_DISTANCE_OF_TRIP = 500f // in meters
@@ -441,11 +377,6 @@ class DefaultTrackingAlgorithm @Inject constructor(
          * The minimum distance a user has to walk apart a stage or trip to be not considered a stay.
          */
         const val DIAMETER_OF_GEOFENCE = 50 // in meters
-
-        /**
-         * Five minutes in milliseconds.
-         */
-        const val FIVE_MINUTES_IN_MILLIS = 300000L // in milliseconds
 
         /**
          * The minimum duration of a stage.

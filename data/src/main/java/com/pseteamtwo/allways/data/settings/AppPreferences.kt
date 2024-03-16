@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.BatteryManager
-import android.util.Log
-import androidx.core.content.ContextCompat
 import com.pseteamtwo.allways.data.trip.tracking.ACTION_START
 import com.pseteamtwo.allways.data.trip.tracking.ACTION_STOP
 import com.pseteamtwo.allways.data.trip.tracking.hasLocationPermission
