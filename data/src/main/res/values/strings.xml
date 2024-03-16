@@ -100,4 +100,10 @@
     <string name="mode_long_distance_train">Langstreckenzug</string>
     <string name="mode_other">Andere</string>
 
+    <string name="settings_tracking_regularity">Trackingintervall</string>
+    <string name="tracking_regularity_never">Nie</string>
+    <string name="tracking_regularity_rarely">Jede Minute</string>
+    <string name="tracking_regularity_medium">Alle 30 Sekunden</string>
+    <string name="tracking_regularity_often">Alle 10 Sekunden</string>
+
 </resources>
