@@ -124,4 +124,7 @@ class LocationService : TrackingService() {
     }
 
 
+    override fun startAlgorithm() {
+        trackingAlgorithmManager.startAlgorithmManually()
+    }
 }

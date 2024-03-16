@@ -29,5 +29,9 @@ class TrackingAlgorithmManager @Inject constructor(
         }
     }
 
+    fun startAlgorithmManually() {
+        trackingAlgorithm.observeTrackingData()
+    }
+
 
 }

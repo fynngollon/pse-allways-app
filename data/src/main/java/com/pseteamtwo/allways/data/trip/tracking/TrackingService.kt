@@ -20,7 +20,10 @@ abstract class TrackingService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START -> start()
-            ACTION_STOP -> stop()
+            ACTION_STOP -> {
+                stop()
+                startAlgorithm()
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -38,4 +41,7 @@ abstract class TrackingService : Service() {
         super.onDestroy()
         serviceScope.cancel()
     }
+
+    abstract fun startAlgorithm()
+
 }

@@ -1,9 +1,15 @@
 package com.pseteamtwo.allways.data.settings
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.BatteryManager
 import android.util.Log
+import androidx.core.content.ContextCompat
+import com.pseteamtwo.allways.data.trip.tracking.ACTION_START
+import com.pseteamtwo.allways.data.trip.tracking.ACTION_STOP
+import com.pseteamtwo.allways.data.trip.tracking.hasLocationPermission
+import com.pseteamtwo.allways.data.trip.tracking.location.LocationService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -23,10 +29,12 @@ import javax.inject.Singleton
  */
 @Singleton
 class AppPreferences @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext val context: Context
 ) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+
+
 
 
 
@@ -41,6 +49,7 @@ class AppPreferences @Inject constructor(
         private const val KEY_TRACKING_REGULARITY = "tracking_regularity"
         private const val KEY_BATTERY_DEPENDENCY_ENABLED = "battery_dependency_enabled"
         private const val KEY_BATTERY_DEPENDENCY = "battery_dependency"
+        private const val KEY_HAS_DENIED_PERMISSION_BEFORE = "has_denied_permission_before"
     }
 
 
@@ -71,18 +80,26 @@ class AppPreferences @Inject constructor(
 
 
     /**
-     * Defines the setting: is [com.pseteamtwo.allways.trip.tracking] currently allowed to run.
+     * Defines the setting: is [com.pseteamtwo.allways.data.trip.tracking] currently allowed to run.
      */
     var isTrackingEnabled: Boolean
         get() =
             sharedPreferences.getBoolean(
                 KEY_TRACKING_ENABLED,
-                false)
-        set(isTrackingEnabled) =
+                true)
+        set(isTrackingEnabled) {
             sharedPreferences.edit().putBoolean(
                 KEY_TRACKING_ENABLED,
                 isTrackingEnabled
             ).apply()
+            if (context.hasLocationPermission()) {
+                Intent(context, LocationService::class.java).apply {
+                    action = if (isTrackingEnabled) ACTION_START else ACTION_STOP
+                    context.startService(this)
+                }
+            }
+        }
+
 
 
 
@@ -181,4 +198,15 @@ class AppPreferences @Inject constructor(
     private fun getDefaultBatteryDependency(): Pair<Int, TrackingRegularity> {
         return Pair(25, TrackingRegularity.RARELY)
     }
+
+    var hasDeniedPermissionBefore: Boolean
+        get() =
+            sharedPreferences.getBoolean(
+                KEY_HAS_DENIED_PERMISSION_BEFORE,
+                false)
+        set(hasDeniedPermissionBefore) =
+            sharedPreferences.edit().putBoolean(
+                KEY_HAS_DENIED_PERMISSION_BEFORE,
+                hasDeniedPermissionBefore
+            ).apply()
 }
