@@ -72,4 +72,15 @@
     <string name="settings_trip_recognition">Wegeerkennung</string>
     <string name="settings_language">Sprache</string>
 
+    <string name="purpose_none">(Nicht eingetragen)</string>
+    <string name="purpose_work">Arbeit</string>
+    <string name="purpose_business_trip">Geschäftsreise</string>
+    <string name="purpose_education">Schule/Studium/Fortbildung</string>
+    <string name="purpose_shopping">Einkaufen</string>
+    <string name="purpose_leisure">Freizeit</string>
+    <string name="purpose_transportation">Etw./Jmd. transportieren</string>
+    <string name="purpose_other_errands">Andere Erledigungen</string>
+    <string name="purpose_home">Nach Hause gehen</string>
+    <string name="purpose_other">Andere</string>
+
 </resources>
