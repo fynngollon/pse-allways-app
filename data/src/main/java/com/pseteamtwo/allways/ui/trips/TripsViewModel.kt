@@ -87,8 +87,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         endDateTime = trip.endDateTime,
                         startLocation = GeoPoint(trip.startLocation),
                         endLocation = GeoPoint(trip.endLocation),
-                        startLocationName = "Lädt...",
-                        endLocationName = "Lädt...",
+                        startLocationName = "Loading...",
+                        endLocationName = "Loading...",
                         duration = trip.duration,
                         distance = trip.distance,
                         deleteTrip = {deleteTrip(tripUiStateId)},
@@ -415,8 +415,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         endDateTime = stage.endDateTime,
                         startLocation = GeoPoint(stage.startLocation),
                         endLocation = GeoPoint(stage.endLocation),
-                        startLocationName = "Lädt...",
-                        endLocationName = "Lädt...",
+                        startLocationName = "Loading...",
+                        endLocationName = "Loading...",
                         setMode = {
                             mode: Mode ->
                             setStageUiStageMode(
