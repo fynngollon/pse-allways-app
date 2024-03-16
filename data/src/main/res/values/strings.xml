@@ -57,7 +57,8 @@
     <string name="msg_permission_explanation">Die App benötigt die Standortberechtigungen, um Ihre Wege automatisch zu erfassen.</string>
     <string name="msg_permission_denied">Sie haben die Standortberechtigungen abgelehnt und können daher die automatische Wegeerkennung nicht nutzen. In den Einstellungen innerhalb der App können Sie die Wegeerkennung aktivieren und die Berechtigung erteilen.</string>
     <string name="tracking_notification_text">Der Standort wird geortet.</string>
-    <string name="">Wegeerkennung aktiv</string>
     <string name="tracking_notification_title">Wegeerkennung aktiv</string>
+    <string name="settings_trip_recognition">Wegeerkennung</string>
+    <string name="settings_language">Sprache</string>
 
 </resources>
