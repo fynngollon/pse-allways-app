@@ -229,7 +229,7 @@ fun StageCard(
                             ) {
 
                                 OutlinedTextField(
-                                    value = selectedMode.modeType,
+                                    value = selectedMode.getStringForMode(),
                                     onValueChange = {},
                                     readOnly = true,
                                     leadingIcon = {
@@ -253,7 +253,7 @@ fun StageCard(
                                     for(mode in Mode.entries) {
                                         DropdownMenuItem(
                                             text = {
-                                                Text(mode.modeType)
+                                                Text(mode.getStringForMode())
                                             },
                                             onClick = {
                                                 expanded = false

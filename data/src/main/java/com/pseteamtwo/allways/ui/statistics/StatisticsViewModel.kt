@@ -3,6 +3,7 @@ package com.pseteamtwo.allways.ui.statistics
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.data.statistics.StatisticsRepository
 import com.pseteamtwo.allways.data.trip.Mode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -89,9 +90,10 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      * The chart is of type [SingleValue]
      */
      suspend fun addCompleteDistanceChart() {
-            chartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
+            chartUiStates.add(ChartUiState(
+                ChartType.SINGLE_VALUE,
                 ChartContent.DISTANCE_ALL,
-                listOf("Distanz"),
+                listOf(R.string.distance),
                 listOf(statisticsRepository.getTripDistanceOfAll().toLong())
             )
             )
@@ -105,7 +107,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             chartUiStates.add(ChartUiState(
                 ChartType.SINGLE_VALUE,
                 ChartContent.DURATION_ALL,
-                listOf("Dauer"),
+                listOf(R.string.duration),
                 listOf(statisticsRepository.getTripDurationOfAll().toLong())
             )
             )
@@ -117,7 +119,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      */
      suspend fun addCompleteModalSplitChart() {
             val completeModalSplit = statisticsRepository.getModalSplitOfAll(true)
-            val completeModalSplitLabels: MutableList<String> = mutableListOf()
+            val completeModalSplitLabels: MutableList<Int> = mutableListOf()
             val completeModalSplitValues: MutableList<Long> = mutableListOf()
 
             for(mode in Mode.entries) {
@@ -147,10 +149,10 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
 
      suspend fun addDistancesOfLastWeekChart() {
             var currentDate = LocalDateTime.now().toLocalDate()
-            val distanceLastWeekLabels: MutableList<String> = mutableListOf()
+            val distanceLastWeekLabels: MutableList<Int> = mutableListOf()
             val distanceLastWeekValues: MutableList<Long> = mutableListOf()
             for(i in IntStream.range(0, 7)) {
-                distanceLastWeekLabels.add((currentDate.plusDays((i-6).toLong())).dayOfMonth.toString() + ".")
+                distanceLastWeekLabels.add((currentDate.plusDays((i-6).toLong())).dayOfMonth)
                 distanceLastWeekValues.add(statisticsRepository.getTripDistanceOfDate(currentDate.plusDays(
                     (i-6).toLong()
                 ))
@@ -176,7 +178,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             homeChartUiStates.add(ChartUiState(
                 ChartType.SINGLE_VALUE,
                 ChartContent.DISTANCE_TODAY,
-                listOf("Distanz"),
+                listOf(R.string.distance),
                 listOf(statisticsRepository.getTripDistanceOfDate(LocalDate.now()).toLong())
             ))
 
@@ -190,7 +192,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
 
      suspend fun addTodaysModalSplitChartHome() {
             val oneDayModalSplit = statisticsRepository.getModalSplitOfDate(true, LocalDate.now())
-            val oneDayModalSplitLabels: MutableList<String> = mutableListOf()
+            val oneDayModalSplitLabels: MutableList<Int> = mutableListOf()
             val oneDayModalSplitValues: MutableList<Long> = mutableListOf()
 
             for(mode in Mode.entries) {
@@ -213,7 +215,7 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
         homeChartUiStates.add(ChartUiState(
             ChartType.SINGLE_VALUE,
             ChartContent.DURATION_TODAY,
-            listOf("Dauer"),
+            listOf(R.string.duration),
             listOf(statisticsRepository.getTripDurationOfDate(LocalDate.now()))
             ))
     }

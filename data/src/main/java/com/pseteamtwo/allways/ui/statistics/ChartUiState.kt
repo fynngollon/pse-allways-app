@@ -18,7 +18,7 @@ data class ChartUiState(
     /**
      * The list of labels of this chart indicating what the given information is referring to.
      */
-    var labels: List<String>,
+    var labels: List<Int>,
 
     /**
      * The list of values corresponding to the [labels]
