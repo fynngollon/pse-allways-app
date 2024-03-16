@@ -2,14 +2,19 @@ package com.pseteamtwo.allways.ui.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Slider
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -21,11 +26,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pseteamtwo.allways.data.settings.AppPreferences
+import com.pseteamtwo.allways.R
+import com.pseteamtwo.allways.data.settings.TrackingRegularity
 
 @Composable
 fun SettingsScreen() {
@@ -36,37 +43,117 @@ fun SettingsScreen() {
         mutableStateOf(settings.isTrackingEnabled)
     }
 
+    Column {
+
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.settings_trip_recognition),
+                modifier = Modifier
+                    .fillMaxWidth(0.4f)
+                    .weight(1f)
+                    .padding(end = 16.dp)
+                    .align(Alignment.CenterVertically)
+            )
+
+            val hasPermission = remember { mutableStateOf(true) }
+
+            Switch(
+                checked = isActive,
+                onCheckedChange = {
+                    hasPermission.value = settingsViewModel.updateTrackingEnabled(it)
+                    isActive = it
+                },
+                modifier = Modifier
+                    .size(25.dp)
+                    .padding(end = 24.dp)
+            )
+
+            MissingPermissionDialog(hasPermission.value, isActive) {
+                hasPermission.value = it
+                isActive = false
+            }
+
+        }
+
+        TrackingRegularitySelection(settings) {
+            settingsViewModel.changeTrackingRegularity(it)
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TrackingRegularitySelection(
+    settings: SettingsUiState,
+    onRegularityChange: (TrackingRegularity) -> Unit
+) {
+    val currentRegularity = settings.trackingRegularity
+    var selectedRegularity by remember { mutableStateOf(currentRegularity) }
+
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 16.dp)
+        .padding(horizontal = 16.dp)
     ) {
-        // Text aligned to the left
         Text(
-            text = "Wegeerkennung",
+            text = stringResource(id = R.string.settings_tracking_regularity),
             modifier = Modifier
-                .fillMaxWidth(0.4f)
-                .weight(1f)
+                .weight(5f)
                 .padding(end = 16.dp)
                 .align(Alignment.CenterVertically)
         )
 
-        val hasPermission = remember { mutableStateOf(true) }
+        var isExpanded by remember { mutableStateOf(false) }
 
-        Switch(
-            checked = isActive,
-            onCheckedChange = {
-                hasPermission.value = settingsViewModel.updateTrackingEnabled(it)
-                isActive = it
-            },
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = it },
             modifier = Modifier
-                .size(25.dp)
-                .padding(end = 16.dp)
-        )
+                .align(Alignment.CenterVertically)  // Align vertically within Row
+                .weight(5f)
+                .wrapContentWidth(Alignment.End)
+        ) {
+            OutlinedTextField(
+                value = selectedRegularity.name,
+                onValueChange = {},
+                readOnly = true,
+                leadingIcon = {
 
-        MissingPermissionDialog(hasPermission.value, isActive) {
-            hasPermission.value = it
+                },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                },
+                shape = RoundedCornerShape(4.dp),
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                textStyle = TextStyle.Default.copy(fontSize = 12.sp),
+                modifier = Modifier
+                    .menuAnchor()
+                    .height(45.dp)
+                    .width(200.dp)
+            )
+
+            ExposedDropdownMenu(expanded = isExpanded,
+                onDismissRequest = { isExpanded = false }
+            ) {
+                for(regularity in TrackingRegularity.entries) {
+                    if (regularity != TrackingRegularity.NEVER) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = stringResource(id = regularity.regularity_id))
+                            },
+                            onClick = {
+                                isExpanded = false
+                                selectedRegularity = regularity
+                                onRegularityChange(regularity)
+                            }
+                        )
+                    }
+                }
+            }
         }
-
     }
 }
 
@@ -80,7 +167,7 @@ fun MissingPermissionDialog(
         AlertDialog(
             onDismissRequest = { },
             title = { Text("Berechtigungen fehlen") },
-            text = { Text("Sie müssen zur Wegeerkennung Standortberechtigungen in den Einstellungen aktivieren") },
+            text = { Text("Sie müssen zur Wegeerkennung Standortberechtigungen in den Einstellungen aktivieren.") },
             confirmButton = {
                 TextButton(onClick = {
                     onConfirm(true)
@@ -92,3 +179,4 @@ fun MissingPermissionDialog(
     }
 
 }
+

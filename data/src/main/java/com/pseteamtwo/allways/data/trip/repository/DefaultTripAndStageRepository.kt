@@ -1,7 +1,6 @@
 package com.pseteamtwo.allways.data.trip.repository
 
 import android.location.Location
-import android.util.Log
 import com.pseteamtwo.allways.data.account.repository.AccountRepository
 import com.pseteamtwo.allways.data.di.ApplicationScope
 import com.pseteamtwo.allways.data.di.DefaultDispatcher
@@ -32,16 +31,13 @@ import com.pseteamtwo.allways.data.trip.toNetwork
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
-import java.lang.NullPointerException
 import javax.inject.Inject
 import javax.inject.Singleton
 

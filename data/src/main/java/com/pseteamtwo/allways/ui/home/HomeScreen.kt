@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.ui.navigation.Screen
 import com.pseteamtwo.allways.ui.profile.ProfileViewModel
+import com.pseteamtwo.allways.ui.statistics.ChartContent
 import com.pseteamtwo.allways.ui.statistics.DetailedStatisticsCard
 import com.pseteamtwo.allways.ui.statistics.StatisticsViewModel
 import com.pseteamtwo.allways.ui.trips.TripsViewModel
@@ -105,10 +106,14 @@ fun HomeScreen(
                         ) {
                             Row(modifier = Modifier.padding(top = 40.dp)) {
                                 DetailedStatisticsCard(
-                                    labels = chartUiState.labels,
+                                    labels =
+                                    when (chartUiState.contentType) {
+                                        ChartContent.DISTANCE_LAST_WEEK -> chartUiState.labels.map { "$it." }
+                                        else -> chartUiState.labels.map { stringResource(id = it) }
+                                    },
                                     values = chartUiState.values,
-                                    title = chartUiState.title,
-                                    unit = chartUiState.unit,
+                                    title = chartUiState.contentType.getTitleForChartContent(),
+                                    unit = chartUiState.contentType.getUnitForChartContent(),
                                     type = chartUiState.type
                                 )
                             }

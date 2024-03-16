@@ -49,14 +49,61 @@
     <string name="from">Von</string>
     <string name="until">Bis</string>
 
+    <string name="distance_all">Distanz aller Wege zusammen</string>
+    <string name="duration_all">Dauer aller Wege zusammen</string>
+    <string name="modal_split_all">Anteil Verkehrsmittel insgesamt</string>
+    <string name="distance_last_week">Zurückgelegte Distanzen der letzten Woche in Metern</string>
+    <string name="distance_today">Heute zurückgelegte Distanz</string>
+    <string name="duration_today">Gesamtdauer der heutigen Wege</string>
+    <string name="modal_split_today">Anteil Verkehrsmittel heute</string>
+    <string name="unit_meters">Meter</string>
+    <string name="unit_minutes">Minuten</string>
+    <string name="unit_nothing" />
+    <string name="distance">Distanz</string>
+    <string name="duration">Dauer</string>
+
     <string name="profile_questions">Persönliche Fragen</string>
     <string name="household_questions">Haushaltsfragen</string>
     <string name="save_changes">Änderungen speichern</string>
 
     <string name="trip_recognition_needs_permission">Wegeerkennung benötigt Berechtigungen.</string>
-    <string name="msg_permission_explanation">Die App benötigt die Standortberechtigungen, um Ihre Wege automatisch zu erfassen.</string>
+    <string name="msg_permission_explanation">Die App benötigt die Standortberechtigungen, um Ihre Wege automatisch zu erfassen. Sie können die Wegeerkennung auch jederzeit in den Einstellungen aktivieren.</string>
     <string name="msg_permission_denied">Sie haben die Standortberechtigungen abgelehnt und können daher die automatische Wegeerkennung nicht nutzen. In den Einstellungen innerhalb der App können Sie die Wegeerkennung aktivieren und die Berechtigung erteilen.</string>
     <string name="tracking_notification_text">Der Standort wird geortet.</string>
     <string name="tracking_notification_title">Wegeerkennung aktiv</string>
+    <string name="settings_trip_recognition">Wegeerkennung</string>
+    <string name="settings_language">Sprache</string>
+
+    <string name="purpose_none">(Nicht eingetragen)</string>
+    <string name="purpose_work">Arbeit</string>
+    <string name="purpose_business_trip">Geschäftsreise</string>
+    <string name="purpose_education">Schule/Studium/Fortbildung</string>
+    <string name="purpose_shopping">Einkaufen</string>
+    <string name="purpose_leisure">Freizeit</string>
+    <string name="purpose_transportation">Etw./Jmd. transportieren</string>
+    <string name="purpose_other_errands">Andere Erledigungen</string>
+    <string name="purpose_home">Nach Hause gehen</string>
+    <string name="purpose_other">Andere</string>
+
+    <string name="mode_none">(Nicht eingetragen)</string>
+    <string name="mode_walk">Laufen</string>
+    <string name="mode_running">Rennen</string>
+    <string name="mode_e_bike">E-Bike</string>
+    <string name="mode_bicycle">Fahrrad</string>
+    <string name="mode_motorcycle">Motorrad</string>
+    <string name="mode_car_driver">Fahrer im Auto</string>
+    <string name="mode_car_passenger">Beifahrer</string>
+    <string name="mode_regional_bus">Regionalbus</string>
+    <string name="mode_long_distance_bus">Fernbus</string>
+    <string name="mode_tram_metro_train">U-Bahn</string>
+    <string name="mode_regional_train">Regionaler Zug</string>
+    <string name="mode_long_distance_train">Langstreckenzug</string>
+    <string name="mode_other">Andere</string>
+
+    <string name="settings_tracking_regularity">Trackingintervall</string>
+    <string name="tracking_regularity_never">Nie</string>
+    <string name="tracking_regularity_rarely">Jede Minute</string>
+    <string name="tracking_regularity_medium">Alle 30 Sekunden</string>
+    <string name="tracking_regularity_often">Alle 10 Sekunden</string>
 
 </resources>

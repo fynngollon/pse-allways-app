@@ -1,9 +1,7 @@
 package com.pseteamtwo.allways
 
 import android.app.AlertDialog
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,8 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.core.content.ContextCompat
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -105,20 +101,13 @@ class MainActivity : ComponentActivity() {
 
     private fun showPermissionExplanationDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Wegeerkennung benötigt Berechtigungen")
-            .setMessage(MSG_PERMISSION_EXPLANATION)
+        builder.setTitle(getString(R.string.trip_recognition_needs_permission))
+            .setMessage(getString(R.string.msg_permission_explanation))
             .setCancelable(false)
-            .setPositiveButton("OK") { dialog, _ ->
+            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
                 requestLocationPermissions()
             }
         builder.create().show()
-    }
-
-    companion object {
-        const val MSG_PERMISSION_EXPLANATION = "Die App benötigt die Standortberechtigungen, " +
-                "um Ihre Wege automatisch zu erfassen. Sie können die Wegeerkennung auch jederzeit in den " +
-                "Einstellungen aktivieren."
-
     }
 }

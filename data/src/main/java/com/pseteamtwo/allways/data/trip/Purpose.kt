@@ -1,5 +1,8 @@
 package com.pseteamtwo.allways.data.trip
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.data.trip.Purpose.OTHER
 import kotlinx.serialization.Serializable
 
@@ -14,57 +17,63 @@ import kotlinx.serialization.Serializable
  * Can be null and is initially set to null until detailed description is provided.
  */
 @Serializable
-enum class Purpose(val purposeType: String, var purposeDetail: String? = null) {
+enum class Purpose(private val purposeType: Int, var purposeDetail: String? = null) {
     //TODO("implementation of use of purposeDetail")
 
     /**
      * Represents that no Purpose has been set for [Trip] yet.
      */
-    NONE("(Nicht eingetragen)"),
+    NONE(R.string.purpose_none),
 
     /**
      * [Trip] got traveled to go to work.
      */
-    WORK("Arbeit"),
+    WORK(R.string.purpose_work),
 
     /**
      * [Trip] is a business trip.
      */
-    BUSINESS_TRIP("Geschäftsreise"),
+    BUSINESS_TRIP(R.string.purpose_business_trip),
 
     /**
      * [Trip] got traveled to go to an educational institution like school, university
      * or to an skill enhancement.
      */
-    EDUCATION("Schule/Studium/Fortbildung"),
+    EDUCATION(R.string.purpose_education),
 
     /**
      * [Trip] got traveled to go shopping.
      */
-    SHOPPING("Einkaufen"),
+    SHOPPING(R.string.purpose_shopping),
 
     /**
      * [Trip] got traveled for leisure or vacation reasons.
      */
-    LEISURE("Freizeit"),
+    LEISURE(R.string.purpose_leisure),
 
     /**
      * [Trip] got traveled for transportation reasons.
      */
-    TRANSPORTATION("Etw./Jmd. transportieren"),
+    TRANSPORTATION(R.string.purpose_transportation),
 
     /**
      * [Trip] got traveled to do other errands.
      */
-    OTHER_ERRANDS("Andere Erledigungen"),
+    OTHER_ERRANDS(R.string.purpose_other_errands),
 
     /**
      * [Trip] got traveled to go home.
      */
-    HOME("Nach Hause gehen"),
+    HOME(R.string.purpose_home),
 
     /**
      * [Trip] got traveled to do something this enumeration does not contain.
      */
-    OTHER("Andere");
+    OTHER(R.string.purpose_other);
+
+
+    @Composable
+    fun getStringForPurpose(): String {
+        return stringResource(id = this.purposeType)
+    }
 }

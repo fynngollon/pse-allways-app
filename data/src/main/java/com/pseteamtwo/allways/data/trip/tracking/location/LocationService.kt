@@ -2,6 +2,7 @@ package com.pseteamtwo.allways.data.trip.tracking.location
 
 import android.annotation.SuppressLint
 import android.location.Location
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.LocationServices
 import com.pseteamtwo.allways.R
@@ -78,6 +79,8 @@ class LocationService : TrackingService() {
                     location.speed = if (speed.isNaN() || speed.isInfinite()) 0.0F else speed
                 }
                 lastLocation = location
+
+                Log.d("PSE_", AppPreferences(this).trackingRegularity.regularity.toString())
 
                 tripAndStageRepository.createGpsPoint(location)
                 trackingAlgorithmManager.requestAlgorithm(location)
