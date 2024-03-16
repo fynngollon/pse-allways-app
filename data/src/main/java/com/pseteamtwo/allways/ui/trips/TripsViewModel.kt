@@ -71,8 +71,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
     //runs after initialization
     init {
         viewModelScope.launch {
-            tripAndStageRepository.observeAllTrips().collect {
-                trips ->
+            tripAndStageRepository.observeAllTrips().collect { trips ->
                 val tripUiStates: MutableList<TripUiState> = mutableListOf()
 
                 for (trip in trips) {
