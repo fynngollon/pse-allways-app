@@ -32,7 +32,7 @@ internal fun Long.convertToLocalDateTime(): LocalDateTime {
  * @return The converted epoch time in milliseconds.
  */
 internal fun LocalDateTime.convertToMillis(): Long {
-    return this.atZone(zoneIdOfApp).toInstant().toEpochMilli();
+    return this.atZone(zoneIdOfApp).toInstant().toEpochMilli()
 }
 
 

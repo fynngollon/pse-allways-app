@@ -1,11 +1,9 @@
 package com.pseteamtwo.allways.data.trip.tracking
 
 import android.location.Location
-import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import co.yml.charts.common.extensions.isNotNull
 import com.pseteamtwo.allways.data.account.repository.AccountRepository
 import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
 import com.pseteamtwo.allways.data.account.source.local.AccountDao
@@ -18,25 +16,20 @@ import com.pseteamtwo.allways.data.trip.source.local.TripAndStageDatabase
 import com.pseteamtwo.allways.data.trip.source.local.TripDao
 import com.pseteamtwo.allways.data.trip.source.network.DefaultStageNetworkDataSource
 import com.pseteamtwo.allways.data.trip.source.network.DefaultTripNetworkDataSource
+import com.pseteamtwo.allways.data.trip.tracking.algorithm.DefaultTrackingAlgorithm
+import com.pseteamtwo.allways.data.trip.tracking.location.calculateSpeedBetweenLocations
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
-import net.pwall.json.schema.parser.Parser.Companion.isZero
 import org.junit.Assert.*
 
 import org.junit.Before
 import org.junit.Test
-import org.junit.rules.TestRule
-import org.junit.runner.Description
 import org.junit.runner.RunWith
-import org.junit.runners.model.Statement
 
 @RunWith(AndroidJUnit4::class)
 class DefaultTrackingAlgorithmTest {

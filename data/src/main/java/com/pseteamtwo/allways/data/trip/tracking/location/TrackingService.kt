@@ -1,9 +1,11 @@
-package com.pseteamtwo.allways.data.trip.tracking
+package com.pseteamtwo.allways.data.trip.tracking.location
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.pseteamtwo.allways.data.trip.tracking.ACTION_START
+import com.pseteamtwo.allways.data.trip.tracking.ACTION_STOP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,7 +22,10 @@ abstract class TrackingService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START -> start()
-            ACTION_STOP -> stop()
+            ACTION_STOP -> {
+                stop()
+                startAlgorithm()
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -28,7 +33,7 @@ abstract class TrackingService : Service() {
     internal abstract fun start()
 
     internal fun stop() {
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
@@ -38,4 +43,7 @@ abstract class TrackingService : Service() {
         super.onDestroy()
         serviceScope.cancel()
     }
+
+    abstract fun startAlgorithm()
+
 }
