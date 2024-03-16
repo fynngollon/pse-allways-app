@@ -99,7 +99,7 @@ fun TrackingRegularitySelection(
         .padding(horizontal = 16.dp)
     ) {
         Text(
-            text = stringResource(id = R.string),
+            text = stringResource(id = R.string.settings_tracking_regularity),
             modifier = Modifier
                 .weight(2f)
                 .padding(end = 16.dp)
