@@ -87,7 +87,6 @@ class LocationService : TrackingService() {
             }
             .launchIn(serviceScope)
 
-
         startForeground(LOCATION_TRACKING_NOTIFICATION_ID, notification.build())
     }
 

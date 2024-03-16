@@ -116,6 +116,10 @@ class AppPreferences @Inject constructor(
                 val batteryLevel = getBatteryLevel()
                 if(batteryLevel <= batteryDependency.first) {
                     this.trackingRegularity = batteryDependency.second
+                    Intent(context, LocationService::class.java).apply {
+                        action = ACTION_START
+                        context.startService(this)
+                    }
                 }
             }
             //actual get-method
