@@ -1,6 +1,7 @@
 package com.pseteamtwo.allways.data.di
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.pseteamtwo.allways.data.account.repository.AccountRepository
 import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
@@ -63,6 +64,22 @@ object DatabaseModule {
     fun provideDefaultStageNetworkDataSource(): DefaultStageNetworkDataSource {
         return DefaultStageNetworkDataSource()
     }
+
+   /* @Singleton
+    @Provides
+    fun provideQuestionRepository(profileQuestionDao: ProfileQuestionDao,
+                                  profileQuestionNetworkDataSource: ProfileQuestionNetworkDataSource,
+                                  profileQuestionnaireNetworkDataSource: ProfileQuestionnaireNetworkDataSource,
+                                  accountRepository: AccountRepository,
+                                  @DefaultDispatcher dispatcher: CoroutineDispatcher,) : QuestionRepository {
+        return ProfileQuestionRepository(
+            profileQuestionDao,
+            profileQuestionNetworkDataSource,
+            profileQuestionnaireNetworkDataSource,
+            accountRepository,
+            dispatcher
+        )
+    }*/
 
     @Singleton
     @Provides
