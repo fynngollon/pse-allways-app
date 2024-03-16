@@ -64,7 +64,7 @@ fun TripsScreen(
 ) {
     val tripsViewModel: TripsViewModel = hiltViewModel()
     val tripsUiState by tripsViewModel.tripsUiState.collectAsState()
-    val tripUiStates = tripsUiState.tripUiStates
+    //val tripUiStates = tripsUiState.tripUiStates
 
     var showAddTripDialog by rememberSaveable { mutableStateOf(false) }
     var addedTripUiStateId by remember {
@@ -75,7 +75,7 @@ fun TripsScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         Column {
-            if(tripUiStates.isNotEmpty()) {
+            if(tripsUiState.tripUiStates.isNotEmpty()) {
                 Column {
                     Spacer(modifier = modifier.height(8.dp))
                     Row(
@@ -102,8 +102,8 @@ fun TripsScreen(
                 ) {
                     var date: LocalDate? = null
                     items(
-                        tripUiStates,
-                        key = { item: TripUiState -> item.id}
+                        tripsUiState.tripUiStates,
+                        //key = { item: TripUiState -> item.id}
                     ) {
                             tripUiState: TripUiState ->
                         if(date != tripUiState.startDateTime.toLocalDate()) {
