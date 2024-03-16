@@ -152,21 +152,6 @@ class DefaultTripAndStageRepository @Inject constructor(
             listOfStages.add(createStageOfExistingGpsPoints(listOfGpsPoints, stage.mode))
         }
         createTripOfExistingStages(listOfStages, purpose, true)
-
-        //TODO("the following part is deprecated but still saved because it could be better on certain errors")
-        /*val tripWithoutId = LocalTrip(purpose = purpose, isConfirmed = true)
-        val createdTripId = tripLocalDataSource.insert(tripWithoutId)
-
-        stages.forEach { stage ->
-            val stageWithoutId = LocalStage(tripId = createdTripId, mode = stage.mode)
-            val createdStageId = stageLocalDataSource.insert(stageWithoutId)
-
-            stage.gpsPoints.forEach { gpsPoint ->
-                val location = gpsPoint.geoPoint.toLocation(gpsPoint.time.convertToMillis())
-                val gpsPointWithoutId = LocalGpsPoint(stageId = createdStageId, location = location)
-                gpsPointLocalDataSource.insert(gpsPointWithoutId)
-            }
-        }*/
     }
 
 
