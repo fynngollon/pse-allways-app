@@ -101,7 +101,7 @@ fun TrackingRegularitySelection(
         Text(
             text = stringResource(id = R.string.settings_tracking_regularity),
             modifier = Modifier
-                .weight(5f)
+                .weight(4f)
                 .padding(end = 16.dp)
                 .align(Alignment.CenterVertically)
         )
@@ -113,11 +113,11 @@ fun TrackingRegularitySelection(
             onExpandedChange = { isExpanded = it },
             modifier = Modifier
                 .align(Alignment.CenterVertically)  // Align vertically within Row
-                .weight(5f)
+                .weight(6f)
                 .wrapContentWidth(Alignment.End)
         ) {
             OutlinedTextField(
-                value = selectedRegularity.name,
+                value = currentRegularity.getStringForRegularity(),
                 onValueChange = {},
                 readOnly = true,
                 leadingIcon = {
@@ -128,11 +128,11 @@ fun TrackingRegularitySelection(
                 },
                 shape = RoundedCornerShape(4.dp),
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                textStyle = TextStyle.Default.copy(fontSize = 12.sp),
+                //textStyle = TextStyle.Default.copy(fontSize = 12.sp),
                 modifier = Modifier
                     .menuAnchor()
                     .height(45.dp)
-                    .width(200.dp)
+                    .width(400.dp)
             )
 
             ExposedDropdownMenu(expanded = isExpanded,
