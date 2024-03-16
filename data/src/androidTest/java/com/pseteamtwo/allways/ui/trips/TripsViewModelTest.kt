@@ -2,13 +2,11 @@ package com.pseteamtwo.allways.ui.trips
 
 import com.pseteamtwo.allways.data.trip.Mode
 import com.pseteamtwo.allways.data.trip.Purpose
-import com.pseteamtwo.allways.data.trip.repository.TripAndStageRepository
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
