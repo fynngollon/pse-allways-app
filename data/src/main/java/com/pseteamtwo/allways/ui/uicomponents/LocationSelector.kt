@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -30,6 +31,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 
 import androidx.core.content.ContextCompat
+import com.pseteamtwo.allways.R
 
 import com.pseteamtwo.allways.ui.map.addressToString
 
@@ -179,7 +181,7 @@ fun LocationSelector(
                                 onDismissRequest()
                             }
                         ) {
-                            Text(text = "Bestätigen")
+                            Text(text = stringResource(id = R.string.verify))
                         }
                     }
                 }

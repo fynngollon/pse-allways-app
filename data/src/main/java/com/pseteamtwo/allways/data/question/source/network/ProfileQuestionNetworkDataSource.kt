@@ -3,6 +3,7 @@ package com.pseteamtwo.allways.data.question.source.network
 import com.pseteamtwo.allways.data.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.data.question.QuestionType
 import kotlinx.coroutines.sync.Mutex
+import java.sql.SQLException
 
 /**
  * This class implements the [QuestionNetworkDataSource]
@@ -49,7 +50,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
                 return questions
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // Handle database errors (e.g., connection issues)
             throw Exception("Failed to load all questions", e)
         } finally {
@@ -83,7 +84,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
                 }
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // Handle database errors (e.g., connection issues, invalid data)
             throw Exception("Failed to save questions", e)
         } finally {
@@ -107,7 +108,7 @@ class ProfileQuestionNetworkDataSource : QuestionNetworkDataSource, BaseNetworkD
                 statement.close()
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // Handle database errors (e.g., connection issues, invalid id)
             throw Exception("Failed to delete question with id: $id", e)
         } finally {

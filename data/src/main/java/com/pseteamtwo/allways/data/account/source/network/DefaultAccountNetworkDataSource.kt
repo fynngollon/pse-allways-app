@@ -47,7 +47,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 }
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // Handle errors (e.g., database connection issues, invalid email)
             throw Exception("Failed to load account", e)
         } finally {
@@ -149,7 +149,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
 
         } catch (sqlExc: SQLException) {
             throw sqlExc
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // 5. Handle errors (e.g., database connection issues, duplicate entries)
             throw Exception("Failed to save account", e)
         } finally {
@@ -192,7 +192,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
             }
 
             accountConnection.close()
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // 5. Handle errors (e.g., database connection issues, deletion failure)
             throw Exception("Failed to delete account", e)
         } finally {
@@ -226,7 +226,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 return doesExist
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // 7. Handle errors (e.g., database connection issues)
             throw Exception("Failed to check email existence", e)
         } finally {
@@ -260,7 +260,7 @@ class DefaultAccountNetworkDataSource : AccountNetworkDataSource, BaseNetworkDat
                 return doesExist
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // 7. Handle errors (e.g., database connection issues)
             throw Exception("Failed to check pseudonym existence", e)
         } finally {

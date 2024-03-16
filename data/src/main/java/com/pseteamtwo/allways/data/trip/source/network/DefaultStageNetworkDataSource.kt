@@ -4,6 +4,7 @@ import android.util.Log
 import com.pseteamtwo.allways.data.network.BaseNetworkDataSource
 import com.pseteamtwo.allways.data.trip.Mode
 import kotlinx.coroutines.sync.Mutex
+import java.sql.SQLException
 
 /**
  * This class implements the [StageNetworkDataSource].
@@ -50,7 +51,7 @@ class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSou
                 return stages
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             // Handle database errors (e.g., connection issues)
             throw Exception("Failed to load all stages", e)
         } finally {
@@ -95,7 +96,7 @@ class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSou
                     // Execute the batch insert and handle overall execution errors
                     try {
                         statement.executeBatch()
-                    } catch (e: Exception) {
+                    } catch (e: SQLException) {
                         // Handle batch execution errors (e.g., network issues, connection problems)
                         throw Exception("Failed to save stages: ${e.message}", e)
                     }
@@ -127,7 +128,7 @@ class DefaultStageNetworkDataSource : StageNetworkDataSource, BaseNetworkDataSou
                 return 1
             }
 
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             throw Exception("Failed to delete stage with id: $id", e)
         } finally {
             accessMutex.unlock() // Release lock after operation
