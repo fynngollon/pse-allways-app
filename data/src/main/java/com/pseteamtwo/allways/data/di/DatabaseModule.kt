@@ -1,7 +1,6 @@
 package com.pseteamtwo.allways.data.di
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
 import com.pseteamtwo.allways.data.account.repository.AccountRepository
 import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
@@ -128,6 +127,9 @@ object DatabaseModule {
     @Provides
     fun provideGpsPointDao(database: TripAndStageDatabase): GpsPointDao = database.gpsPointDao()
 
+    @Provides
+    @Singleton
+    fun provideAppPreferences(context: Application): AppPreferences = AppPreferences(context.applicationContext)
 }
 
 @Module

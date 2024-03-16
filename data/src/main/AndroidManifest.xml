@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".data.trip.tracking.TrackingNotification"
+        android:name=".data.trip.tracking.location.TrackingNotification"
         android:allowBackup="true"
         android:icon="@mipmap/allways_app_icon"
         android:roundIcon="@mipmap/allways_app_icon_round"

@@ -17,10 +17,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.pseteamtwo.allways.data.settings.AppPreferences
 import com.pseteamtwo.allways.ui.navigation.BottomNavigation
 import com.pseteamtwo.allways.ui.navigation.SetUpNavGraph
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +39,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(this)
-
         requestLocationPermissions()
 
         setContent {
@@ -82,46 +84,34 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private var hasShownPermissionDialog = false
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { results ->
         val granted = results.all { it.value }
-        if (granted) {
-            startTracking()
-        } else {
-            if (!hasShownPermissionDialog) {
-                showPermissionExplanationDialog()
-                hasShownPermissionDialog = true
-            }
+
+        // Permission granted for the first time
+        if (granted && AppPreferences(this).isTrackingEnabled) {
+            AppPreferences(this).isTrackingEnabled = true
+        }
+
+        // Permission denied
+        if (!granted) {
+            AppPreferences(this).isTrackingEnabled = false
+            if (!AppPreferences(this).hasDeniedPermissionBefore) showPermissionExplanationDialog()
+            AppPreferences(this).hasDeniedPermissionBefore = true
         }
     }
 
     private fun showPermissionExplanationDialog() {
         val builder = AlertDialog.Builder(this)
-        val message = if (!hasShownPermissionDialog) {
-            MSG_PERMISSION_EXPLANATION
-        } else {
-            MSG_PERMISSION_DENIED
-        }
-        builder.setTitle("Wegeerkennung benötigt Berechtigungen")
-            .setMessage(message)
-            .setCancelable(false) // Optional: prevent dismissal by tapping outside
-            .setPositiveButton("OK") { dialog, _ ->
+        builder.setTitle(getString(R.string.trip_recognition_needs_permission))
+            .setMessage(getString(R.string.msg_permission_explanation))
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
-                requestLocationPermissions() // Request permission again after explanation
+                requestLocationPermissions()
             }
         builder.create().show()
-    }
-
-    companion object {
-        const val MSG_PERMISSION_EXPLANATION = "Die App benötigt die Standortberechtigungen, " +
-                "um Ihre Wege automatisch zu erfassen."
-
-        const val MSG_PERMISSION_DENIED = "Sie haben die Standortberechtigungen abgelehnt und " +
-                "können daher die automatische Wegeerkennung nicht nutzen. In den Einstellungen" +
-                " innerhalb der App können Sie die Wegeerkennung aktivieren und die Berechtigung" +
-                " erteilen."
     }
 }

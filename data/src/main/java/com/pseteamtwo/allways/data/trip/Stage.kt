@@ -1,6 +1,6 @@
 package com.pseteamtwo.allways.data.trip
 
-import com.pseteamtwo.allways.data.trip.tracking.calculateDistance
+import com.pseteamtwo.allways.data.trip.tracking.location.calculateDistance
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
@@ -9,7 +9,7 @@ import org.threeten.bp.ZonedDateTime
 /**
  * Representation of a stage traveled by the user (to be also used outside this data module).
  *
- * A stage can be created by recording through [com.pseteamtwo.allways.trip.tracking] tracking
+ * A stage can be created by recording through [com.pseteamtwo.allways.data.trip.tracking] tracking
  * or by the user himself. A stage should be part of only 1 [Trip].
  *
  * @property id The unique identification number of the stage for saving, editing and retrieving

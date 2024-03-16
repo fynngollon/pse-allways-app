@@ -66,7 +66,7 @@ data class LocalTripWithStages(
         parentColumn = "id",
         entityColumn = "tripId"
     )
-    val stages: List<LocalStageWithGpsPoints>
+    val stages: List<LocalStageWithGpsPoints> = emptyList()
 ) {
 
     val sortedStages: List<LocalStageWithGpsPoints> by lazy {

@@ -14,10 +14,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.ui.navigation.Screen
 
 /**
@@ -48,12 +50,12 @@ fun LoginScreen(navController: NavController) {
             Card {
                 Column {
                     Row(modifier = Modifier.padding(20.dp)) {
-                        Text(text = "Derzeit ist keine Verbindung zum Server herstellbar. Versuchen Sie es zu einem späteren Zeitpunkt noch einmal.")
+                        Text(text = stringResource(id = R.string.no_connection_to_server))
 
                     }
                     Row(modifier = Modifier.padding(20.dp)) {
                         Button(onClick = onDismissRequest) {
-                            Text(text = "OK")
+                            Text(text = stringResource(id = R.string.ok))
                         }
                     }
                 }
@@ -68,11 +70,11 @@ fun LoginScreen(navController: NavController) {
             Card {
                 Column {
                     Row(modifier = Modifier.padding(20.dp)) {
-                        Text(text = "Account konnte nicht eingeloggt werden")
+                        Text(text = stringResource(id = R.string.login_failed))
                     }
                     Row(modifier = Modifier.padding(20.dp)) {
                         Button(onClick =  onDismissRequest ) {
-                            Text(text = "OK")
+                            Text(text = stringResource(id = R.string.ok))
                         }
                     }
                 }
@@ -87,12 +89,12 @@ fun LoginScreen(navController: NavController) {
             Card {
                 Column {
                     Row(modifier = Modifier.padding(20.dp)) {
-                        Text(text = "Account mit diesem Namen existiert bereits.")
+                        Text(text = stringResource(id = R.string.account_already_exists))
 
                     }
                     Row(modifier = Modifier.padding(20.dp)) {
                         Button(onClick =  onDismissRequest) {
-                            Text(text = "OK")
+                            Text(text = stringResource(id = R.string.ok))
                         }
                     }
                 }
@@ -108,15 +110,11 @@ fun LoginScreen(navController: NavController) {
             Card {
                 Column {
                     Row(modifier = Modifier.padding(20.dp)) {
-                        Text(text =  "The given password has to contain at least\n" +
-                                "one uppercase letter,\n" +
-                                "one lowercase letter,\n" +
-                                "one number,\n" +
-                                "one special character.")
+                        Text(text =  stringResource(id = R.string.email_invalid_format))
                     }
                     Row(modifier = Modifier.padding(20.dp)) {
                         Button(onClick =  onDismissRequest) {
-                            Text(text = "OK")
+                            Text(text = stringResource(id = R.string.ok))
                         }
                     }
                 }
@@ -131,11 +129,11 @@ fun LoginScreen(navController: NavController) {
             Card {
                 Column {
                     Row(modifier = Modifier.padding(20.dp)) {
-                        Text(text =  "The given email is of invalid format.")
+                        Text(text =  stringResource(id = R.string.password_invalid_format))
                     }
                     Row(modifier = Modifier.padding(20.dp)) {
                         Button(onClick =  onDismissRequest) {
-                            Text(text = "OK")
+                            Text(text = stringResource(id = R.string.ok))
                         }
                     }
                 }
@@ -149,14 +147,14 @@ fun LoginScreen(navController: NavController) {
 
     Column(modifier = Modifier.padding(20.dp)) {
         Row(modifier = Modifier.padding(start = 20.dp)) {
-            Text(text = "Email")
+            Text(text = stringResource(id = R.string.email))
         }
         Row (modifier = Modifier.padding( start = 20.dp)){
             OutlinedTextField(value = email, onValueChange = {it -> email = it})
         }
 
         Row (modifier = Modifier.padding(top = 20.dp, start = 20.dp)){
-            Text(text = "Passwort")
+            Text(text = stringResource(id = R.string.password))
         }
         Row(modifier = Modifier.padding(start = 20.dp)) {
             OutlinedTextField(value = password, onValueChange = {it -> password = it})
@@ -165,12 +163,12 @@ fun LoginScreen(navController: NavController) {
         Row(modifier = Modifier.padding(start = 20.dp, top = 15.dp)) {
             Column {
                 Button(onClick = {loginViewModel.validateLogin(email, password)}) {
-                    Text(text = "Einloggen")
+                    Text(text = stringResource(id = R.string.login_text))
                 }
             }
             Column(modifier = Modifier.padding(start = 20.dp)) {
                 Button(onClick = {loginViewModel.createAccount(email, password)}) {
-                    Text(text = "Registrieren")
+                    Text(text = stringResource(id = R.string.register))
                 }
             }
 
@@ -178,7 +176,7 @@ fun LoginScreen(navController: NavController) {
 
         Row (modifier = Modifier.padding(start = 20.dp, top = 15.dp)){
             Button(onClick = {loginViewModel.useWithoutAccount()}) {
-                Text(text = "Ohne Account benutzen")
+                Text(text = stringResource(id = R.string.use_without_account))
             }
         }
 

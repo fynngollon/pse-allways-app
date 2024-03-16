@@ -3,7 +3,6 @@ package com.pseteamtwo.allways.data.trip.tracking
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.core.content.ContextCompat
 
 fun Context.hasLocationPermission(): Boolean {

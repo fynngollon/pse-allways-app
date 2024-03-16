@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">AllWays</string>
+
+    <string name="home">Home</string>
+    <string name="trips">Trips</string>
+    <string name="statistics">Statistics</string>
+    <string name="profile">Profile</string>
+    <string name="login">Login</string>
+    <string name="settings">Settings</string>
+    <string name="spend_data">Spend data</string>
+    <string name="bottom_bar">Bottom bar</string>
+
+
+    <string name="ok">OK</string>
+    <string name="change">Change</string>
+    <string name="save">Save</string>
+    <string name="verify">Verify</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="no_connection_to_server">Currently there is no connection to the server. Please try again later.</string>
+
+    <string name="use_without_account">use without account</string>
+    <string name="login_text">log in</string>
+    <string name="register">register</string>
+    <string name="email">email</string>
+    <string name="email_invalid_format">The provided email is of invalid format.</string>
+    <string name="password">password</string>
+    <string name="password_invalid_format">The provided password has to contain at least:\n\n
+        - one lower case letter\n
+        - one upper case letter\n
+        - one digit\n
+        - one special character</string>
+    <string name="login_failed">Login into account failed.</string>
+    <string name="account_already_exists">An account with the provided email already exists. Please consider logging in instead.</string>
+
+    <string name="no_trips_yet">No trips yet…</string>
+    <string name="add_trip">Add trip</string>
+    <string name="empty_trips_message">Wait until the app recognizes a trip or click on + to add a trip.</string>
+    <string name="new_trip">New trip</string>
+    <string name="edit_trip">Edit trip</string>
+    <string name="verify_trip">Verify trip</string>
+    <string name="delete_trip">Delete trip</string>
+    <string name="trip_purpose">Trip purpose</string>
+    <string name="add_stage">Add stage</string>
+    <string name="arrival_at">Arrival at</string>
+    <string name="means_of_transportation">Means of transportation</string>
+    <string name="clock">o\'clock</string>
+    <string name="pick_date">Pick date</string>
+    <string name="from">From</string>
+    <string name="until">Until</string>
+
+    <string name="profile_questions">Profile-Questions</string>
+    <string name="household_questions">Household-Questions</string>
+    <string name="save_changes">Save changes</string>
+
+    <string name="trip_recognition_needs_permission">Trip recognition needs permission.</string>
+    <string name="msg_permission_explanation">The app needs location permissions in order to automatically recognize your trips. You can turn on the trip recognition at any time in the app\'s settings.</string>
+    <string name="msg_permission_denied">You denied the location permissions and therefore you cannot use the automatic trip recognition. You can grant the permissions by activating the trip recognition in the app\'s settings.</string>
+    <string name="tracking_notification_text">The location is being tracked.</string>
+    <string name="tracking_notification_title">Trip recognition is active</string>
+
+</resources>
