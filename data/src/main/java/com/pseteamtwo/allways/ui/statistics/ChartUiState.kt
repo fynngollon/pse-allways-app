@@ -11,9 +11,9 @@ data class ChartUiState(
     var type: ChartType,
 
     /**
-     * The title of the chart displayed above the chart
+     * The content of the chart to determine its title and unit
      */
-    var title: String,
+    var contentType: ChartContent,
 
     /**
      * The list of labels of this chart indicating what the given information is referring to.
@@ -23,10 +23,5 @@ data class ChartUiState(
     /**
      * The list of values corresponding to the [labels]
      */
-    var values: List<Long>,
-
-    /**
-     * The unit in which the information is expressed
-     */
-    var unit: String
+    var values: List<Long>
 )
