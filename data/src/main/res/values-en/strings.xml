@@ -70,7 +70,6 @@
     <string name="tracking_notification_text">Your location is being tracked.</string>
     <string name="tracking_notification_title">Trip recognition is active</string>
     <string name="settings_trip_recognition">Trip recognition</string>
-    <string name="settings_tracking_regularity">Tracking interval</string>
 
     <string name="purpose_none">(Not entered)</string>
     <string name="purpose_work">Work</string>
@@ -82,5 +81,11 @@
     <string name="purpose_other_errands">Other errands</string>
     <string name="purpose_home">Going home</string>
     <string name="purpose_other">Other</string>
+
+    <string name="settings_tracking_regularity">Tracking interval</string>
+    <string name="tracking_regularity_never">Never</string>
+    <string name="tracking_regularity_rarely">Every minute</string>
+    <string name="tracking_regularity_medium">All 30 seconds</string>
+    <string name="tracking_regularity_often">All 10 seconds</string>
 
 </resources>

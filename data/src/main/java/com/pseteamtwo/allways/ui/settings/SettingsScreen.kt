@@ -68,7 +68,7 @@ fun SettingsScreen() {
                 },
                 modifier = Modifier
                     .size(25.dp)
-                    .padding(end = 16.dp)
+                    .padding(end = 24.dp)
             )
 
             MissingPermissionDialog(hasPermission.value, isActive) {
@@ -101,7 +101,7 @@ fun TrackingRegularitySelection(
         Text(
             text = stringResource(id = R.string.settings_tracking_regularity),
             modifier = Modifier
-                .weight(2f)
+                .weight(5f)
                 .padding(end = 16.dp)
                 .align(Alignment.CenterVertically)
         )
@@ -142,7 +142,7 @@ fun TrackingRegularitySelection(
                     if (regularity != TrackingRegularity.NEVER) {
                         DropdownMenuItem(
                             text = {
-                                Text(regularity.name)
+                                Text(text = stringResource(id = regularity.regularity_id))
                             },
                             onClick = {
                                 isExpanded = false

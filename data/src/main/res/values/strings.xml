@@ -70,7 +70,6 @@
     <string name="tracking_notification_text">Der Standort wird geortet.</string>
     <string name="tracking_notification_title">Wegeerkennung aktiv</string>
     <string name="settings_trip_recognition">Wegeerkennung</string>
-    <string name="settings_tracking_regularity">Trackingintervall</string>
 
     <string name="purpose_none">(Nicht eingetragen)</string>
     <string name="purpose_work">Arbeit</string>
@@ -82,5 +81,11 @@
     <string name="purpose_other_errands">Andere Erledigungen</string>
     <string name="purpose_home">Nach Hause gehen</string>
     <string name="purpose_other">Andere</string>
+
+    <string name="settings_tracking_regularity">Trackingintervall</string>
+    <string name="tracking_regularity_never">Nie</string>
+    <string name="tracking_regularity_rarely">Jede Minute</string>
+    <string name="tracking_regularity_medium">Alle 30 Sekunden</string>
+    <string name="tracking_regularity_often">Alle 10 Sekunden</string>
 
 </resources>
