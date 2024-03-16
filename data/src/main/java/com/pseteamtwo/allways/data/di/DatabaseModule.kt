@@ -1,8 +1,6 @@
 package com.pseteamtwo.allways.data.di
 
-import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.room.Room
 import com.pseteamtwo.allways.data.account.repository.AccountRepository
 import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
@@ -22,7 +20,6 @@ import com.pseteamtwo.allways.data.question.source.network.HouseholdQuestionnair
 import com.pseteamtwo.allways.data.question.source.network.ProfileQuestionNetworkDataSource
 import com.pseteamtwo.allways.data.question.source.network.ProfileQuestionnaireNetworkDataSource
 import com.pseteamtwo.allways.data.question.source.network.QuestionNetworkDataSource
-import com.pseteamtwo.allways.data.settings.AppPreferences
 import com.pseteamtwo.allways.data.statistics.DefaultStatisticsRepository
 import com.pseteamtwo.allways.data.statistics.StatisticsRepository
 import com.pseteamtwo.allways.data.trip.repository.DefaultTripAndStageRepository
@@ -66,6 +63,22 @@ object DatabaseModule {
     fun provideDefaultStageNetworkDataSource(): DefaultStageNetworkDataSource {
         return DefaultStageNetworkDataSource()
     }
+
+   /* @Singleton
+    @Provides
+    fun provideQuestionRepository(profileQuestionDao: ProfileQuestionDao,
+                                  profileQuestionNetworkDataSource: ProfileQuestionNetworkDataSource,
+                                  profileQuestionnaireNetworkDataSource: ProfileQuestionnaireNetworkDataSource,
+                                  accountRepository: AccountRepository,
+                                  @DefaultDispatcher dispatcher: CoroutineDispatcher,) : QuestionRepository {
+        return ProfileQuestionRepository(
+            profileQuestionDao,
+            profileQuestionNetworkDataSource,
+            profileQuestionnaireNetworkDataSource,
+            accountRepository,
+            dispatcher
+        )
+    }*/
 
     @Singleton
     @Provides

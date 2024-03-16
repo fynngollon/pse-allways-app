@@ -2,6 +2,7 @@ package com.pseteamtwo.allways.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pseteamtwo.allways.data.account.repository.AccountRepository
 import com.pseteamtwo.allways.data.account.repository.DefaultAccountRepository
 import com.pseteamtwo.allways.data.exception.AccountAlreadyExistsException
 import com.pseteamtwo.allways.data.exception.AccountNotFoundException
@@ -19,7 +20,7 @@ import javax.inject.Inject
  * Viewmodel to retrieve and update the login related data for the [LoginScreen] and
  */
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val accountRepository: DefaultAccountRepository): ViewModel() {
+class LoginViewModel @Inject constructor(private val accountRepository: AccountRepository): ViewModel() {
     private var _loginUiState: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState(loggedIn = false, loginFailed = false, serverConnectionFailed = false, accountAlreadyExists = false, invalidEmail = false, invalidPassword = false))
     val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 

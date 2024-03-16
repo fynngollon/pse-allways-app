@@ -96,7 +96,6 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
                 "Meter"
             )
             )
-
     }
 
     /**

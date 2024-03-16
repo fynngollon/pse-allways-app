@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 /**
  * This data access object provides functionality to access the [TripAndStageDatabase] in terms
@@ -19,6 +20,17 @@ import androidx.room.Update
  */
 @Dao
 interface StageDao {
+
+    /**
+     * Observe all stages of the trip specified by the given [tripId].
+     *
+     * @param tripId Identification number of the trip to observe from the database.
+     * @return All stages for the specified trip. If there is no such stage, flow will contain
+     * an emptyList.
+     */
+    @Transaction
+    @Query("SELECT * FROM stages WHERE tripId = :tripId")
+    fun observeStagesWithGpsPointsForTrip(tripId: Long): Flow<List<LocalStageWithGpsPoints>>
 
     /**
      * Get the stage specified by the given id.
