@@ -49,6 +49,17 @@
     <string name="from">Von</string>
     <string name="until">Bis</string>
 
+    <string name="distance_all">Distanz aller Wege zusammen</string>
+    <string name="duration_all">Dauer aller Wege zusammen</string>
+    <string name="modal_split_all">Anteil Verkehrsmittel insgesamt</string>
+    <string name="distance_last_week">Zurückgelegte Distanzen der letzten Woche in Metern</string>
+    <string name="distance_today">Heute zurückgelegte Distanz</string>
+    <string name="duration_today">Gesamtdauer der heutigen Wege</string>
+    <string name="modal_split_today">Anteil Verkehrsmittel heute</string>
+    <string name="unit_meters">Meter</string>
+    <string name="unit_minutes">Minuten</string>
+    <string name="unit_nothing" />
+
     <string name="profile_questions">Persönliche Fragen</string>
     <string name="household_questions">Haushaltsfragen</string>
     <string name="save_changes">Änderungen speichern</string>
@@ -58,5 +69,7 @@
     <string name="msg_permission_denied">Sie haben die Standortberechtigungen abgelehnt und können daher die automatische Wegeerkennung nicht nutzen. In den Einstellungen innerhalb der App können Sie die Wegeerkennung aktivieren und die Berechtigung erteilen.</string>
     <string name="tracking_notification_text">Der Standort wird geortet.</string>
     <string name="tracking_notification_title">Wegeerkennung aktiv</string>
+    <string name="settings_trip_recognition">Wegeerkennung</string>
+    <string name="settings_language">Sprache</string>
 
 </resources>

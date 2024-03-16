@@ -49,6 +49,17 @@
     <string name="from">From</string>
     <string name="until">Until</string>
 
+    <string name="distance_all">Distance of all trips together</string>
+    <string name="duration_all">Duration of all trips together</string>
+    <string name="modal_split_all">Percentages of means of transportation for all trips</string>
+    <string name="distance_last_week">Distances of last week in meters</string>
+    <string name="distance_today">Distance travelled today</string>
+    <string name="duration_today">Duration travelled today</string>
+    <string name="modal_split_today">Percentages of means of transportation for today</string>
+    <string name="unit_meters">meters</string>
+    <string name="unit_minutes">minutes</string>
+    <string name="unit_nothing" />
+
     <string name="profile_questions">Profile-Questions</string>
     <string name="household_questions">Household-Questions</string>
     <string name="save_changes">Save changes</string>
@@ -56,7 +67,9 @@
     <string name="trip_recognition_needs_permission">Trip recognition needs permission.</string>
     <string name="msg_permission_explanation">The app needs location permissions in order to automatically recognize your trips. You can turn on the trip recognition at any time in the app\'s settings.</string>
     <string name="msg_permission_denied">You denied the location permissions and therefore you cannot use the automatic trip recognition. You can grant the permissions by activating the trip recognition in the app\'s settings.</string>
-    <string name="tracking_notification_text">The location is being tracked.</string>
+    <string name="tracking_notification_text">Your location is being tracked.</string>
     <string name="tracking_notification_title">Trip recognition is active</string>
+    <string name="settings_trip_recognition">Trip recognition</string>
+    <string name="settings_language">Language</string>
 
 </resources>

@@ -90,10 +90,9 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      */
      suspend fun addCompleteDistanceChart() {
             chartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
-                "Distanz aller Wege zusammen",
+                ChartContent.DISTANCE_ALL,
                 listOf("Distanz"),
-                listOf(statisticsRepository.getTripDistanceOfAll().toLong()),
-                "Meter"
+                listOf(statisticsRepository.getTripDistanceOfAll().toLong())
             )
             )
     }
@@ -103,11 +102,11 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      * The chart is of type [SingleValue]
      */
      suspend fun addCompleteDurationChart() {
-            chartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
-                "Dauer aller Wege zusammen",
+            chartUiStates.add(ChartUiState(
+                ChartType.SINGLE_VALUE,
+                ChartContent.DURATION_ALL,
                 listOf("Dauer"),
-                listOf(statisticsRepository.getTripDurationOfAll().toLong()),
-                "Minuten"
+                listOf(statisticsRepository.getTripDurationOfAll().toLong())
             )
             )
     }
@@ -129,11 +128,11 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
             }
 
 
-            chartUiStates.add(ChartUiState(ChartType.PIE,
-                "Anteil Verkehrsmittel insgesamt",
+            chartUiStates.add(ChartUiState(
+                ChartType.PIE,
+                ChartContent.MODAL_SPLIT_ALL,
                 completeModalSplitLabels,
-                completeModalSplitValues,
-                ""
+                completeModalSplitValues
             )
             )
 
@@ -159,11 +158,11 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
                 //currentDate = currentDate.plusDays(-1)
             }
 
-            chartUiStates.add(ChartUiState(ChartType.COLUMN,
-                "Zurückgelegte Distanzen der letzten Woche in Metern",
+            chartUiStates.add(ChartUiState(
+                ChartType.COLUMN,
+                ChartContent.DISTANCE_LAST_WEEK,
                 distanceLastWeekLabels,
-                distanceLastWeekValues,
-                ""
+                distanceLastWeekValues
             )
             )
     }
@@ -174,11 +173,11 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
      * The chart is of type [SingleValue]
      */
      suspend fun addTodaysDistanceChartHome() {
-            homeChartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
-                "Heute zurückgelegte Distanz",
+            homeChartUiStates.add(ChartUiState(
+                ChartType.SINGLE_VALUE,
+                ChartContent.DISTANCE_TODAY,
                 listOf("Distanz"),
-                listOf(statisticsRepository.getTripDistanceOfDate(LocalDate.now()).toLong()),
-                "Meter"
+                listOf(statisticsRepository.getTripDistanceOfDate(LocalDate.now()).toLong())
             ))
 
     }
@@ -196,27 +195,26 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
 
             for(mode in Mode.entries) {
                 if(oneDayModalSplit.containsKey(mode)) {
-                    Log.d("Tag", "true")
                     oneDayModalSplitLabels.add(mode.modeType)
                     oneDayModalSplit[mode]?.let { oneDayModalSplitValues.add(it.toLong()/10) }
                 }
             }
 
-            homeChartUiStates.add(ChartUiState(ChartType.PIE,
-                "Anteil Verkehrsmittel heute",
+            homeChartUiStates.add(ChartUiState(
+                ChartType.PIE,
+                ChartContent.MODAL_SPLIT_TODAY,
                 oneDayModalSplitLabels,
-                oneDayModalSplitValues,
-                ""
+                oneDayModalSplitValues
             )
             )
     }
 
     suspend fun addTodaysDurationChart() {
-        homeChartUiStates.add(ChartUiState(ChartType.SINGLE_VALUE,
-            "Gesamtdauer der heutigen Wege",
+        homeChartUiStates.add(ChartUiState(
+            ChartType.SINGLE_VALUE,
+            ChartContent.DURATION_TODAY,
             listOf("Dauer"),
-            listOf(statisticsRepository.getTripDurationOfDate(LocalDate.now())),
-            "Minuten"
+            listOf(statisticsRepository.getTripDurationOfDate(LocalDate.now()))
             ))
     }
 

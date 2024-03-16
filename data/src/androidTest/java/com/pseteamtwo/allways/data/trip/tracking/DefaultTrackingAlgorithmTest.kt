@@ -119,7 +119,6 @@ class DefaultTrackingAlgorithmTest {
         trackingAlgorithm = DefaultTrackingAlgorithm(
             repository,
             gpsPointDao,
-            tripDao,
             testDispatcher,
             testScope
         )
