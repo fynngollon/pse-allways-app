@@ -2,8 +2,7 @@ package com.pseteamtwo.allways.ui.login
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import org.junit.runner.RunWith
 
 
