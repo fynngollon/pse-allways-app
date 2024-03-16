@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.pseteamtwo.allways.R
 
 import com.pseteamtwo.allways.ui.uicomponents.EditTripDialog
 import com.pseteamtwo.allways.ui.uicomponents.TripCard
@@ -88,7 +90,7 @@ fun TripsScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Add,
-                                contentDescription = "Weg hinzufügen",
+                                contentDescription = stringResource(id = R.string.add_trip),
                                 modifier = modifier.size(48.dp)
                             )
                         }
@@ -130,7 +132,7 @@ fun TripsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Noch keine Wege...",
+                        text = stringResource(id = R.string.no_trips_yet),
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = modifier.height(24.dp))
@@ -142,14 +144,13 @@ fun TripsScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Add,
-                            contentDescription = "Weg hinzufügen",
+                            contentDescription = stringResource(id = R.string.add_trip),
                             modifier = modifier.size(48.dp)
                         )
                     }
                     Spacer(modifier = modifier.height(24.dp))
                     Text(
-                        text = "Warte bis die App einen Weg erkennt" +
-                                " oder tippe auf +, um einen Weg hinzuzufügen.",
+                        text = stringResource(id = R.string.empty_trips_message),
                         modifier.padding(horizontal = 32.dp),
                         textAlign = TextAlign.Center
                     )

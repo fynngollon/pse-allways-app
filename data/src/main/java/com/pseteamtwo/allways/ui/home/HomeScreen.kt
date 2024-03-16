@@ -18,10 +18,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.ui.navigation.Screen
 import com.pseteamtwo.allways.ui.profile.ProfileViewModel
 import com.pseteamtwo.allways.ui.statistics.DetailedStatisticsCard
@@ -70,20 +72,20 @@ fun HomeScreen(
                         showDonateDataDialog = true
                     }
                 ) {
-                    Text(text = "Daten spenden")
+                    Text(text = stringResource(id = R.string.spend_data))
                 }
             }
 
             Column {
                 Button(modifier = Modifier.padding(start = 20.dp, top = 50.dp),
                     onClick = { navController.navigate(route = Screen.Settings.route) }) {
-                    Text(text = "Einstellungen")
+                    Text(text = stringResource(id = R.string.settings))
                 }
             }
         }
 
         Row(modifier = Modifier.padding(start = 20.dp, top = 20.dp)) {
-            Text(text = "Statistiken", fontSize = 20.sp)
+            Text(text = stringResource(id = R.string.statistics), fontSize = 20.sp)
         }
 
         Row {

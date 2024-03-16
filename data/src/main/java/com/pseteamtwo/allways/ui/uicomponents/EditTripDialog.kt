@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
+import com.pseteamtwo.allways.R
 
 import com.pseteamtwo.allways.ui.trips.StageUiState
 import com.pseteamtwo.allways.ui.trips.TripUiState
@@ -123,7 +125,9 @@ fun EditTripDialog(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = if (tripUiState.tripId == 0L) "  Neuer Weg" else if(tripUiState.isConfirmed) "  Weg bearbeiten" else "  Weg bestätigen",
+                            text = "  " + if (tripUiState.tripId == 0L) stringResource(id = R.string.new_trip)
+                            else if(tripUiState.isConfirmed) stringResource(id = R.string.edit_trip)
+                            else stringResource(id = R.string.verify_trip),
                             style = MaterialTheme.typography.titleLarge
                         )
                         IconButton(
@@ -132,7 +136,7 @@ fun EditTripDialog(
                             },
                             modifier.scale(1.25f)
                         ) {
-                            Icon(imageVector = Icons.Rounded.Delete, contentDescription = "Weg löschen")
+                            Icon(imageVector = Icons.Rounded.Delete, contentDescription = stringResource(id = R.string.delete_trip))
                         }
                     }
                 }
@@ -154,7 +158,7 @@ fun EditTripDialog(
                             }
 
                             Text(
-                                text = "   Wegezweck:",
+                                text = "   " + stringResource(id = R.string.trip_purpose) + ":",
                                 modifier = modifier.weight(2.2f)
                             )
 
@@ -222,7 +226,7 @@ fun EditTripDialog(
                             modifier = modifier
                         ) {
                             Icon(
-                                imageVector = Icons.Rounded.Add, contentDescription = "Etappe hinzufügen",
+                                imageVector = Icons.Rounded.Add, contentDescription = stringResource(id = R.string.add_stage),
                             )
                         }
                     }
@@ -266,7 +270,7 @@ fun EditTripDialog(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        text = "Ankunft am ",
+                                        text = stringResource(id = R.string.arrival_at) + " ",
                                         modifier = modifier.weight(1f),
                                         textAlign = TextAlign.Right,
                                         lineHeight = 8.sp
@@ -300,7 +304,7 @@ fun EditTripDialog(
                             ,
                         ) {
                             Icon(
-                                imageVector = Icons.Rounded.Add, contentDescription = "Etappe hinzufügen",
+                                imageVector = Icons.Rounded.Add, contentDescription = stringResource(id = R.string.add_stage),
                             )
                         }
                     }
@@ -331,9 +335,9 @@ fun EditTripDialog(
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9549))
                         ) {
                             if(tripUiState.isConfirmed) {
-                                Text(text = "Speichern")
+                                Text(text = stringResource(id = R.string.save))
                             } else {
-                                Text(text = "Bestätigen")
+                                Text(text = stringResource(id = R.string.verify))
                             }
                         }
                         Spacer(modifier = modifier.width(8.dp))

@@ -1,9 +1,7 @@
 package com.pseteamtwo.allways
 
 import android.app.AlertDialog
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -36,7 +35,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(this)
-
         requestLocationPermissions()
 
         setContent {
@@ -101,27 +99,17 @@ class MainActivity : ComponentActivity() {
     private fun showPermissionExplanationDialog() {
         val builder = AlertDialog.Builder(this)
         val message = if (!hasShownPermissionDialog) {
-            MSG_PERMISSION_EXPLANATION
+            getString(R.string.msg_permission_explanation)
         } else {
-            MSG_PERMISSION_DENIED
+            getString(R.string.msg_permission_denied)
         }
-        builder.setTitle("Wegeerkennung benötigt Berechtigungen")
+        builder.setTitle(getString(R.string.trip_recognition_needs_permission))
             .setMessage(message)
             .setCancelable(false) // Optional: prevent dismissal by tapping outside
-            .setPositiveButton("OK") { dialog, _ ->
+            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
                 requestLocationPermissions() // Request permission again after explanation
             }
         builder.create().show()
-    }
-
-    companion object {
-        const val MSG_PERMISSION_EXPLANATION = "Die App benötigt die Standortberechtigungen, " +
-                "um Ihre Wege automatisch zu erfassen."
-
-        const val MSG_PERMISSION_DENIED = "Sie haben die Standortberechtigungen abgelehnt und " +
-                "können daher die automatische Wegeerkennung nicht nutzen. In den Einstellungen" +
-                " innerhalb der App können Sie die Wegeerkennung aktivieren und die Berechtigung" +
-                " erteilen."
     }
 }

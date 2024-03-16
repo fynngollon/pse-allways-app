@@ -58,6 +58,7 @@ import androidx.compose.ui.graphics.PathEffect
 
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -72,6 +73,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.compose.ui.window.Dialog
+import com.pseteamtwo.allways.R
 
 import com.pseteamtwo.allways.ui.trips.StageUiState
 import com.pseteamtwo.allways.data.trip.Mode
@@ -169,7 +171,7 @@ fun StageCard(
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B7DAF))
                         ) {
-                            Text(text = "Ändern")
+                            Text(text = stringResource(id = R.string.change))
                         }
                     }
                     Spacer(modifier = modifier.weight(0.25f))
@@ -213,7 +215,7 @@ fun StageCard(
                             }
 
                             Text(
-                                text = "Verkehrsmittel: ",
+                                text = stringResource(id = R.string.mean_of_transportation) + ": ",
                                 modifier = modifier.weight(2.2f)
                             )
 
@@ -297,7 +299,7 @@ fun StageCard(
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B7DAF))
                     ) {
-                        Text(text = "Ändern")
+                        Text(text = stringResource(id = R.string.change))
                     }
                     Spacer(modifier = modifier.weight(0.25f))
                 }
@@ -499,13 +501,13 @@ fun TimeRow(
         )
         Spacer(modifier = modifier.width(4.dp))
         Text(
-            text = "Uhr",
+            text = stringResource(id = R.string.clock),
         )
         Spacer(modifier = modifier.width(4.dp))
         IconButton(
             onClick = { showDatePicker = true },
         ) {
-            Icon(imageVector = Icons.Rounded.CalendarMonth, contentDescription = "Datum auswählen")
+            Icon(imageVector = Icons.Rounded.CalendarMonth, contentDescription = stringResource(id = R.string.pick_date))
         }
         if (showDatePicker) {
             DatePickerDialog(
@@ -524,7 +526,7 @@ fun TimeRow(
                             showDatePicker = false
                         }
                     ) {
-                        Text(text = "Ok")
+                        Text(text = stringResource(id = R.string.ok))
                     }
                 },
                 dismissButton = {
@@ -534,7 +536,7 @@ fun TimeRow(
                             showDatePicker = false
                         }
                     ) {
-                        Text(text = "Abbrechen")
+                        Text(text = stringResource(id = R.string.cancel))
                     }
                 }
             ) {
@@ -546,7 +548,7 @@ fun TimeRow(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Spacer(modifier = modifier.width(16.dp))
-                            Text(text = "Datum auswählen")
+                            Text(text = stringResource(id = R.string.pick_date))
                         }
                     },
                     showModeToggle = true

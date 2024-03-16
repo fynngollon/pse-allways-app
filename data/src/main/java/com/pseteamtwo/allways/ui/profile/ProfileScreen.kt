@@ -29,11 +29,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.data.question.QuestionType
 
 /**
@@ -58,7 +60,7 @@ fun ProfileScreen(
     ) {
         item {
             Row(modifier = Modifier.padding(bottom = 20.dp)) {
-                QuestionsCard("Persönliche Fragen",
+                QuestionsCard(stringResource(id = R.string.profile_questions),
                     questions = profileQuestions,
                     modifier = questionItemModifier,
                     cardTitleSize,
@@ -69,7 +71,7 @@ fun ProfileScreen(
 
         item {
             Row {
-                QuestionsCard("Haushaltsfragen",
+                QuestionsCard(stringResource(id = R.string.household_questions),
                     questions = householdQuestions,
                     modifier = questionItemModifier,
                     cardTitleSize,
@@ -92,7 +94,7 @@ fun ProfileScreen(
                                 profileViewModel.updateHouseholdAnswer(question.id, question.answer)
                             }
                         }) {
-                        Text(text = "Änderungen speichern")
+                        Text(text = stringResource(id = R.string.save_changes))
                     }
                 }
             }
@@ -105,15 +107,11 @@ fun ProfileScreen(
             Card {
                 Column {
                     Row(modifier = Modifier.padding(20.dp)) {
-                        Text(text =  "The given password has to contain at least\n" +
-                                "one uppercase letter,\n" +
-                                "one lowercase letter,\n" +
-                                "one number,\n" +
-                                "one special character.")
+                        Text(text =  stringResource(id = R.string.no_connection_to_server))
                     }
                     Row(modifier = Modifier.padding(20.dp)) {
                         Button(onClick =  onDismissRequest) {
-                            Text(text = "OK")
+                            Text(text = stringResource(id = R.string.ok))
                         }
                     }
                 }
