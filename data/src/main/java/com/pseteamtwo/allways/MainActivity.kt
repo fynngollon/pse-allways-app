@@ -105,20 +105,13 @@ class MainActivity : ComponentActivity() {
 
     private fun showPermissionExplanationDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Wegeerkennung benötigt Berechtigungen")
-            .setMessage(MSG_PERMISSION_EXPLANATION)
+        builder.setTitle(getString(R.string.trip_recognition_needs_permission))
+            .setMessage(getString(R.string.msg_permission_explanation))
             .setCancelable(false)
-            .setPositiveButton("OK") { dialog, _ ->
+            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
                 requestLocationPermissions()
             }
         builder.create().show()
-    }
-
-    companion object {
-        const val MSG_PERMISSION_EXPLANATION = "Die App benötigt die Standortberechtigungen, " +
-                "um Ihre Wege automatisch zu erfassen. Sie können die Wegeerkennung auch jederzeit in den " +
-                "Einstellungen aktivieren."
-
     }
 }

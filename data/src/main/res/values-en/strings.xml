@@ -54,7 +54,7 @@
     <string name="save_changes">Save changes</string>
 
     <string name="trip_recognition_needs_permission">Trip recognition needs permission.</string>
-    <string name="msg_permission_explanation">The app needs location permissions in order to automatically recognize your trips.</string>
+    <string name="msg_permission_explanation">The app needs location permissions in order to automatically recognize your trips. You can turn on the trip recognition at any time in the app\'s settings.</string>
     <string name="msg_permission_denied">You denied the location permissions and therefore you cannot use the automatic trip recognition. You can grant the permissions by activating the trip recognition in the app\'s settings.</string>
     <string name="tracking_notification_text">The location is being tracked.</string>
     <string name="tracking_notification_title">Trip recognition is active</string>
