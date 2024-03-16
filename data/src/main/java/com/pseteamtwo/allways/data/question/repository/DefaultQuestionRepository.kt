@@ -10,12 +10,14 @@ import com.pseteamtwo.allways.data.question.source.local.LocalQuestion
 import com.pseteamtwo.allways.data.question.source.local.QuestionDao
 import com.pseteamtwo.allways.data.question.source.network.QuestionNetworkDataSource
 import com.pseteamtwo.allways.data.question.source.network.QuestionnaireNetworkDataSource
+import com.pseteamtwo.allways.data.question.toExternal
 import com.pseteamtwo.allways.data.question.toLocal
 import com.pseteamtwo.allways.data.question.toNetwork
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 /**
@@ -48,13 +50,8 @@ abstract class DefaultQuestionRepository<T: QuestionDao,
 
 
 
-    override fun observeAll(): Flow<List<Question>>  {
-        //return questionDao.observeAll().map { it.toExternal() }
-        return flowOf( mutableListOf(
-            Question("1", "question1", QuestionType.TEXT, listOf("option1", "option2"), "option1"),
-            Question("2", "question2", QuestionType.TEXT, listOf("option1", "option2"), "option1"),
-            Question("3", "question3", QuestionType.TEXT, listOf("option1", "option2"), "option1")
-        ))
+    override fun observeAll(): Flow<List<Question>> {
+        return questionDao.observeAll().map { it.toExternal() }
     }
 
     @Throws(ServerConnectionFailedException::class)
