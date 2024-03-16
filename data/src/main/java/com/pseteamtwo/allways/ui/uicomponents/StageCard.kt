@@ -191,6 +191,7 @@ fun StageCard(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TimeRow(
+                                isForStartTime = true,
                                 initialDateTime = stageUiState.startDateTime,
                                 initialHour = stageUiState.startHour,
                                 initialMinute = stageUiState.startMinute,
@@ -271,6 +272,7 @@ fun StageCard(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TimeRow(
+                                isForStartTime = false,
                                 initialDateTime = stageUiState.endDateTime,
                                 initialHour = stageUiState.endDateTime.hour,
                                 initialMinute = stageUiState.endDateTime.minute,
@@ -345,6 +347,7 @@ fun StageCard(
 @Composable
 fun TimeRow(
     modifier: Modifier = Modifier,
+    isForStartTime: Boolean,
     initialDateTime: LocalDateTime,
     initialHour: Int,
     initialMinute: Int,
@@ -393,7 +396,7 @@ fun TimeRow(
         horizontalArrangement = Arrangement.Start
     ) {
         Text(
-            text = "Bis:",
+            text = if (isForStartTime) "Von:" else "Bis:",
         )
         Spacer(modifier = modifier.width(16.dp))
 
