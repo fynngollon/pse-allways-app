@@ -72,4 +72,15 @@
     <string name="settings_trip_recognition">Trip recognition</string>
     <string name="settings_tracking_regularity">Tracking interval</string>
 
+    <string name="purpose_none">(Not entered)</string>
+    <string name="purpose_work">Work</string>
+    <string name="purpose_business_trip">Business Trip</string>
+    <string name="purpose_education">Education</string>
+    <string name="purpose_shopping">Shopping</string>
+    <string name="purpose_leisure">Leisure</string>
+    <string name="purpose_transportation">Transportation</string>
+    <string name="purpose_other_errands">Other errands</string>
+    <string name="purpose_home">Going home</string>
+    <string name="purpose_other">Other</string>
+
 </resources>

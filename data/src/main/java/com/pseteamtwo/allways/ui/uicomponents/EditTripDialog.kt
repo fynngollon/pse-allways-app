@@ -171,7 +171,7 @@ fun EditTripDialog(
                             ) {
 
                                 OutlinedTextField(
-                                    value = selectedPurpose.purposeType,
+                                    value = selectedPurpose.getStringForPurpose(),
                                     onValueChange = {},
                                     readOnly = true,
                                     leadingIcon = {
@@ -195,7 +195,7 @@ fun EditTripDialog(
                                     for(purpose in Purpose.entries) {
                                         DropdownMenuItem(
                                             text = {
-                                                Text(purpose.purposeType)
+                                                Text(purpose.getStringForPurpose())
                                             },
                                             onClick = {
                                                 expanded = false
