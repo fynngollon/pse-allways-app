@@ -12,6 +12,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.threeten.bp.LocalDateTime
 import java.util.stream.IntStream.range
+import com.pseteamtwo.allways.R
+
 
 @RunWith(AndroidJUnit4::class)
 class StatisticsViewModelTest {
@@ -55,11 +57,12 @@ class StatisticsViewModelTest {
         assertEquals(viewModel.statisticsUiState.value.charts.last().values.last(), 50)
     }
 
+
     @Test
     fun testAddCompleteModalSplitChart() = runTest{
 
 
-        var labels: MutableList<String> = mutableListOf<String>(Mode.WALK.modeType, Mode.REGIONAL_BUS.modeType, Mode.OTHER.modeType)
+        var labels: MutableList<Int> = mutableListOf<Int>(R.string.mode_walk, R.string.mode_regional_bus, R.string.mode_other)
 
         viewModel.addCompleteModalSplitChart()
         assertEquals(viewModel.statisticsUiState.value.charts.last().labels, labels)
@@ -69,16 +72,16 @@ class StatisticsViewModelTest {
     @Test
     fun testAddDistancesOfLastWeekChart() = runTest{
         var currentDate = LocalDateTime.now().toLocalDate()
-        var labels: MutableList<String> = mutableListOf()
+        var labels: MutableList<Int> = mutableListOf()
         var values: MutableList<Long> = mutableListOf()
 
         for (i in range(0, 7)) {
-            labels.add((currentDate.plusDays((i-6).toLong())).dayOfMonth.toString() + ".")
+            labels.add((currentDate.plusDays((i-6).toLong())).dayOfMonth.toInt())
             values.add(fakeRepository.getTripDistanceOfDate(currentDate.plusDays(
                 (i-6).toLong()
             )).toLong())
         }
-        viewModel.addTodaysModalSplitChartHome()
+        viewModel.addDistancesOfLastWeekChart()
         assertEquals(viewModel.statisticsUiState.value.charts.last().labels, labels)
         assertEquals(viewModel.statisticsUiState.value.charts.last().values, values)
 
@@ -88,17 +91,17 @@ class StatisticsViewModelTest {
     fun testAddTodaysDistanceChartHome() = runTest {
         viewModel.addTodaysDistanceChartHome()
         delay(200)
-        Log.d("Tag", viewModel.homeStatisticsUiState.value.charts.last().labels.first())
-        assertEquals(viewModel.homeStatisticsUiState.value.charts.last().labels, listOf<String>("Distanz"))
-        assertEquals(viewModel.homeStatisticsUiState.value.charts.last().values, fakeRepository.getTripDistanceOfDate(LocalDateTime.now().toLocalDate()))
+        assertEquals(viewModel.homeStatisticsUiState.value.charts.last().labels, listOf<Int>(R.string.distance))
+        assertEquals(viewModel.homeStatisticsUiState.value.charts.last().values, listOf(fakeRepository.getTripDistanceOfDate(LocalDateTime.now().toLocalDate()).toLong()))
     }
 
     @Test
     fun testAddTodaysModalSplitChartHome() = runTest {
-        var labels: MutableList<String> = mutableListOf<String>(Mode.WALK.modeType, Mode.REGIONAL_BUS.modeType, Mode.OTHER.modeType)
+        var labels: List<Int> = listOf<Int>(R.string.mode_walk, R.string.mode_regional_bus, R.string.mode_other)
 
         viewModel.addTodaysModalSplitChartHome()
-        assertEquals(viewModel.homeStatisticsUiState.value.charts.first().labels, labels)
+        delay(200)
+        assertEquals(viewModel.homeStatisticsUiState.value.charts.last().labels, labels)
     }
 
 
@@ -106,7 +109,7 @@ class StatisticsViewModelTest {
     fun testAddTodaysDurationChart() = runTest {
         viewModel.addTodaysDurationChart()
         assertNotNull(viewModel.homeStatisticsUiState.value.charts.last())
-        assertEquals(viewModel.homeStatisticsUiState.value.charts.last().type, ChartType.COLUMN)
+        assertEquals(viewModel.homeStatisticsUiState.value.charts.last().type, ChartType.SINGLE_VALUE)
         assertEquals(viewModel.homeStatisticsUiState.value.charts.last().values.last(), 50)
     }
 }
