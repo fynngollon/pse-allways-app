@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,7 +84,11 @@ fun StatisticsScreen(navController: NavController) {
                 ) {
                     Row(modifier = Modifier.padding(top = 40.dp)) {
                         DetailedStatisticsCard(
-                            labels = chartUiState.labels,
+                            labels =
+                            when (chartUiState.contentType) {
+                                ChartContent.DISTANCE_LAST_WEEK -> chartUiState.labels.map { "$it." }
+                                else -> chartUiState.labels.map { stringResource(id = it) }
+                            },
                             values = chartUiState.values,
                             title = chartUiState.contentType.getTitleForChartContent(),
                             unit = chartUiState.contentType.getUnitForChartContent(),

@@ -59,6 +59,8 @@
     <string name="unit_meters">meters</string>
     <string name="unit_minutes">minutes</string>
     <string name="unit_nothing" />
+    <string name="distance">Distance</string>
+    <string name="duration">Duration</string>
 
     <string name="profile_questions">Profile-Questions</string>
     <string name="household_questions">Household-Questions</string>
@@ -70,6 +72,7 @@
     <string name="tracking_notification_text">Your location is being tracked.</string>
     <string name="tracking_notification_title">Trip recognition is active</string>
     <string name="settings_trip_recognition">Trip recognition</string>
+    <string name="settings_language">Language</string>
 
     <string name="purpose_none">(Not entered)</string>
     <string name="purpose_work">Work</string>
@@ -81,6 +84,21 @@
     <string name="purpose_other_errands">Other errands</string>
     <string name="purpose_home">Going home</string>
     <string name="purpose_other">Other</string>
+
+    <string name="mode_none">(Not entered)</string>
+    <string name="mode_walk">Walking</string>
+    <string name="mode_running">Running</string>
+    <string name="mode_e_bike">E-Bike</string>
+    <string name="mode_bicycle">Bicycle</string>
+    <string name="mode_motorcycle">Motorcycle</string>
+    <string name="mode_car_driver">Car driver</string>
+    <string name="mode_car_passenger">Car passenger</string>
+    <string name="mode_regional_bus">Regional bus</string>
+    <string name="mode_long_distance_bus">Long distance bus</string>
+    <string name="mode_tram_metro_train">Tram/Metro/Subway</string>
+    <string name="mode_regional_train">Regional train</string>
+    <string name="mode_long_distance_train">Long distance train</string>
+    <string name="mode_other">Other</string>
 
     <string name="settings_tracking_regularity">Tracking interval</string>
     <string name="tracking_regularity_never">Never</string>
