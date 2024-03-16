@@ -1,5 +1,8 @@
 package com.pseteamtwo.allways.data.settings
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.pseteamtwo.allways.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -14,32 +17,37 @@ import kotlinx.serialization.Serializable
  * between 2 trackings of the device's location.
  */
 @Serializable
-enum class TrackingRegularity(val regularity: Long) {
+enum class TrackingRegularity(val regularity: Long, private val regularityId: Int) {
     /**
      * This tracking regularity means that the tracking is disabled.
      */
     @SerialName("never")
-    NEVER(0),
+    NEVER(0, R.string.tracking_regularity_never),
 
     /**
      * This regularity means that the tracking should be done once per minute.
      */
     @SerialName("rarely")
-    RARELY(60000),
+    RARELY(60000, R.string.tracking_regularity_rarely),
 
     /**
      * This regularity means that the tracking should be done twice per minute.
      */
     @SerialName("medium")
-    MEDIUM(30000),
+    MEDIUM(30000, R.string.tracking_regularity_medium),
 
     /**
      * This regularity means that the tracking should be done 6 times per minute.
      */
     @SerialName("often")
-    OFTEN(10000);
+    OFTEN(10000, R.string.tracking_regularity_often);
 
     override fun toString(): String {
         return this.name + "(" + this.regularity + ")"
+    }
+
+    @Composable
+    fun getStringForRegularity(): String {
+        return stringResource(id = this.regularityId)
     }
 }

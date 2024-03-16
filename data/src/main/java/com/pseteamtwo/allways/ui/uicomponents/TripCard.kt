@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,7 +80,8 @@ fun TripCard(
                     .padding(horizontal = 8.dp)
                     .clickable(
                         enabled = true,
-                        onClickLabel = if (tripUiState.isConfirmed) "Weg bearbeiten" else "Weg bestätigen",
+                        onClickLabel = if (tripUiState.isConfirmed) stringResource(id = R.string.edit_trip)
+                        else stringResource(id = R.string.verify_trip),
                     ) {
                         tripUiState.createStageUiStates()
                         showEditTripDialog = true

@@ -28,7 +28,6 @@ import com.pseteamtwo.allways.data.trip.source.network.TripNetworkDataSource
 import com.pseteamtwo.allways.data.trip.toExternal
 import com.pseteamtwo.allways.data.trip.toLocation
 import com.pseteamtwo.allways.data.trip.toNetwork
-import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -85,8 +84,8 @@ class DefaultTripAndStageRepository @Inject constructor(
 
 
     override suspend fun observeStagesOfTrip(tripId: Long): Flow<List<Stage>> {
-        return tripLocalDataSource.observeTripWithStages(tripId).map { trip ->
-            trip.stages.toExternal().sortedBy { it.startDateTime }
+        return stageLocalDataSource.observeStagesWithGpsPointsForTrip(tripId).map { stages ->
+            stages.toExternal().sortedBy { it.startDateTime }
         }
     }
 

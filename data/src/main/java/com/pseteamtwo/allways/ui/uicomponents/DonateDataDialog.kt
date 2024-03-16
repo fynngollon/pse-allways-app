@@ -24,8 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.pseteamtwo.allways.R
 import com.pseteamtwo.allways.ui.profile.ProfileViewModel
 import com.pseteamtwo.allways.ui.profile.QuestionUiState
 import com.pseteamtwo.allways.ui.trips.TripUiState
@@ -75,18 +77,18 @@ fun DonateDataDialog(
 
 
                     ) {
-                        Text(text = "Bestätigen")
+                        Text(text = stringResource(id = R.string.verify))
                     }
                 }
                 Row {
-                    QuestionList("Persönliche Fragen", questions = profileQuestions)
+                    QuestionList(stringResource(id = R.string.profile_questions), questions = profileQuestions)
                 }
                 Row {
-                    QuestionList("Haushaltsfragen", questions = householdQuestions)
+                    QuestionList(stringResource(id = R.string.household_questions), questions = householdQuestions)
                 }
 
                 Row {
-                    TripList(title = "Wege", trips = trips)
+                    TripList(title = stringResource(id = R.string.trips), trips = trips)
                 }
             }
         }

@@ -65,14 +65,10 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
     //ID for next TripUiState
     private var nextTripUiStateId: Long = 0
 
-    //geocoder for geocoding GeoPoints to Addresses
-    private val geocoder: GeocoderNominatim = GeocoderNominatim(Locale.getDefault(), Configuration.getInstance().userAgentValue)
-
     //runs after initialization
     init {
         viewModelScope.launch {
-            tripAndStageRepository.observeAllTrips().collect {
-                trips ->
+            tripAndStageRepository.observeAllTrips().collect { trips ->
                 val tripUiStates: MutableList<TripUiState> = mutableListOf()
 
                 for (trip in trips) {
@@ -88,8 +84,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         endDateTime = trip.endDateTime,
                         startLocation = GeoPoint(trip.startLocation),
                         endLocation = GeoPoint(trip.endLocation),
-                        startLocationName = "Lädt...",
-                        endLocationName = "Lädt...",
+                        startLocationName = "Loading...",
+                        endLocationName = "Loading...",
                         duration = trip.duration,
                         distance = trip.distance,
                         deleteTrip = {deleteTrip(tripUiStateId)},
@@ -122,43 +118,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
 
                     //add to list
                     tripUiStates.add(tripUiState)
-
-                    //try to get addresses for start and end locations of trip
-                    /*CoroutineScope(Dispatchers.IO).launch{
-                        var addresses: List<Address>
-                        var startLocationName: String
-                        var endLocationName: String
-                        try {
-                            addresses = withContext(Dispatchers.IO) {
-                                geocoder.getFromLocation(
-                                    trip.startLocation.latitude,
-                                    trip.startLocation.longitude, 1
-                                )
-                            }
-                            startLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            startLocationName = "-"
-                        }
-                        try {
-                            addresses = withContext(Dispatchers.IO) {
-                                geocoder.getFromLocation(
-                                    trip.endLocation.latitude,
-                                    trip.endLocation.longitude, 1
-                                )
-                            }
-                            endLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            endLocationName = "-"
-                        }
-
-                        updateTripUiState(
-                            tripUiStateId,
-                            tripUiState.copy(
-                                startLocationName = startLocationName,
-                                endLocationName = endLocationName
-                            )
-                        )
-                    }*/
                 }
 
                 //update UI state
@@ -416,8 +375,8 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                         endDateTime = stage.endDateTime,
                         startLocation = GeoPoint(stage.startLocation),
                         endLocation = GeoPoint(stage.endLocation),
-                        startLocationName = "Lädt...",
-                        endLocationName = "Lädt...",
+                        startLocationName = "Loading...",
+                        endLocationName = "Loading...",
                         setMode = {
                             mode: Mode ->
                             setStageUiStageMode(
@@ -514,34 +473,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     tripUiStateId = tripUiStateId,
                     tripUiState.copy(stageUiStates = stageUiStates)
                 )
-                for (stageUiState in stageUiStates) {
-                    viewModelScope.launch{
-                        var addresses: List<Address>
-                        var startLocationName: String
-                        var endLocationName: String
-                        try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.startLocation.latitude, stageUiState.startLocation.longitude, 1)}
-                            startLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            startLocationName = "-"
-                        }
-                        try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.endLocation.latitude, stageUiState.endLocation.longitude, 1)}
-                            endLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            endLocationName = "-"
-                        }
-
-                        updateStageUiState(
-                            tripUiStateId = tripUiStateId,
-                            stageUiStateId = stageUiState.id,
-                            stageUiState.copy(
-                                startLocationName = startLocationName,
-                                endLocationName = endLocationName
-                            )
-                        )
-                    }
-                }
             }
         }
     }
@@ -652,7 +583,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
      * @param tripUiStateId the ID of the TripUiState
      * @param purpose the purpose to be set
      * */
-    private fun setTripUiStatePurpose(
+    fun setTripUiStatePurpose(
         tripUiStateId: Long,
         purpose: Purpose
     ) {
@@ -662,7 +593,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStageMode(
+     fun setStageUiStageMode(
         tripUiStateId: Long,
         stageUiStateId: Int,
         mode: Mode
@@ -674,7 +605,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStageStartDate(
+     fun setStageUiStageStartDate(
         tripUiStateId: Long,
         stageUiStateId: Int,
         date: LocalDate
@@ -689,7 +620,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStageEndDate(
+     fun setStageUiStageEndDate(
         tripUiStateId: Long,
         stageUiStateId: Int,
         date: LocalDate
@@ -704,7 +635,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateStartTime(
+     fun setStageUiStateStartTime(
         tripUiStateId: Long,
         stageUiStateId: Int,
         hour: Int = getStageUiState(tripUiStateId, stageUiStateId).startDateTime.hour,
@@ -722,7 +653,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateEndTime(
+     fun setStageUiStateEndTime(
         tripUiStateId: Long,
         stageUiStateId: Int,
         hour: Int = getStageUiState(tripUiStateId, stageUiStateId).endDateTime.hour,
@@ -740,7 +671,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateStartLocation(
+     fun setStageUiStateStartLocation(
         tripUiStateId: Long,
         stageUiStateId: Int,
         geoPoint: GeoPoint
@@ -755,7 +686,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateEndLocation(
+     fun setStageUiStateEndLocation(
         tripUiStateId: Long,
         stageUiStateId: Int,
         geoPoint: GeoPoint
@@ -770,7 +701,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateStartLocationName(
+     fun setStageUiStateStartLocationName(
         tripUiStateId: Long,
         stageUiStateId: Int,
         startLocationName: String
@@ -785,7 +716,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateEndLocationName(
+     fun setStageUiStateEndLocationName(
         tripUiStateId: Long,
         stageUiStateId: Int,
         endLocationName: String
@@ -899,7 +830,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
     }
 
-    private fun addStageUiStateBefore(tripUiStateId: Long) {
+     fun addStageUiStateBefore(tripUiStateId: Long) {
         val tripUiState = getTripUiState(tripUiStateId)
         val stageUiStates = tripUiState.stageUiStates
         val firstStageUiState = stageUiStates.first()
@@ -1122,7 +1053,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun addStageUiStateAfter(tripUiStateId: Long) {
+     fun addStageUiStateAfter(tripUiStateId: Long) {
         val tripUiState = getTripUiState(tripUiStateId)
         val stageUiStates = tripUiState.stageUiStates
         val lastStageUiState = stageUiStates.last()
@@ -1258,7 +1189,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun updateTripPurpose(tripUiState: TripUiState) {
+    fun updateTripPurpose(tripUiState: TripUiState) {
         viewModelScope.launch {
             tripAndStageRepository.updateTripPurpose(
                 tripId = tripUiState.tripId,

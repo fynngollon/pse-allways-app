@@ -3,7 +3,6 @@ package com.pseteamtwo.allways.data.network
 import com.pseteamtwo.allways.data.exception.ServerConnectionFailedException
 import java.sql.Connection
 import java.sql.DriverManager
-import java.sql.SQLException
 
 /**
  * This Class if for creating a connection to a MySql server.
@@ -11,7 +10,7 @@ import java.sql.SQLException
 abstract class BaseNetworkDataSource {
 
     companion object {
-        private const val CONNECTION_FAILED_MESSAGE = "There is no connection to the network" +
+        private const val MSG_CONNECTION_FAILED = "There is no connection to the network" +
                 " database or it could not be established."
     }
 
@@ -30,7 +29,7 @@ abstract class BaseNetworkDataSource {
         try {
             return DriverManager.getConnection(url, username, password)
         } catch (e: Exception) {
-            throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
+            throw ServerConnectionFailedException(MSG_CONNECTION_FAILED)
         }
     }
 
@@ -49,7 +48,7 @@ abstract class BaseNetworkDataSource {
         try {
             return DriverManager.getConnection(url, username, password)
         } catch (e: Exception) {
-            throw ServerConnectionFailedException(CONNECTION_FAILED_MESSAGE)
+            throw ServerConnectionFailedException(MSG_CONNECTION_FAILED)
         }
     }
 }
