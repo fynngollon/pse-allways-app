@@ -95,7 +95,6 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
                 listOf(statisticsRepository.getTripDistanceOfAll().toLong())
             )
             )
-
     }
 
     /**

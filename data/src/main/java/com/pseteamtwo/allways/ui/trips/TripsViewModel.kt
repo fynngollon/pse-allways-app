@@ -651,7 +651,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
      * @param tripUiStateId the ID of the TripUiState
      * @param purpose the purpose to be set
      * */
-    private fun setTripUiStatePurpose(
+    fun setTripUiStatePurpose(
         tripUiStateId: Long,
         purpose: Purpose
     ) {
@@ -661,7 +661,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStageMode(
+     fun setStageUiStageMode(
         tripUiStateId: Long,
         stageUiStateId: Int,
         mode: Mode
@@ -673,7 +673,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStageStartDate(
+     fun setStageUiStageStartDate(
         tripUiStateId: Long,
         stageUiStateId: Int,
         date: LocalDate
@@ -688,7 +688,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStageEndDate(
+     fun setStageUiStageEndDate(
         tripUiStateId: Long,
         stageUiStateId: Int,
         date: LocalDate
@@ -703,7 +703,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateStartTime(
+     fun setStageUiStateStartTime(
         tripUiStateId: Long,
         stageUiStateId: Int,
         hour: Int = getStageUiState(tripUiStateId, stageUiStateId).startDateTime.hour,
@@ -721,7 +721,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateEndTime(
+     fun setStageUiStateEndTime(
         tripUiStateId: Long,
         stageUiStateId: Int,
         hour: Int = getStageUiState(tripUiStateId, stageUiStateId).endDateTime.hour,
@@ -739,7 +739,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateStartLocation(
+     fun setStageUiStateStartLocation(
         tripUiStateId: Long,
         stageUiStateId: Int,
         geoPoint: GeoPoint
@@ -754,7 +754,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateEndLocation(
+     fun setStageUiStateEndLocation(
         tripUiStateId: Long,
         stageUiStateId: Int,
         geoPoint: GeoPoint
@@ -769,7 +769,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateStartLocationName(
+     fun setStageUiStateStartLocationName(
         tripUiStateId: Long,
         stageUiStateId: Int,
         startLocationName: String
@@ -784,7 +784,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun setStageUiStateEndLocationName(
+     fun setStageUiStateEndLocationName(
         tripUiStateId: Long,
         stageUiStateId: Int,
         endLocationName: String
@@ -898,7 +898,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         }
     }
 
-    private fun addStageUiStateBefore(tripUiStateId: Long) {
+     fun addStageUiStateBefore(tripUiStateId: Long) {
         val tripUiState = getTripUiState(tripUiStateId)
         val stageUiStates = tripUiState.stageUiStates
         val firstStageUiState = stageUiStates.first()
@@ -1121,7 +1121,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun addStageUiStateAfter(tripUiStateId: Long) {
+     fun addStageUiStateAfter(tripUiStateId: Long) {
         val tripUiState = getTripUiState(tripUiStateId)
         val stageUiStates = tripUiState.stageUiStates
         val lastStageUiState = stageUiStates.last()
@@ -1257,7 +1257,7 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
         )
     }
 
-    private fun updateTripPurpose(tripUiState: TripUiState) {
+    fun updateTripPurpose(tripUiState: TripUiState) {
         viewModelScope.launch {
             tripAndStageRepository.updateTripPurpose(
                 tripId = tripUiState.tripId,

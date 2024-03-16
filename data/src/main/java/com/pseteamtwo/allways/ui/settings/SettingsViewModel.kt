@@ -2,6 +2,7 @@ package com.pseteamtwo.allways.ui.settings
 
 import androidx.lifecycle.ViewModel
 import com.pseteamtwo.allways.data.settings.AppPreferences
+import com.pseteamtwo.allways.data.settings.Language
 import com.pseteamtwo.allways.data.trip.tracking.hasLocationPermission
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,12 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _settingsUiState: MutableStateFlow<SettingsUiState> =
-        MutableStateFlow(SettingsUiState(isTrackingEnabled = appPreferences.isTrackingEnabled))
+        MutableStateFlow(
+            SettingsUiState(
+                isTrackingEnabled = appPreferences.isTrackingEnabled,
+                getLanguage = appPreferences.language
+            )
+        )
     val settingsUiState: StateFlow<SettingsUiState> = _settingsUiState.asStateFlow()
 
     fun updateTrackingEnabled(newValue: Boolean): Boolean {

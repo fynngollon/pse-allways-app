@@ -74,6 +74,7 @@ dependencies {
 
     // Room - for local databases
     implementation("androidx.room:room-ktx:2.6.1")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     ksp("androidx.room:room-compiler:2.6.1")
     //annotationProcessor("androidx.room:room-compiler:2.6.1")
 
