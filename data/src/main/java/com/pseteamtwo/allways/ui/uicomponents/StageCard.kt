@@ -216,7 +216,7 @@ fun StageCard(
                             }
 
                             Text(
-                                text = stringResource(id = R.string.mean_of_transportation) + ": ",
+                                text = stringResource(id = R.string.means_of_transportation) + ": ",
                                 modifier = modifier.weight(2.2f)
                             )
 

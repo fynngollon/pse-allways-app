@@ -31,9 +31,9 @@
         - eine Zahl\n
         - ein Sonderzeichen</string>
     <string name="login_failed">Account konnte nicht eingeloggt werden.</string>
-    <string name="account_already_exists">Account mit diesem Namen existiert bereits.</string>
+    <string name="account_already_exists">Ein Account mit dieser E-Mail existiert bereits. Bitte nutzen Sie stattdessen Login.</string>
 
-    <string name="no_trips_yet">Noch keine Wege...</string>
+    <string name="no_trips_yet">Noch keine Wege…</string>
     <string name="add_trip">Weg hinzufügen</string>
     <string name="empty_trips_message">Warte bis die App einen Weg erkennt oder tippe auf +, um einen Weg hinzuzufügen.</string>
     <string name="new_trip">Neuer Weg</string>
@@ -43,7 +43,7 @@
     <string name="trip_purpose">Wegezweck</string>
     <string name="add_stage">Etappe hinzufügen</string>
     <string name="arrival_at">Ankunft am</string>
-    <string name="mean_of_transportation">Verkehrsmittel</string>
+    <string name="means_of_transportation">Verkehrsmittel</string>
     <string name="clock">Uhr</string>
     <string name="pick_date">Datum auswählen</string>
     <string name="from">Von</string>
@@ -53,7 +53,7 @@
     <string name="household_questions">Haushaltsfragen</string>
     <string name="save_changes">Änderungen speichern</string>
 
-    <string name="trip_recognition_needs_permission">Wegeerkennung benötigt Berechtigungen</string>
+    <string name="trip_recognition_needs_permission">Wegeerkennung benötigt Berechtigungen.</string>
     <string name="msg_permission_explanation">Die App benötigt die Standortberechtigungen, um Ihre Wege automatisch zu erfassen.</string>
     <string name="msg_permission_denied">Sie haben die Standortberechtigungen abgelehnt und können daher die automatische Wegeerkennung nicht nutzen. In den Einstellungen innerhalb der App können Sie die Wegeerkennung aktivieren und die Berechtigung erteilen.</string>
 
