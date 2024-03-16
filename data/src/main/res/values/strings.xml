@@ -46,6 +46,8 @@
     <string name="mean_of_transportation">Verkehrsmittel</string>
     <string name="clock">Uhr</string>
     <string name="pick_date">Datum auswählen</string>
+    <string name="from">Von</string>
+    <string name="until">Bis</string>
 
     <string name="profile_questions">Persönliche Fragen</string>
     <string name="household_questions">Haushaltsfragen</string>

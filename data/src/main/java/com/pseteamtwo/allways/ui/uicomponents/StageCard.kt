@@ -398,7 +398,8 @@ fun TimeRow(
         horizontalArrangement = Arrangement.Start
     ) {
         Text(
-            text = if (isForStartTime) "Von:" else "Bis:",
+            text = if (isForStartTime) stringResource(id = R.string.from) + ":"
+            else stringResource(id = R.string.until) + ":",
         )
         Spacer(modifier = modifier.width(16.dp))
 
