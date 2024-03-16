@@ -19,12 +19,12 @@
 
     <string name="no_connection_to_server">Currently there is no connection to the server. Please try again later.</string>
 
-    <string name="use_without_account">use without account</string>
-    <string name="login_text">log in</string>
-    <string name="register">register</string>
-    <string name="email">email</string>
+    <string name="use_without_account">Use without account</string>
+    <string name="login_text">Log in</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
     <string name="email_invalid_format">The provided email is of invalid format.</string>
-    <string name="password">password</string>
+    <string name="password">Password</string>
     <string name="password_invalid_format">The provided password has to contain at least:\n\n
         - one lower case letter\n
         - one upper case letter\n
