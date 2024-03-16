@@ -70,6 +70,6 @@
     <string name="tracking_notification_text">Der Standort wird geortet.</string>
     <string name="tracking_notification_title">Wegeerkennung aktiv</string>
     <string name="settings_trip_recognition">Wegeerkennung</string>
-    <string name="settings_language">Sprache</string>
+    <string name="settings_tracking_regularity">Trackingintervall</string>
 
 </resources>

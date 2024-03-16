@@ -20,8 +20,8 @@ import org.osmdroid.util.GeoPoint
 /**
  * Instrumented test, which will execute on an Android device.
  *
- * This test tests [com.pseteamtwo.allways.trip.source.local.TripDao]
- * and [com.pseteamtwo.allways.trip.source.local.TripAndStageDatabase].
+ * This test tests [com.pseteamtwo.allways.data.trip.source.local.TripDao]
+ * and [com.pseteamtwo.allways.data.trip.source.local.TripAndStageDatabase].
  */
 @RunWith(AndroidJUnit4::class)
 class TripDaoTest {

@@ -70,6 +70,6 @@
     <string name="tracking_notification_text">Your location is being tracked.</string>
     <string name="tracking_notification_title">Trip recognition is active</string>
     <string name="settings_trip_recognition">Trip recognition</string>
-    <string name="settings_language">Language</string>
+    <string name="settings_tracking_regularity">Tracking interval</string>
 
 </resources>
