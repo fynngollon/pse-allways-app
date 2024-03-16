@@ -49,6 +49,17 @@
     <string name="from">From</string>
     <string name="until">Until</string>
 
+    <string name="distance_all">Distance of all trips together</string>
+    <string name="duration_all">Duration of all trips together</string>
+    <string name="modal_split_all">Percentages of means of transportation for all trips</string>
+    <string name="distance_last_week">Distances of last week in meters</string>
+    <string name="distance_today">Distance travelled today</string>
+    <string name="duration_today">Duration travelled today</string>
+    <string name="modal_split_today">Percentages of means of transportation for today</string>
+    <string name="unit_meters">meters</string>
+    <string name="unit_minutes">minutes</string>
+    <string name="unit_nothing" />
+
     <string name="profile_questions">Profile-Questions</string>
     <string name="household_questions">Household-Questions</string>
     <string name="save_changes">Save changes</string>

@@ -49,6 +49,17 @@
     <string name="from">Von</string>
     <string name="until">Bis</string>
 
+    <string name="distance_all">Distanz aller Wege zusammen</string>
+    <string name="duration_all">Dauer aller Wege zusammen</string>
+    <string name="modal_split_all">Anteil Verkehrsmittel insgesamt</string>
+    <string name="distance_last_week">Zurückgelegte Distanzen der letzten Woche in Metern</string>
+    <string name="distance_today">Heute zurückgelegte Distanz</string>
+    <string name="duration_today">Gesamtdauer der heutigen Wege</string>
+    <string name="modal_split_today">Anteil Verkehrsmittel heute</string>
+    <string name="unit_meters">Meter</string>
+    <string name="unit_minutes">Minuten</string>
+    <string name="unit_nothing" />
+
     <string name="profile_questions">Persönliche Fragen</string>
     <string name="household_questions">Haushaltsfragen</string>
     <string name="save_changes">Änderungen speichern</string>

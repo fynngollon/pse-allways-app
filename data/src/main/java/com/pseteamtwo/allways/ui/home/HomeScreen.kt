@@ -107,8 +107,8 @@ fun HomeScreen(
                                 DetailedStatisticsCard(
                                     labels = chartUiState.labels,
                                     values = chartUiState.values,
-                                    title = chartUiState.title,
-                                    unit = chartUiState.unit,
+                                    title = chartUiState.contentType.getTitleForChartContent(),
+                                    unit = chartUiState.contentType.getUnitForChartContent(),
                                     type = chartUiState.type
                                 )
                             }
