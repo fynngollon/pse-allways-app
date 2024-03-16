@@ -9,12 +9,11 @@ import com.pseteamtwo.allways.data.trip.tracking.ACTION_START
 class PhoneRestartBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            if (AppPreferences(context).isTrackingEnabled) {
-                Intent(context, LocationService::class.java).apply {
-                    action = ACTION_START
-                    context.startService(this)
-                }
+        if (intent.action == Intent.ACTION_BOOT_COMPLETED
+            && AppPreferences(context).isTrackingEnabled) {
+            Intent(context, LocationService::class.java).apply {
+                action = ACTION_START
+                context.startService(this)
             }
         }
     }

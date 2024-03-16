@@ -1,6 +1,5 @@
 package com.pseteamtwo.allways.ui.statistics
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pseteamtwo.allways.R
@@ -39,7 +38,6 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
 
             assembleStatisticsScreenUiState()
             _statisticsUiState.update {
-                    it ->
                 it.copy(
                     charts = chartUiStates,
                 )
@@ -47,7 +45,6 @@ class StatisticsViewModel @Inject constructor(private val statisticsRepository: 
 
             assembleHomeScreenUiState()
             _homeStatisticsUiState.update {
-                    it ->
                 it.copy(
                     charts = homeChartUiStates,
                 )

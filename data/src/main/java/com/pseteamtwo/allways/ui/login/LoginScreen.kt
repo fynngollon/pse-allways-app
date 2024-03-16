@@ -150,14 +150,14 @@ fun LoginScreen(navController: NavController) {
             Text(text = stringResource(id = R.string.email))
         }
         Row (modifier = Modifier.padding( start = 20.dp)){
-            OutlinedTextField(value = email, onValueChange = {it -> email = it})
+            OutlinedTextField(value = email, onValueChange = {email = it})
         }
 
         Row (modifier = Modifier.padding(top = 20.dp, start = 20.dp)){
             Text(text = stringResource(id = R.string.password))
         }
         Row(modifier = Modifier.padding(start = 20.dp)) {
-            OutlinedTextField(value = password, onValueChange = {it -> password = it})
+            OutlinedTextField(value = password, onValueChange = {password = it})
         }
 
         Row(modifier = Modifier.padding(start = 20.dp, top = 15.dp)) {

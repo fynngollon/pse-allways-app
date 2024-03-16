@@ -148,8 +148,7 @@ class DefaultAccountRepository @Inject constructor(
         return passwordHash == networkAccount.passwordHash
     }
 
-    // doesn't compare email rn
-    // TODO("needs testing")
+
     override suspend fun authenticateAccount(): Boolean {
         // loads the local account
         val localAccount = accountLocalDataSource.observe().first()
