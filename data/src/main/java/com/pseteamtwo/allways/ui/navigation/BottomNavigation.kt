@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -36,7 +37,7 @@ fun BottomNavigation(navController: NavController, modifier: Modifier = Modifier
                           navController.navigate(screen.route) {
                           }
                 },
-                label = { Text(text = screen.label)},
+                label = { Text(text = stringResource(id = screen.label)) },
                 icon = {
                     Icon(imageVector = screen.icon, contentDescription = " NavBar Icon")
                        },

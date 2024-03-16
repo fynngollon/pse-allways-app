@@ -103,7 +103,7 @@ fun TripsScreen(
                     var date: LocalDate? = null
                     items(
                         tripUiStates,
-                        key = { item: TripUiState -> item.id}
+                        //key = { item: TripUiState -> item.id}
                     ) {
                             tripUiState: TripUiState ->
                         if(date != tripUiState.startDateTime.toLocalDate()) {
