@@ -65,9 +65,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
     //ID for next TripUiState
     private var nextTripUiStateId: Long = 0
 
-    //geocoder for geocoding GeoPoints to Addresses
-    private val geocoder: GeocoderNominatim = GeocoderNominatim(Locale.getDefault(), Configuration.getInstance().userAgentValue)
-
     //runs after initialization
     init {
         viewModelScope.launch {
@@ -121,43 +118,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
 
                     //add to list
                     tripUiStates.add(tripUiState)
-
-                    //try to get addresses for start and end locations of trip
-                    /*CoroutineScope(Dispatchers.IO).launch{
-                        var addresses: List<Address>
-                        var startLocationName: String
-                        var endLocationName: String
-                        try {
-                            addresses = withContext(Dispatchers.IO) {
-                                geocoder.getFromLocation(
-                                    trip.startLocation.latitude,
-                                    trip.startLocation.longitude, 1
-                                )
-                            }
-                            startLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            startLocationName = "-"
-                        }
-                        try {
-                            addresses = withContext(Dispatchers.IO) {
-                                geocoder.getFromLocation(
-                                    trip.endLocation.latitude,
-                                    trip.endLocation.longitude, 1
-                                )
-                            }
-                            endLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            endLocationName = "-"
-                        }
-
-                        updateTripUiState(
-                            tripUiStateId,
-                            tripUiState.copy(
-                                startLocationName = startLocationName,
-                                endLocationName = endLocationName
-                            )
-                        )
-                    }*/
                 }
 
                 //update UI state
@@ -513,34 +473,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                     tripUiStateId = tripUiStateId,
                     tripUiState.copy(stageUiStates = stageUiStates)
                 )
-                for (stageUiState in stageUiStates) {
-                    viewModelScope.launch{
-                        var addresses: List<Address>
-                        var startLocationName: String
-                        var endLocationName: String
-                        try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.startLocation.latitude, stageUiState.startLocation.longitude, 1)}
-                            startLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            startLocationName = "-"
-                        }
-                        try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.endLocation.latitude, stageUiState.endLocation.longitude, 1)}
-                            endLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            endLocationName = "-"
-                        }
-
-                        updateStageUiState(
-                            tripUiStateId = tripUiStateId,
-                            stageUiStateId = stageUiState.id,
-                            stageUiState.copy(
-                                startLocationName = startLocationName,
-                                endLocationName = endLocationName
-                            )
-                        )
-                    }
-                }
             }
         }
     }
