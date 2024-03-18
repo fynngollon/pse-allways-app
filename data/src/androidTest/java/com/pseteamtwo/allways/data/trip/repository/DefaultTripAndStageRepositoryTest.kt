@@ -347,9 +347,9 @@ class DefaultTripAndStageRepositoryTest {
     //average times determined by testing on emulator of android-studio:
     // 100 trips -> ~3sec
     // 500 trips -> ~30sec
-    // 1000 trips -> ~3min
+    // 1000 trips -> ~2min
     // 3000 trips -> ~10min
-    // 10000 trips -> >30min
+    // 10000 trips -> >40min
     //(for running on an own device, the according times are around twice the value because the
     // emulator doesn't need that to wait for other processes of the phone)
     @Test
