@@ -2,6 +2,7 @@ package com.pseteamtwo.allways.ui.trips
 
 
 
+import android.location.Address
 import android.location.Location
 
 import androidx.lifecycle.ViewModel
@@ -14,8 +15,10 @@ import com.pseteamtwo.allways.data.trip.Purpose
 import com.pseteamtwo.allways.data.trip.Stage
 
 import com.pseteamtwo.allways.data.trip.repository.TripAndStageRepository
+import com.pseteamtwo.allways.ui.map.addressToString
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,10 +26,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import org.osmdroid.bonuspack.location.GeocoderNominatim
+import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+import java.io.IOException
+import java.util.Locale
 
 import javax.inject.Inject
 
@@ -108,43 +116,6 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
 
                     //add to list
                     tripUiStates.add(tripUiState)
-
-                    //try to get addresses for start and end locations of trip
-                    /*CoroutineScope(Dispatchers.IO).launch{
-                        var addresses: List<Address>
-                        var startLocationName: String
-                        var endLocationName: String
-                        try {
-                            addresses = withContext(Dispatchers.IO) {
-                                geocoder.getFromLocation(
-                                    trip.startLocation.latitude,
-                                    trip.startLocation.longitude, 1
-                                )
-                            }
-                            startLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            startLocationName = "-"
-                        }
-                        try {
-                            addresses = withContext(Dispatchers.IO) {
-                                geocoder.getFromLocation(
-                                    trip.endLocation.latitude,
-                                    trip.endLocation.longitude, 1
-                                )
-                            }
-                            endLocationName = addressToString(addresses[0])
-                        } catch (exception: IOException) {
-                            endLocationName = "-"
-                        }
-
-                        updateTripUiState(
-                            tripUiStateId,
-                            tripUiState.copy(
-                                startLocationName = startLocationName,
-                                endLocationName = endLocationName
-                            )
-                        )
-                    }*/
                 }
 
                 //update UI state
@@ -499,20 +470,17 @@ class TripsViewModel @Inject constructor(private val tripAndStageRepository: Tri
                 )
                 for (stageUiState in stageUiStates) {
                     viewModelScope.launch{
-                        var addresses: List<Address>
-                        var startLocationName: String
-                        var endLocationName: String
-                        try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.startLocation.latitude, stageUiState.startLocation.longitude, 1)}
-                            startLocationName = addressToString(addresses[0])
+                        val startLocationName: String = try {
+                            val addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.startLocation.latitude, stageUiState.startLocation.longitude, 1)}
+                            addressToString(addresses[0])
                         } catch (exception: IOException) {
-                            startLocationName = "-"
+                            "-"
                         }
-                        try {
-                            addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.endLocation.latitude, stageUiState.endLocation.longitude, 1)}
-                            endLocationName = addressToString(addresses[0])
+                        val endLocationName: String = try {
+                            val addresses = withContext(Dispatchers.IO) {geocoder.getFromLocation(stageUiState.endLocation.latitude, stageUiState.endLocation.longitude, 1)}
+                            addressToString(addresses[0])
                         } catch (exception: IOException) {
-                            endLocationName = "-"
+                            "-"
                         }
 
                         updateStageUiState(
